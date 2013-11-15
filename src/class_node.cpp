@@ -14,7 +14,6 @@ void ClassNode::setParent( ClassNode* parent ) {
     if( NULL == parent ) {
         m_parentName.clear();
     }
-    
     m_parent = parent;
 }
 
@@ -42,7 +41,6 @@ void ClassNode::acceptVars( Visitor& visitor){
 
     for( int i=0; i < m_varList.size(); ++i ){
         if( m_varList[i] ) {
-            
             // set every node 
             m_varList[i]->setVarClass( this );
             m_varList[i]->accept( visitor );
@@ -60,7 +58,6 @@ void ClassNode::acceptFuncs( Visitor& visitor, ScopeManager& scopeManager, Error
     for( int i=0; i < m_funcList.size(); ++i ) {
 
         if( m_funcList[i] ){
-            
             iter = funcMap.find( m_funcList[i]->getName() );
             if( iter != funcMap.end() ){
                 FuncRedefinedError error( iter->second, m_funcList[i] );

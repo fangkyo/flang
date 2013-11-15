@@ -29,11 +29,11 @@ LoggerPtr g_logger(Logger::getLogger("yacc"));
 %}
 
 %union {
-	int   intVal;
-	char  charVal;
-	bool  boolVal;
-    int   strIdx;
-    int   lineNum;
+  int   intVal;
+  char  charVal;
+  bool  boolVal;
+  int   strIdx;
+  int   lineNum;
 
 	SyntaxNode*      syntaxNode;
 	DeclareNode*     declareNode;
