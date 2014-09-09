@@ -9,3 +9,5 @@ src/tinyc_lex.cpp
 src/tinyc_yacc.cpp
 .sconsign.dblite
 tags
+sconstruct.py
+.*

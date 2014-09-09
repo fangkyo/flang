@@ -53,17 +53,17 @@ void Scope::addClass( ClassNode* classNode ) {
 
 
 
-VarNode* Scope::findVar( const string& varName ) {
+VarNode* Scope::findVar( const string& varName ) {/*
     unordered_map<string,VarNode*>::iterator got = m_varMap.find( varName );
     if( got == m_varMap.end() )
         return NULL;
     else 
-        return got->second;
+        return got->second;*/  return NULL;
 }
 
 // used to detect the function name conflic
 FuncNode* Scope::findFunc( const string& funcName ) {
-
+    /*
     unordered_map<string, FuncNode*>::iterator got = m_funcMap.find( funcName );
 
     if( got == m_funcMap.end() )
@@ -72,11 +72,12 @@ FuncNode* Scope::findFunc( const string& funcName ) {
         return NULL;
     else
         return got->second.front();
-
+    */
+  return NULL;
 }
 
-FuncNode* Scope::testFuncConflict( FuncNode& funcNode ){
-    FuncMapType::iterator got = m_funcMap.find( funcNode.getName() );   
+FuncNode* Scope::testFuncConflict( FuncNode& funcNode ){ /*
+    FuncMapType::iterator got = m_funcMap.find( funcNode.getName() );
     if( got == m_funcMap.end() ){
         return NULL;
     }
@@ -87,16 +88,15 @@ FuncNode* Scope::testFuncConflict( FuncNode& funcNode ){
             return *iter;
         }
         ++iter;
-    }
+    }*/
     return NULL;
 }
 
 // used to search a function
 FuncNode* Scope::findFunc( const string& funcName, vector<DataTypeNode*>& paramsType ){
-
+    /*
     unordered_map<string, FuncNode*>::iterator got = m_funcMap.find( funcName );
 
-    /*
     if( got == m_funcMap.end() )
         return NULL;
     else if( got->second->matchParamsType( paramsType ) )
@@ -326,8 +326,9 @@ FuncNode* ScopeManager::testFuncConflict( const string& funcName ){
     return NULL;
 }*/
 
-FuncNode* ScopeManager::testFuncConflict( const FuncNode& funcNode )
+FuncNode* ScopeManager::testFuncConflict( const FuncNode& funcNode ) {
 
+    /*
     LOG4CXX_TRACE( ms_logger, "testFuncConflict( \"" << funcNode.getName() << "\" called )" );
 
     if( getSize() == 0 )
@@ -340,7 +341,8 @@ FuncNode* ScopeManager::testFuncConflict( const FuncNode& funcNode )
     if( result != NULL )
         LOG4CXX_DEBUG( ms_logger, "function \"" <<  funcNode.getName() << "\" not conflicted" ); 
 
-    return result;
+    return result; */
+  return NULL;
 }
 
 FuncNode* ScopeManager::findFunc( const string& funcName ) {

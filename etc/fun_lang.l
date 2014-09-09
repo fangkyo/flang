@@ -12,7 +12,7 @@
 #include "ctrl_node.h"
 #include "func_node.h"
 #include "class_node.h"
-#include "tinyc_yacc.h"
+#include "fun_lang_yacc.h"
 
 using namespace std;
 
@@ -38,7 +38,7 @@ char '.'
 
 while                { yylval.lineNum = yylineno; return WHILE; }
 if                   { yylval.lineNum = yylineno; return IF; }
-else			     { yylval.lineNum = yylineno; return ELSE; }
+else			           { yylval.lineNum = yylineno; return ELSE; }
 break                { yylval.lineNum = yylineno; return BREAK; }
 def                  { yylval.lineNum = yylineno; return DEF;  }
 class                { yylval.lineNum = yylineno; return CLASS; }
@@ -56,7 +56,7 @@ false                { yylval.lineNum = yylineno; return FALSE; }
 or                   { yylval.lineNum = yylineno; return OR; }
 and                  { yylval.lineNum = yylineno; return AND; }
 
-[ \n\r\t]             ;
+[ \n\r\t]            ;
 
 {number} { 
 	yylval.intVal = atoi(yytext);
@@ -64,28 +64,26 @@ and                  { yylval.lineNum = yylineno; return AND; }
 }
 
 {op} { 
-    yylval.lineNum = yylineno;
-	return *yytext; 
+  yylval.lineNum = yylineno;
+  return *yytext; 
 }
 
 {string} {
-
-    g_strVals.push_back( string( yytext+1, yyleng-2 ) );
-	yylval.strIdx = g_strVals.size()-1;
-	return STR;
+  yylval.strIdx = g_strVals.size();
+  g_strVals.push_back( string( yytext+1, yyleng-2 ) );
+  return STR;
 }
 
 {char} {
-	yylval.charVal = *yytext;
-	return CHARVAL;
+  yylval.charVal = *yytext;
+  return CHARVAL;
 }
 
 
 {identifier} {
-
-	g_strVals.push_back( string( yytext, yyleng ) );
-	yylval.strIdx = g_strVals.size() - 1;
-	return ID; 
+  g_strVals.push_back( string( yytext, yyleng ) );
+  yylval.strIdx = g_strVals.size() - 1;
+  return ID; 
 }
 
 "<="				 { yylval.lineNum = yylineno; return LE; }
@@ -93,7 +91,7 @@ and                  { yylval.lineNum = yylineno; return AND; }
 "==" 				 { yylval.lineNum = yylineno; return EQ;  }
 "!="				 { yylval.lineNum = yylineno; return NE; }
 
-.                    { printf("Unknown char at line %d : %c\n", yylineno, yytext[0]); };
+.            { printf("Unknown char at line %d : %c\n", yylineno, yytext[0]); };
 
 %%
 

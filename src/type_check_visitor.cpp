@@ -1,6 +1,8 @@
 #include <iostream>
 #include <cassert>
 
+#include <Arg.h>
+
 #include "type_check_visitor.h"
 #include "error.h"
 using namespace std;
@@ -420,7 +422,7 @@ void TypeCheckVisitor::doGlobalFuncNode( GlobalFuncNode* funcNode ){
 }
 
 void TypeCheckVisitor::doClassFuncNode( ClassFuncNode* node ){
-    
+    /*
     LOG4CXX_TRACE( ms_logger, "doClassFuncNode() called" );
     if( NULL == node )
         return;
@@ -437,6 +439,7 @@ void TypeCheckVisitor::doClassFuncNode( ClassFuncNode* node ){
     // doFuncNodePart( node );
 
     LOG4CXX_TRACE( ms_logger, "doClassFuncNode() return" );
+    */
 }
 
 void TypeCheckVisitor::doFuncNodePart( FuncNode* node ) {

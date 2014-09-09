@@ -8,7 +8,7 @@
 class DeclareNode : public SyntaxNode {
     public:
         DataTypeNode* m_dataType;
-        vector<AssignNode*> m_varList;       
+        vector<AssignNode*> m_varList;
 
         DeclareNode() {
             m_dataType = UNDEF_TYPE_NODE;
