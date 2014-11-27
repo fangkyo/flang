@@ -5,16 +5,16 @@
 #include <log4cxx/logger.h>
 #include <log4cxx/propertyconfigurator.h>
 
-#include "fun_lang_lex.h"
-#include "data_type.h"
-#include "exp_node.h"
-#include "print_node.h"
-#include "ctrl_node.h"
-#include "func_node.h"
-#include "class_node.h"
-#include "declare_node.h"
+#include "flang_scanner.h"
+#include "base/types.h"
+#include "syntax_tree/exp_node.h"
+#include "syntax_tree/print_node.h"
+#include "syntax_tree/ctrl_node.h"
+#include "syntax_tree/func_node.h"
+#include "syntax_tree/class_node.h"
+#include "syntax_tree/declare_node.h"
 #include "scope.h"
-#include "type_check_visitor.h"
+/* #include "type_check_visitor.h" */
 
 using namespace std;
 using namespace log4cxx;
@@ -31,10 +31,10 @@ LoggerPtr g_logger(Logger::getLogger("yacc"));
   int   strIdx;
   int   lineNum;
 
-	SyntaxNode*      syntaxNode;
-	DeclareNode*     declareNode;
-	StmtListNode*    stmtListNode;
-	ExpNode*         expNode;
+  SyntaxNode*      syntaxNode;
+  DeclareNode*     declareNode;
+  StmtListNode*    stmtListNode;
+  ExpNode*         expNode;
   DataTypeNode*    dataTypeNode;
   IfNode*          ifNode;
   WhileNode*       whileNode;
@@ -60,7 +60,7 @@ LoggerPtr g_logger(Logger::getLogger("yacc"));
 %left AND
 %left OR
 
-%left EQ NE 
+%left EQ NE
 %left GE LE '>' '<'
 %left '+' '-'
 %left '*' '/'
@@ -78,7 +78,7 @@ LoggerPtr g_logger(Logger::getLogger("yacc"));
 %type <funcNode>  function func_param_list
 %type <callNode>  call_param_list call param_list
 %type <classNode> class  class_stmt_list
-%type <assignNode> declare_var 
+%type <assignNode> declare_var
 
 %start program
 
@@ -86,22 +86,22 @@ LoggerPtr g_logger(Logger::getLogger("yacc"));
 
 %%
 
-program : stmt_list { 
+program : stmt_list {
   $$ = $1;
   program = $1;
-} | { 
-  $$ = NULL; 
+} | {
+  $$ = NULL;
   program = NULL;
 };
 
 stmt_list : stmt {
   $$ = new StmtListNode();
   $$->setLineNum( yylineno );
-  $$->addStmt( $1 ); 
+  $$->addStmt( $1 );
   g_collector.insert( $$ );
-} | stmt_list stmt { 
-	$1->addStmt( $2 );
-	$$ = $1;
+} | stmt_list stmt {
+  $1->addStmt( $2 );
+  $$ = $1;
 };
 
 stmt : simple_stmt {
@@ -143,7 +143,7 @@ simple_stmt : ';' {
   $$ = new ReturnNode( $2 );
   $$->setLineNum( $1 );
   g_collector.insert( $$ );
-} | RETURN ';' { 
+} | RETURN ';' {
   $$ = new ReturnNode();
   $$->setLineNum( $1 );
   g_collector.insert( $$ );
@@ -151,11 +151,11 @@ simple_stmt : ';' {
   $$ = new BreakNode();
   $$->setLineNum( $1 );
   g_collector.insert( $$ );
-} | declare ';' { 
+} | declare ';' {
   $$ = $1;
-} | if_stmt { 
+} | if_stmt {
   $$ = $1;
-} | while_stmt { 
+} | while_stmt {
   $$ = $1;
 };
 
@@ -164,58 +164,58 @@ expr : NUMBER {
   $$->setLineNum( yylineno );
   g_collector.insert( $$ );
 } | TRUE {
-  $$ = new BoolNode(true); 
+  $$ = new BoolNode(true);
   $$->setLineNum(yylineno);
   g_collector.insert( $$ );
 } | FALSE {
-  $$ = new BoolNode(false); 
+  $$ = new BoolNode(false);
   $$->setLineNum( yylineno );
   g_collector.insert( $$ );
 } | STR {
-  $$ = new StringNode( getStrVal($1) ); 
-  $$->setLineNum( yylineno ); 
+  $$ = new StringNode( getStrVal($1) );
+  $$->setLineNum( yylineno );
   g_collector.insert( $$ );
 } | CHARVAL {
-  $$ = new CharNode($1); 
-  $$->setLineNum( yylineno ); 
+  $$ = new CharNode($1);
+  $$->setLineNum( yylineno );
   g_collector.insert( $$ );
 } | ID {
-  $$ = new VarRefNode( getStrVal($1) ); 
-  $$->setLineNum( yylineno ); 
-  g_collector.insert( $$ );  
+  $$ = new VarRefNode( getStrVal($1) );
+  $$->setLineNum( yylineno );
+  g_collector.insert( $$ );
 } | ID '=' expr {
-  VarRefNode* var = new VarRefNode(getStrVal($1)); 
-  var->setLineNum(yylineno); 
+  VarRefNode* var = new VarRefNode(getStrVal($1));
+  var->setLineNum(yylineno);
   g_collector.insert( var );
-  $$ = new AssignNode( var, $3 ); 
+  $$ = new AssignNode( var, $3 );
   $$->setLineNum( yylineno );
   g_collector.insert( $$ );
 } | expr '+' expr {
-  $$ = new AddNode( $1, $3 ); 
+  $$ = new AddNode( $1, $3 );
   $$->setLineNum( yylineno );
   g_collector.insert( $$ );
 } | expr '-' expr {
-  $$ = new SubNode( $1, $3 ); 
+  $$ = new SubNode( $1, $3 );
   $$->setLineNum( yylineno );
   g_collector.insert( $$ );
 } | expr '*' expr {
-  $$ = new MulNode( $1, $3 ); 
+  $$ = new MulNode( $1, $3 );
   $$->setLineNum( yylineno );
   g_collector.insert( $$ );
 } | expr '/' expr {
-  $$ = new DivNode( $1, $3 ); 
+  $$ = new DivNode( $1, $3 );
   $$->setLineNum( yylineno );
   g_collector.insert( $$ );
 } | expr '<' expr {
-  $$ = new LtNode( $1, $3 );  
+  $$ = new LtNode( $1, $3 );
   $$->setLineNum( yylineno );
   g_collector.insert( $$ );
 } | expr AND  expr {
-  $$ = new AndNode( $1, $3 ); 
+  $$ = new AndNode( $1, $3 );
   $$->setLineNum( yylineno );
   g_collector.insert( $$ );
 } | expr EQ  expr {
-  $$ = new EqNode( $1, $3 );  
+  $$ = new EqNode( $1, $3 );
   $$->setLineNum( yylineno );
   g_collector.insert( $$ );
 } | '(' expr ')' {
@@ -223,7 +223,7 @@ expr : NUMBER {
 } | call {
   $$ = $1;
 } | NEW ID {
-  $$ = new NewNode( getStrVal($2) ); 
+  $$ = new NewNode( getStrVal($2) );
   g_collector.insert( $$ );
 };
 
@@ -241,8 +241,8 @@ var_list : var_list declare_var ',' {
   $$->setLineNum( yylineno );
 } | type {
   $$ = new DeclareNode();
-	$$->setDataTypeNode($1);
-	$$->setLineNum( yylineno );
+  $$->setDataTypeNode($1);
+  $$->setLineNum( yylineno );
   g_collector.insert( $$ );
 };
 
@@ -257,7 +257,7 @@ declare_var : ID {
   VarNode* var = new VarDeclareNode( getStrVal($1));
   var->setLineNum( yylineno );
   g_collector.insert( var );
-  $$ = new AssignNode( var, $3 );  
+  $$ = new AssignNode( var, $3 );
   $$->setLineNum( yylineno );
   g_collector.insert( $$ );
 };
@@ -272,28 +272,28 @@ type : INT {
   $$ = STRING_TYPE_NODE;
 } | ID {
   $$ = new ClassTypeNode( getStrVal($1) );
-  $$->setLineNum( yylineno); 
+  $$->setLineNum( yylineno);
   g_collector.insert( $$ );
 };
 
 if_stmt : IF '(' expr ')' '{'
-            simple_program 
-          '}' ELSE '{' 
-            simple_program 
-          '}' {  
+            simple_program
+          '}' ELSE '{'
+            simple_program
+          '}' {
   $$ = new IfNode( $3, $6, $10 );
   $$->setLineNum( $1 );
   g_collector.insert( $$ );
 } | IF '(' expr ')' '{' simple_program '}' ELSE  stmt {
-  $$ = new IfNode( $3, $6, $9 ); 
+  $$ = new IfNode( $3, $6, $9 );
   $$->setLineNum( $1 );
   g_collector.insert( $$ );
 } | IF '(' expr ')'  stmt ELSE '{' simple_program '}' {
-  $$ = new IfNode( $3, $5, $8 ); 
+  $$ = new IfNode( $3, $5, $8 );
   $$->setLineNum( $1 );
   g_collector.insert( $$ );
 } | IF '(' expr ')'  stmt  ELSE stmt {
-  $$ = new IfNode( $3, $5, $7 ); 
+  $$ = new IfNode( $3, $5, $7 );
   $$->setLineNum( $1 );
   g_collector.insert( $$ );
 } | IF '(' expr ')' '{' simple_program '}' %prec IFX {
@@ -301,7 +301,7 @@ if_stmt : IF '(' expr ')' '{'
   $$->setLineNum( $1 );
   g_collector.insert( $$ );
 } | IF '(' expr ')'  stmt  %prec IFX {
-  $$ = new IfNode( $3, $5 ); 
+  $$ = new IfNode( $3, $5 );
   $$->setLineNum( $1 );
   g_collector.insert( $$ );
 };
@@ -317,8 +317,8 @@ while_stmt : WHILE '(' expr ')' '{' simple_program '}' {
 };
 
 function : DEF ID '(' func_param_list ')' ret_type '{' simple_program '}' {
-  $$ = $4; 
-  $$->setName( getStrVal($2)); 
+  $$ = $4;
+  $$->setName( getStrVal($2));
   $$->setRetType($6);
   $$->setBody($8);
   $$->setLineNum( $1 );
@@ -334,9 +334,9 @@ ret_type : type {
   $$ = VOID_TYPE_NODE;
 };
 
-func_param_list : func_param_list ',' type ID { 
-  $$ = $1; 
-  $$->addParam( VarNode( getStrVal( $4 ), $3) ); 
+func_param_list : func_param_list ',' type ID {
+  $$ = $1;
+  $$->addParam( VarNode( getStrVal( $4 ), $3) );
 } | type ID {
   $$ = new GlobalFuncNode();
   $$->addParam( VarNode( getStrVal( $2 ), $1 ) );
@@ -344,8 +344,8 @@ func_param_list : func_param_list ',' type ID {
 };
 
 call : ID '(' call_param_list ')' {
-  $$ = $3; 
-  $$->setFuncName( getStrVal($1) ); 
+  $$ = $3;
+  $$->setFuncName( getStrVal($1) );
 } | ID '.' ID '(' call_param_list ')' {
   $$ = $5;
   $$->setLineNum( $<lineNum>2 );
@@ -357,18 +357,18 @@ call : ID '(' call_param_list ')' {
   $$->setLineNum( $<lineNum>2 );
   $$->setFuncName( getStrVal($3) );
   $$->setMemberFuncHint( true );
-}; 
+};
 
 call_param_list : param_list {
   $$ = $1;
 } | {
-  $$ = new CallNode(); 
+  $$ = new CallNode();
   g_collector.insert( $$ );
 };
 
 param_list : param_list ',' expr {
   $$ = $1;
-  $$->addParam( $3 ); 
+  $$->addParam( $3 );
   g_collector.insert( $$ );
 } | expr {
   $$ = new CallNode();
@@ -400,40 +400,39 @@ class_stmt_list : class_stmt_list declare ';' {
   g_collector.insert( classFunc );
   g_collector.collect( $2 );
 } | {
-  $$ = new ClassNode();  
+  $$ = new ClassNode();
   g_collector.insert( $$ );
 };
 
 %%
 
 void yyerror(SyntaxNode* &program, const char* msg ){
-
-	printf( "error at line %d : %s\n", yylineno, msg );
+  printf( "error at line %d : %s\n", yylineno, msg );
 }
 
 int main(){
 
-  PropertyConfigurator::configure("log4cxx.properties");
-  LOG4CXX_INFO( g_logger, "start to parse program and build abstract syntax tree" );
-  SyntaxTree* program = NULL;
-  yyparse( program );
+  /* PropertyConfigurator::configure("log4cxx.properties"); */
+  /* LOG4CXX_INFO( g_logger, "start to parse program and build abstract syntax tree" ); */
+  /* SyntaxTree* program = NULL; */
+  /* yyparse( program ); */
 
-  if( NULL == program ){
-    LOG4CXX_INFO( g_logger, "program is null" );
-    return 0;
-  }
+  /* if( NULL == program ){ */
+    /* LOG4CXX_INFO( g_logger, "program is null" ); */
+    /* return 0; */
+  /* } */
 
-  LOG4CXX_INFO( g_logger, "abstract syntax tree built completed" );
-  LOG4CXX_INFO( g_logger, "start to do type check" );
+  /* LOG4CXX_INFO( g_logger, "abstract syntax tree built completed" ); */
+  /* LOG4CXX_INFO( g_logger, "start to do type check" ); */
 
-  TypeCheckVisitor typeCheckVisitor;
-  program->accept( typeCheckVisitor );
-  typeCheckVisitor.printError();
+  /* TypeCheckVisitor typeCheckVisitor; */
+  /* program->accept( typeCheckVisitor ); */
+  /* typeCheckVisitor.printError(); */
 
-  LOG4CXX_INFO( g_logger, "type check completed" );
-  program = NULL;
+  /* LOG4CXX_INFO( g_logger, "type check completed" ); */
+  /* program = NULL; */
 
-	return 0;
+  return 0;
 }
 
 

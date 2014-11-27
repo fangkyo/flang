@@ -26,7 +26,6 @@ class DataTypeNode : public SyntaxNode {
         virtual bool isSimpleType() { return true; }
 
         virtual bool isSingleton()    { return true; } // used for memory collection
-        
         virtual bool isEqual( DataTypeNode* node );
 
         virtual DataTypeNode* clone() { return this; }

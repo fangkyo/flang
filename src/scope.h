@@ -9,7 +9,7 @@
 
 #include <log4cxx/logger.h>
 
-#include "data_type.h"
+#include "base/types.h"
 
 using namespace std;
 using namespace log4cxx;

@@ -17,15 +17,16 @@ class ClassNode;
 class ExpNode : public SyntaxNode {
 
  public:
-  unique_ptr<DataTypeNode> m_dtype;
+  // unique_ptr<DataTypeNode> m_dtype;
+  DataTypeNode* m_dtype;
 
   ExpNode(DataTypeNode* dtype) : m_dtype(dtype) {}
 
-  ExpNode() { m_dtype.reset(new UndefTypeNode()); }
+  ExpNode() { m_dtype = UndefTypeNode::getInstance(); }
 
-  void setDataTypeNode(DataTypeNode* dtype) { m_dtype.reset(dtype); }
+  void setDataTypeNode(DataTypeNode* dtype) { m_dtype = dtype; }
 
-  DataTypeNode* getDataTypeNode() { return m_dtype.get(); }
+  DataTypeNode* getDataTypeNode() { return m_dtype; }
 
   bool matchType(ExpNode* expNode);
 
@@ -56,7 +57,7 @@ class StringNode : public ExpNode {
 
   // member function
 
-  StringNode(const string& str) : ExpNode(new StringTypeNode()), m_val(str) {
+  StringNode(const string& str) : ExpNode(StringTypeNode::getInstance()), m_val(str) {
   }
 
   StringNode(const char* str) : m_val(str) {
