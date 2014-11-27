@@ -1,13 +1,30 @@
 #ifndef VISITOR_H_
 #define VISITOR_H_
 
-#include "syntax_tree.h"
-#include "exp_node.h"
-#include "print_node.h"
-#include "ctrl_node.h"
-#include "func_node.h"
-#include "class_node.h"
-#include "declare_node.h"
+#include "syntax_tree/syntax_tree.h"
+#include "syntax_tree/exp_node.h"
+#include "syntax_tree/print_node.h"
+#include "syntax_tree/ctrl_node.h"
+#include "syntax_tree/func_node.h"
+#include "syntax_tree/class_node.h"
+#include "syntax_tree/declare_node.h"
+
+// class StmtListNode;
+// class PrintNode;
+// class DeclareNode;
+// class OpNode;
+// class VarNode;
+// class VarRefNode;
+// class AndNode;
+// class EqNode;
+// class LtNode;
+// class AddNode;
+// class SubNode;
+// class MulNode;
+// class DivNode;
+// class AssignNode;
+// class IfNode;
+// class 
 
 class Visitor {
  public:

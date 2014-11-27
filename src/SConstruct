@@ -13,10 +13,6 @@ env.Replace(CCFLAGS="-std=c++11", CPPPATH=".")
 env.Replace(LIBS=["log4cxx"])
 env.Replace(LIBPATH=".")
 
-# lex_file = "etc/fun_lang.l"
-# lex_cpp  = "etc/fun_lang_lex.cpp"
-# lex_h    = "include/fun_lang_lex.h"
-
 lex_file = "flang_scanner.l"
 lex_cpp  = "flang_scanner.cpp"
 lex_h    = "flang_scanner.h"
@@ -31,7 +27,12 @@ srcs = Glob("*.cpp")
 lex_obj = env.Object(lex_cpp)
 yacc_obj = env.Object(yacc_cpp)
 
-synax_tree_lib = env.Library(Glob("synax_tree/*.cpp"))
+synax_tree_lib = env.Library(
+    target = "synax_tree_lib",
+    source = Glob("syntax_tree/*.cpp")
+)
+
+Alias("synax_tree_lib", synax_tree_lib)
 
 # objs = env.Object(srcs)
 # objs.append(lex_obj)

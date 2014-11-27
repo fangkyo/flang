@@ -6,12 +6,12 @@
 #include <list>
 #include <string>
 
-#include "syntax_tree.h"
-#include "data_type.h"
-#include "exp_node.h"
-#include "ctrl_node.h"
-#include "func_node.h"
-#include "class_node.h"
+#include "syntax_tree/syntax_tree.h"
+#include "syntax_tree/data_type.h"
+#include "syntax_tree/exp_node.h"
+#include "syntax_tree/ctrl_node.h"
+#include "syntax_tree/func_node.h"
+#include "syntax_tree/class_node.h"
 
 #define ERROR_STR_LEN 256
 
@@ -33,7 +33,6 @@ class ErrorEngine {
 };
 
 class TypeNotMatchError : public Error {
-    
     private:
         ExpNode* m_expNode;
         DataTypeNode* m_expectedType;

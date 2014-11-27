@@ -1,8 +1,8 @@
 #include <cstring>
 #include <iostream>
 
-#include "common/check.h"
-#include "common/utils.h"
+#include "base/check.h"
+#include "base/utils.h"
 #include "syntax_tree.h"
 #include "visitor.h"
 

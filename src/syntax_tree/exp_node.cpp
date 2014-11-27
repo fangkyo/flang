@@ -11,12 +11,12 @@ using namespace std;
 
 bool ExpNode::matchType(ExpNode* expNode) {
   if (NULL == expNode) return false;
-  return m_dataTypeNode->isEqual(expNode->getDataTypeNode());
+  return m_dtype->isEqual(expNode->getDataTypeNode());
 }
 
 bool ExpNode::matchType(DataTypeNode* dtypeNode) {
   if (NULL == dtypeNode) return false;
-  return m_dataTypeNode->isEqual(dtypeNode);
+  return m_dtype->isEqual(dtypeNode);
 }
 
 void ExpNode::accept(Visitor& visitor) {}

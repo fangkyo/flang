@@ -1,4 +1,4 @@
-#include "common/utils.h"
+#include "base/utils.h"
 #include "declare_node.h"
 #include "visitor.h"
 
@@ -6,7 +6,7 @@
  *                 DeclareNode
  *********************************************/
 DeclareNode::~DeclareNode() {
-  stdDeleteElement(m_varList);
+  stdDeleteElements(m_varList);
 }
 
 void DeclareNode::accept(Visitor& visitor) { visitor.doDeclareNode(this); }
