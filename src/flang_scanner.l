@@ -1,7 +1,5 @@
 /* This file generates class FlangScanner, which is the lexical analyzer
  * of flang.
-%option c++
-%option yyclass="FLangScanner"
  */
 %{
 #include <cstdio>
@@ -34,6 +32,8 @@ std::string& getStrVal( int idx ) {
 %option debug
 %option yylineno
 %option noyywrap
+%option c++
+%option yyclass="FLangScanner"
 
 number [0-9]+
 op [-+*/%(){}<>.;=!,:]
@@ -96,30 +96,6 @@ new {
 int {
   yylval.lineNum = yylineno;
   return INT;
-}
-
-int8 {
-}
-
-uint8 {
-}
-
-int16 {
-}
-
-uint16 {
-}
-
-int32 {
-}
-
-uint32 {
-}
-
-int64 {
-}
-
-uint64 {
 }
 
 bool {

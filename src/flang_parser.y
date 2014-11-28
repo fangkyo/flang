@@ -1,4 +1,20 @@
-%{
+%skeleton "lalr1.cc"
+%require  "3.0"
+%debug
+%defines
+%define api.namespace {flang}
+%define parser_class_name {FlangParser}
+
+%code requires{
+namespace flang {
+  class FlangScanner;
+}
+}
+
+%lex-param {FlangScanner  &scanner}
+%parse-param {FlangScanner  &scanner}
+
+%code {
 #include <cstdio>
 #include <iostream>
 
@@ -22,7 +38,10 @@ using namespace log4cxx;
 extern string& getStrVal(int idx);
 void yyerror(SyntaxNode* &program, const char*);
 LoggerPtr g_logger(Logger::getLogger("yacc"));
-%}
+
+static int yylex(flang::FlangParser::semantic_type *yylval,
+                 flang::FlangScanner &scanner);
+}
 
 %union {
   int   intVal;
