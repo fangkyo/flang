@@ -1,7 +1,12 @@
 
 
 def generate_lex(source, target, env, for_signature):
-  return "flex --header-file=%s -o %s %s" % (target[0], target[1], source[0])
+  assert len(target) > 0
+  if len(target) == 1:
+    return "flex -o %s %s" % (target[0], source[0])
+  else:
+    return "flex --header-file=%s -o %s %s" % (target[0], target[1], source[0])
+
 lex = Builder(generator=generate_lex)
 
 def generate_yacc(source, target, env, for_signature):
@@ -15,8 +20,7 @@ env.Replace(LIBPATH=".")
 
 lex_file = "flang_scanner.l"
 lex_cpp  = "flang_scanner.cpp"
-lex_h    = "flang_scanner.h"
-lex_h, lex_cpp = env.Lex(target=[lex_h,lex_cpp], source=lex_file)
+lex_cpp = env.Lex(target=[lex_cpp], source=lex_file)
 
 yacc_file = "flang_parser.y"
 yacc_cpp  = "flang_parser.cpp"

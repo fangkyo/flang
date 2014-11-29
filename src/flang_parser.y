@@ -6,13 +6,25 @@
 %define parser_class_name {FlangParser}
 
 %code requires{
+
+#include "base/types.h"
+#include "syntax_tree/syntax_tree.h"
+#include "syntax_tree/exp_node.h"
+#include "syntax_tree/print_node.h"
+#include "syntax_tree/ctrl_node.h"
+#include "syntax_tree/func_node.h"
+#include "syntax_tree/class_node.h"
+#include "syntax_tree/declare_node.h"
+#include "scope.h"
+
 namespace flang {
   class FlangScanner;
 }
 }
 
-%lex-param {FlangScanner  &scanner}
-%parse-param {FlangScanner  &scanner}
+%lex-param {FlangScanner& scanner}
+%parse-param {FlangScanner& scanner}
+%parse-param {SyntaxNode* &program}
 
 %code {
 #include <cstdio>
@@ -22,21 +34,22 @@ namespace flang {
 #include <log4cxx/propertyconfigurator.h>
 
 #include "flang_scanner.h"
-#include "base/types.h"
-#include "syntax_tree/exp_node.h"
-#include "syntax_tree/print_node.h"
-#include "syntax_tree/ctrl_node.h"
-#include "syntax_tree/func_node.h"
-#include "syntax_tree/class_node.h"
-#include "syntax_tree/declare_node.h"
-#include "scope.h"
+/* #include "base/types.h" */
+/* #include "syntax_tree/syntax_tree.h" */
+/* #include "syntax_tree/exp_node.h" */
+/* #include "syntax_tree/print_node.h" */
+/* #include "syntax_tree/ctrl_node.h" */
+/* #include "syntax_tree/func_node.h" */
+/* #include "syntax_tree/class_node.h" */
+/* #include "syntax_tree/declare_node.h" */
+/* #include "scope.h" */
 /* #include "type_check_visitor.h" */
 
 using namespace std;
 using namespace log4cxx;
 
 extern string& getStrVal(int idx);
-void yyerror(SyntaxNode* &program, const char*);
+/* void yyerror(SyntaxNode* &program, const char*); */
 LoggerPtr g_logger(Logger::getLogger("yacc"));
 
 static int yylex(flang::FlangParser::semantic_type *yylval,
@@ -101,7 +114,6 @@ static int yylex(flang::FlangParser::semantic_type *yylval,
 
 %start program
 
-%parse-param {SyntaxNode* &program}
 
 %%
 
@@ -115,7 +127,7 @@ program : stmt_list {
 
 stmt_list : stmt {
   $$ = new StmtListNode();
-  $$->setLineNum( yylineno );
+  $$->setLineNum(scanner.lineno());
   $$->addStmt( $1 );
   g_collector.insert( $$ );
 } | stmt_list stmt {
@@ -137,7 +149,7 @@ simple_program : simple_stmt_list {
 
 simple_stmt_list : simple_stmt {
   $$ = new StmtListNode();
-  $$->setLineNum( yylineno );
+  $$->setLineNum(scanner.lineno());
   $$->addStmt( $1 );
   g_collector.insert( $$ );
 } | simple_stmt_list simple_stmt {
@@ -180,62 +192,62 @@ simple_stmt : ';' {
 
 expr : NUMBER {
   $$ = new IntNode( $1 );
-  $$->setLineNum( yylineno );
+  $$->setLineNum( scanner.lineno() );
   g_collector.insert( $$ );
 } | TRUE {
   $$ = new BoolNode(true);
-  $$->setLineNum(yylineno);
+  $$->setLineNum(scanner.lineno());
   g_collector.insert( $$ );
 } | FALSE {
   $$ = new BoolNode(false);
-  $$->setLineNum( yylineno );
+  $$->setLineNum( scanner.lineno() );
   g_collector.insert( $$ );
 } | STR {
   $$ = new StringNode( getStrVal($1) );
-  $$->setLineNum( yylineno );
+  $$->setLineNum( scanner.lineno() );
   g_collector.insert( $$ );
 } | CHARVAL {
   $$ = new CharNode($1);
-  $$->setLineNum( yylineno );
+  $$->setLineNum( scanner.lineno() );
   g_collector.insert( $$ );
 } | ID {
   $$ = new VarRefNode( getStrVal($1) );
-  $$->setLineNum( yylineno );
+  $$->setLineNum( scanner.lineno() );
   g_collector.insert( $$ );
 } | ID '=' expr {
   VarRefNode* var = new VarRefNode(getStrVal($1));
-  var->setLineNum(yylineno);
+  var->setLineNum(scanner.lineno());
   g_collector.insert( var );
   $$ = new AssignNode( var, $3 );
-  $$->setLineNum( yylineno );
+  $$->setLineNum( scanner.lineno() );
   g_collector.insert( $$ );
 } | expr '+' expr {
   $$ = new AddNode( $1, $3 );
-  $$->setLineNum( yylineno );
+  $$->setLineNum( scanner.lineno() );
   g_collector.insert( $$ );
 } | expr '-' expr {
   $$ = new SubNode( $1, $3 );
-  $$->setLineNum( yylineno );
+  $$->setLineNum( scanner.lineno() );
   g_collector.insert( $$ );
 } | expr '*' expr {
   $$ = new MulNode( $1, $3 );
-  $$->setLineNum( yylineno );
+  $$->setLineNum( scanner.lineno() );
   g_collector.insert( $$ );
 } | expr '/' expr {
   $$ = new DivNode( $1, $3 );
-  $$->setLineNum( yylineno );
+  $$->setLineNum( scanner.lineno() );
   g_collector.insert( $$ );
 } | expr '<' expr {
   $$ = new LtNode( $1, $3 );
-  $$->setLineNum( yylineno );
+  $$->setLineNum( scanner.lineno() );
   g_collector.insert( $$ );
 } | expr AND  expr {
   $$ = new AndNode( $1, $3 );
-  $$->setLineNum( yylineno );
+  $$->setLineNum( scanner.lineno() );
   g_collector.insert( $$ );
 } | expr EQ  expr {
   $$ = new EqNode( $1, $3 );
-  $$->setLineNum( yylineno );
+  $$->setLineNum( scanner.lineno() );
   g_collector.insert( $$ );
 } | '(' expr ')' {
   $$ = $2;
@@ -250,34 +262,34 @@ declare : var_list declare_var {
   $$ = $1;
   $2->setVarDataTypeNode( $1->getDataTypeNode() );
   $$->addDeclare( $2 );
-  $$->setLineNum( yylineno );
+  $$->setLineNum( scanner.lineno() );
 };
 
 var_list : var_list declare_var ',' {
   $$ = $1;
   $2->setVarDataTypeNode( $1->getDataTypeNode() );
   $$->addDeclare( $2 );
-  $$->setLineNum( yylineno );
+  $$->setLineNum( scanner.lineno() );
 } | type {
   $$ = new DeclareNode();
   $$->setDataTypeNode($1);
-  $$->setLineNum( yylineno );
+  $$->setLineNum( scanner.lineno() );
   g_collector.insert( $$ );
 };
 
 declare_var : ID {
   VarNode* var = new VarDeclareNode( getStrVal($1) );
-  var->setLineNum( yylineno );
+  var->setLineNum( scanner.lineno() );
   g_collector.insert( var );
   $$ = new AssignNode( var );
-  $$->setLineNum( yylineno );
+  $$->setLineNum( scanner.lineno() );
   g_collector.insert( $$ );
 } | ID '=' expr {
   VarNode* var = new VarDeclareNode( getStrVal($1));
-  var->setLineNum( yylineno );
+  var->setLineNum( scanner.lineno() );
   g_collector.insert( var );
   $$ = new AssignNode( var, $3 );
-  $$->setLineNum( yylineno );
+  $$->setLineNum( scanner.lineno() );
   g_collector.insert( $$ );
 };
 
@@ -291,7 +303,7 @@ type : INT {
   $$ = STRING_TYPE_NODE;
 } | ID {
   $$ = new ClassTypeNode( getStrVal($1) );
-  $$->setLineNum( yylineno);
+  $$->setLineNum( scanner.lineno());
   g_collector.insert( $$ );
 };
 
@@ -392,7 +404,7 @@ param_list : param_list ',' expr {
 } | expr {
   $$ = new CallNode();
   $$->addParam( $1 );
-  $$->setLineNum( yylineno );
+  $$->setLineNum( scanner.lineno() );
   g_collector.insert( $$ );
 };
 
@@ -425,8 +437,12 @@ class_stmt_list : class_stmt_list declare ';' {
 
 %%
 
-void yyerror(SyntaxNode* &program, const char* msg ){
-  printf( "error at line %d : %s\n", yylineno, msg );
+/* void yyerror(SyntaxNode* &program, const char* msg ){ */
+  /* printf( "error at line %d : %s\n", scanner.lineno(), msg ); */
+/* } */
+
+void flang::FlangParser::error( const std::string &err_message ) {
+   std::cerr << "Error: " << err_message << "\n";
 }
 
 int main(){

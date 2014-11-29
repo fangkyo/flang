@@ -16,6 +16,7 @@
 #include "syntax_tree/class_node.h"
 
 #include "flang_parser.h"
+#include "flang_scanner.h"
 
 /* typedef flang::FLangParser::token FLangToken; */
 
@@ -26,6 +27,8 @@ std::vector<string> g_strVals;
 std::string& getStrVal( int idx ) {
   return g_strVals[idx];
 }
+/* typedef to make the returns for the tokens shorter */
+typedef flang::FlangParser::token Token;
 
 %}
 
@@ -33,7 +36,7 @@ std::string& getStrVal( int idx ) {
 %option yylineno
 %option noyywrap
 %option c++
-%option yyclass="FLangScanner"
+%option yyclass="FlangScanner"
 
 number [0-9]+
 op [-+*/%(){}<>.;=!,:]
@@ -44,146 +47,146 @@ char '.'
 %%
 
 while {
-  yylval.lineNum = yylineno;
-  return WHILE;
+  yylval->lineNum = lineno();
+  return Token::WHILE;
 }
 
 if {
-  yylval.lineNum = yylineno;
-  return IF;
+  yylval->lineNum = lineno();
+  return Token::IF;
 }
 
 else {
-  yylval.lineNum = yylineno;
-  return ELSE;
+  yylval->lineNum = lineno();
+  return Token::ELSE;
 }
 
 break {
-  yylval.lineNum = yylineno;
-  return BREAK;
+  yylval->lineNum = lineno();
+  return Token::BREAK;
 }
 
 def {
-  yylval.lineNum = yylineno;
-  return DEF;
+  yylval->lineNum = lineno();
+  return Token::DEF;
 }
 
 class {
-  yylval.lineNum = yylineno;
-  return CLASS;
+  yylval->lineNum = lineno();
+  return Token::CLASS;
 }
 
 print {
-  yylval.lineNum = yylineno;
-  return PRINT;
+  yylval->lineNum = lineno();
+  return Token::PRINT;
 }
 
 return {
-  yylval.lineNum = yylineno;
-  return RETURN;
+  yylval->lineNum = lineno();
+  return Token::RETURN;
 }
 
 this {
-  yylval.lineNum = yylineno;
-  return THIS;
+  yylval->lineNum = lineno();
+  return Token::THIS;
 }
 
 new {
-  yylval.lineNum = yylineno;
-  return NEW;
+  yylval->lineNum = lineno();
+  return Token::NEW;
 }
 
 int {
-  yylval.lineNum = yylineno;
-  return INT;
+  yylval->lineNum = lineno();
+  return Token::INT;
 }
 
 bool {
-  yylval.lineNum = yylineno;
-  return BOOL;
+  yylval->lineNum = lineno();
+  return Token::BOOL;
 }
 
 char {
-  yylval.lineNum = yylineno;
-  return CHAR;
+  yylval->lineNum = lineno();
+  return Token::CHAR;
 }
 
 string {
-  yylval.lineNum = yylineno;
-  return STRING;
+  yylval->lineNum = lineno();
+  return Token::STRING;
 }
 
 true {
-  yylval.lineNum = yylineno;
-  return TRUE;
+  yylval->lineNum = lineno();
+  return Token::TRUE;
 }
 
 false {
-  yylval.lineNum = yylineno;
-  return FALSE;
+  yylval->lineNum = lineno();
+  return Token::FALSE;
 }
 
 or {
-  yylval.lineNum = yylineno;
-  return OR;
+  yylval->lineNum = lineno();
+  return Token::OR;
 }
 
 and {
-  yylval.lineNum = yylineno;
-  return AND;
+  yylval->lineNum = lineno();
+  return Token::AND;
 }
 
 [ \n\r\t] ;
 
 {number} {
-  yylval.intVal = atoi(yytext);
-  return NUMBER;
+  yylval->intVal = atoi(yytext);
+  return Token::NUMBER;
 }
 
 {op} {
-  yylval.lineNum = yylineno;
+  yylval->lineNum = lineno();
   return *yytext;
 }
 
 {string} {
-  yylval.strIdx = g_strVals.size();
+  yylval->strIdx = g_strVals.size();
   g_strVals.push_back( string( yytext+1, yyleng-2 ) );
-  return STR;
+  return Token::STR;
 }
 
 {char} {
-  yylval.charVal = *yytext;
-  return CHARVAL;
+  yylval->charVal = *yytext;
+  return Token::CHARVAL;
 }
 
 {identifier} {
   g_strVals.push_back( string( yytext, yyleng ) );
-  yylval.strIdx = g_strVals.size() - 1;
-  return ID;
+  yylval->strIdx = g_strVals.size() - 1;
+  return Token::ID;
 }
 
 "<=" {
-  yylval.lineNum = yylineno;
-  return LE;
+  yylval->lineNum = lineno();
+  return Token::LE;
 }
 
 ">=" {
-  yylval.lineNum = yylineno;
-  return GE;
+  yylval->lineNum = lineno();
+  return Token::GE;
 }
 
 "==" {
-  yylval.lineNum = yylineno;
-  return EQ;
+  yylval->lineNum = lineno();
+  return Token::EQ;
 }
 
 "!=" {
-  yylval.lineNum = yylineno;
-  return NE;
+  yylval->lineNum = lineno();
+  return Token::NE;
 }
 
 . {
-  printf("Unknown char at line %d : %c\n", yylineno, yytext[0]);
+  printf("Unknown char at line %d : %c\n", lineno(), yytext[0]);
 };
 
 %%
