@@ -34,16 +34,6 @@ namespace flang {
 #include <log4cxx/propertyconfigurator.h>
 
 #include "flang_scanner.h"
-/* #include "base/types.h" */
-/* #include "syntax_tree/syntax_tree.h" */
-/* #include "syntax_tree/exp_node.h" */
-/* #include "syntax_tree/print_node.h" */
-/* #include "syntax_tree/ctrl_node.h" */
-/* #include "syntax_tree/func_node.h" */
-/* #include "syntax_tree/class_node.h" */
-/* #include "syntax_tree/declare_node.h" */
-/* #include "scope.h" */
-/* #include "type_check_visitor.h" */
 
 using namespace std;
 using namespace log4cxx;
@@ -53,7 +43,9 @@ extern string& getStrVal(int idx);
 LoggerPtr g_logger(Logger::getLogger("yacc"));
 
 static int yylex(flang::FlangParser::semantic_type *yylval,
-                 flang::FlangScanner &scanner);
+                 flang::FlangScanner &scanner) {
+   return scanner.yylex(yylval);
+}
 }
 
 %union {
