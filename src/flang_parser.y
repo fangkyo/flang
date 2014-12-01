@@ -29,6 +29,7 @@ namespace flang {
 %code {
 #include <cstdio>
 #include <iostream>
+#include <string>
 
 #include <log4cxx/logger.h>
 #include <log4cxx/propertyconfigurator.h>
@@ -38,8 +39,7 @@ namespace flang {
 using namespace std;
 using namespace log4cxx;
 
-extern string& getStrVal(int idx);
-/* void yyerror(SyntaxNode* &program, const char*); */
+/* extern string& getStrVal(int idx); */
 LoggerPtr g_logger(Logger::getLogger("yacc"));
 
 static int yylex(flang::FlangParser::semantic_type *yylval,
@@ -49,32 +49,34 @@ static int yylex(flang::FlangParser::semantic_type *yylval,
 }
 
 %union {
-  int   intVal;
-  char  charVal;
-  bool  boolVal;
-  int   strIdx;
-  int   lineNum;
+  int   int_val; // integer value
+  char  char_val; // char value
+  bool  bool_val; // bool value
+  std::string*   str_val; // string value
+  int   lineno; // line number
 
-  SyntaxNode*      syntaxNode;
-  DeclareNode*     declareNode;
-  StmtListNode*    stmtListNode;
-  ExpNode*         expNode;
-  DataTypeNode*    dataTypeNode;
-  IfNode*          ifNode;
-  WhileNode*       whileNode;
-  FuncNode*        funcNode;
-  CallNode*        callNode;
-  ClassNode*       classNode;
-  AssignNode*      assignNode;
+  SyntaxNode*      syntax_node;
+  DeclareNode*     declare_node;
+  StmtListNode*    stmt_list_node;
+  ExpNode*         exp_node;
+  DataTypeNode*    data_type_node;
+  IfNode*          if_node;
+  WhileNode*       while_node;
+  FuncNode*        func_node;
+  CallNode*        call_node;
+  ClassNode*       class_node;
+  AssignNode*      assign_node;
 }
 
-%token <intVal> NUMBER
-%token <charVal> CHARVAL
-%token <boolVal> BOOLVAL
-%token <strIdx> STR ID
+%token <int_val> NUMBER
+%token <char_val> CHARVAL
+%token <bool_val> BOOLVAL
+%token <str_val> STR ID
 
-%token <lineNum> WHILE IF PRINT BREAK DEF CLASS RETURN THIS NEW
-%token <lineNum> BOOL CHAR INT TRUE FALSE STRING
+%token <lineno> WHILE IF PRINT BREAK DEF CLASS RETURN THIS NEW
+%token <lineno> BOOL CHAR INT TRUE FALSE STRING
+
+%destructor { if ($$)  {delete ($$); ($$) = nullptr; } }  <str_val>
 
 %nonassoc IFX
 %nonassoc ELSE
@@ -92,17 +94,17 @@ static int yylex(flang::FlangParser::semantic_type *yylval,
 %right '!'
 
 %nonassoc UMINUS
-%type <syntaxNode> program simple_program stmt simple_stmt complex_stmt
-%type <expNode> expr
-%type <declareNode> declare var_list
-%type <stmtListNode> stmt_list simple_stmt_list
-%type <dataTypeNode> type ret_type
-%type <ifNode> if_stmt
-%type <whileNode> while_stmt
-%type <funcNode>  function func_param_list
-%type <callNode>  call_param_list call param_list
-%type <classNode> class  class_stmt_list
-%type <assignNode> declare_var
+%type <syntax_node> program simple_program stmt simple_stmt complex_stmt
+%type <exp_node> expr
+%type <declare_node> declare var_list
+%type <stmt_list_node> stmt_list simple_stmt_list
+%type <data_type_node> type ret_type
+%type <if_node> if_stmt
+%type <while_node> while_stmt
+%type <func_node>  function func_param_list
+%type <call_node>  call_param_list call param_list
+%type <class_node> class  class_stmt_list
+%type <assign_node> declare_var
 
 %start program
 
@@ -121,7 +123,7 @@ stmt_list : stmt {
   $$ = new StmtListNode();
   $$->setLineNum(scanner.lineno());
   $$->addStmt( $1 );
-  g_collector.insert( $$ );
+  /* g_collector.insert( $$ ); */
 } | stmt_list stmt {
   $1->addStmt( $2 );
   $$ = $1;
@@ -195,7 +197,7 @@ expr : NUMBER {
   $$->setLineNum( scanner.lineno() );
   g_collector.insert( $$ );
 } | STR {
-  $$ = new StringNode( getStrVal($1) );
+  $$ = new StringNode( *($1) );
   $$->setLineNum( scanner.lineno() );
   g_collector.insert( $$ );
 } | CHARVAL {
@@ -203,11 +205,11 @@ expr : NUMBER {
   $$->setLineNum( scanner.lineno() );
   g_collector.insert( $$ );
 } | ID {
-  $$ = new VarRefNode( getStrVal($1) );
+  $$ = new VarRefNode( *($1) );
   $$->setLineNum( scanner.lineno() );
   g_collector.insert( $$ );
 } | ID '=' expr {
-  VarRefNode* var = new VarRefNode(getStrVal($1));
+  VarRefNode* var = new VarRefNode(*($1));
   var->setLineNum(scanner.lineno());
   g_collector.insert( var );
   $$ = new AssignNode( var, $3 );
@@ -246,7 +248,7 @@ expr : NUMBER {
 } | call {
   $$ = $1;
 } | NEW ID {
-  $$ = new NewNode( getStrVal($2) );
+  $$ = new NewNode( *($2) );
   g_collector.insert( $$ );
 };
 
@@ -270,14 +272,14 @@ var_list : var_list declare_var ',' {
 };
 
 declare_var : ID {
-  VarNode* var = new VarDeclareNode( getStrVal($1) );
+  VarNode* var = new VarDeclareNode( *($1) );
   var->setLineNum( scanner.lineno() );
   g_collector.insert( var );
   $$ = new AssignNode( var );
   $$->setLineNum( scanner.lineno() );
   g_collector.insert( $$ );
 } | ID '=' expr {
-  VarNode* var = new VarDeclareNode( getStrVal($1));
+  VarNode* var = new VarDeclareNode(*($1));
   var->setLineNum( scanner.lineno() );
   g_collector.insert( var );
   $$ = new AssignNode( var, $3 );
@@ -294,7 +296,7 @@ type : INT {
 } | STRING {
   $$ = STRING_TYPE_NODE;
 } | ID {
-  $$ = new ClassTypeNode( getStrVal($1) );
+  $$ = new ClassTypeNode( *($1) );
   $$->setLineNum( scanner.lineno());
   g_collector.insert( $$ );
 };
@@ -341,12 +343,12 @@ while_stmt : WHILE '(' expr ')' '{' simple_program '}' {
 
 function : DEF ID '(' func_param_list ')' ret_type '{' simple_program '}' {
   $$ = $4;
-  $$->setName( getStrVal($2));
+  $$->setName( *($2));
   $$->setRetType($6);
   $$->setBody($8);
   $$->setLineNum( $1 );
 } | DEF ID '(' ')' ret_type '{'simple_program '}' {
-  $$ = new GlobalFuncNode( getStrVal($2), $5, $7 );
+  $$ = new GlobalFuncNode( *($2), $5, $7 );
   $$->setLineNum( $1 );
   g_collector.insert( $$ );
 };
@@ -359,26 +361,26 @@ ret_type : type {
 
 func_param_list : func_param_list ',' type ID {
   $$ = $1;
-  $$->addParam( VarNode( getStrVal( $4 ), $3) );
+  $$->addParam( VarNode( *( $4 ), $3) );
 } | type ID {
   $$ = new GlobalFuncNode();
-  $$->addParam( VarNode( getStrVal( $2 ), $1 ) );
+  $$->addParam( VarNode( *( $2 ), $1 ) );
   g_collector.insert( $$ );
 };
 
 call : ID '(' call_param_list ')' {
   $$ = $3;
-  $$->setFuncName( getStrVal($1) );
+  $$->setFuncName( *($1) );
 } | ID '.' ID '(' call_param_list ')' {
   $$ = $5;
-  $$->setLineNum( $<lineNum>2 );
-  $$->setFuncName( getStrVal($3) );
+  $$->setLineNum( $<lineno>2 );
+  $$->setFuncName( *($3) );
   $$->setMemberFuncHint( true );
-  $$->setCallerName(getStrVal( $1 ));
+  $$->setCallerName(*( $1 ));
 } | THIS '.' ID '(' call_param_list ')' {
   $$ = $5;
-  $$->setLineNum( $<lineNum>2 );
-  $$->setFuncName( getStrVal($3) );
+  $$->setLineNum( $<lineno>2 );
+  $$->setFuncName( *($3) );
   $$->setMemberFuncHint( true );
 };
 
@@ -386,28 +388,28 @@ call_param_list : param_list {
   $$ = $1;
 } | {
   $$ = new CallNode();
-  g_collector.insert( $$ );
+  /* g_collector.insert( $$ ); */
 };
 
 param_list : param_list ',' expr {
   $$ = $1;
   $$->addParam( $3 );
-  g_collector.insert( $$ );
+  /* g_collector.insert( $$ ); */
 } | expr {
   $$ = new CallNode();
   $$->addParam( $1 );
   $$->setLineNum( scanner.lineno() );
-  g_collector.insert( $$ );
+  /* g_collector.insert( $$ ); */
 };
 
 class : CLASS ID '{' class_stmt_list  '}' {
   $$ = $4;
-  $$->setName( getStrVal($2) );
+  $$->setName( *($2) );
   $$->setLineNum( $1 );
 } | CLASS ID ':' ID '{' class_stmt_list '}' {
   $$ = $6;
-  $$->setParentName( getStrVal( $4 ) );
-  $$->setName( getStrVal($2) );
+  $$->setParentName( *( $4 ) );
+  $$->setName( *($2) );
   $$->setLineNum( $1 );
 };
 
@@ -420,18 +422,14 @@ class_stmt_list : class_stmt_list declare ';' {
   ClassFuncNode* classFunc = new ClassFuncNode( $1, $2 );
   // add the function to the class
   $$->addFuncion( classFunc );
-  g_collector.insert( classFunc );
-  g_collector.collect( $2 );
+  /* g_collector.insert( classFunc ); */
+  /* g_collector.collect( $2 ); */
 } | {
   $$ = new ClassNode();
-  g_collector.insert( $$ );
+  /* g_collector.insert( $$ ); */
 };
 
 %%
-
-/* void yyerror(SyntaxNode* &program, const char* msg ){ */
-  /* printf( "error at line %d : %s\n", scanner.lineno(), msg ); */
-/* } */
 
 void flang::FlangParser::error( const std::string &err_message ) {
    std::cerr << "Error: " << err_message << "\n";

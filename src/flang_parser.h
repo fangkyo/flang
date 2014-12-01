@@ -144,23 +144,23 @@ namespace flang {
     {
     #line 51 "flang_parser.y" // lalr1.cc:372
 
-  int   intVal;
-  char  charVal;
-  bool  boolVal;
-  int   strIdx;
-  int   lineNum;
+  int   int_val; // integer value
+  char  char_val; // char value
+  bool  bool_val; // bool value
+  std::string*   str_val; // string value
+  int   lineno; // line number
 
-  SyntaxNode*      syntaxNode;
-  DeclareNode*     declareNode;
-  StmtListNode*    stmtListNode;
-  ExpNode*         expNode;
-  DataTypeNode*    dataTypeNode;
-  IfNode*          ifNode;
-  WhileNode*       whileNode;
-  FuncNode*        funcNode;
-  CallNode*        callNode;
-  ClassNode*       classNode;
-  AssignNode*      assignNode;
+  SyntaxNode*      syntax_node;
+  DeclareNode*     declare_node;
+  StmtListNode*    stmt_list_node;
+  ExpNode*         exp_node;
+  DataTypeNode*    data_type_node;
+  IfNode*          if_node;
+  WhileNode*       while_node;
+  FuncNode*        func_node;
+  CallNode*        call_node;
+  ClassNode*       class_node;
+  AssignNode*      assign_node;
 
 #line 166 "flang_parser.h" // lalr1.cc:372
     };

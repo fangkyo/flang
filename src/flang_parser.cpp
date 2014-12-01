@@ -53,6 +53,7 @@
 
 #include <cstdio>
 #include <iostream>
+#include <string>
 
 #include <log4cxx/logger.h>
 #include <log4cxx/propertyconfigurator.h>
@@ -62,8 +63,7 @@
 using namespace std;
 using namespace log4cxx;
 
-extern string& getStrVal(int idx);
-/* void yyerror(SyntaxNode* &program, const char*); */
+/* extern string& getStrVal(int idx); */
 LoggerPtr g_logger(Logger::getLogger("yacc"));
 
 static int yylex(flang::FlangParser::semantic_type *yylval,
@@ -308,7 +308,26 @@ namespace flang {
       YY_SYMBOL_PRINT (yymsg, yysym);
 
     // User destructor.
-    YYUSE (yysym.type_get ());
+    switch (yysym.type_get ())
+    {
+            case 6: // STR
+
+#line 79 "flang_parser.y" // lalr1.cc:599
+        { if ((yysym.value.str_val))  {delete ((yysym.value.str_val)); ((yysym.value.str_val)) = nullptr; } }
+#line 318 "flang_parser.cpp" // lalr1.cc:599
+        break;
+
+      case 7: // ID
+
+#line 79 "flang_parser.y" // lalr1.cc:599
+        { if ((yysym.value.str_val))  {delete ((yysym.value.str_val)); ((yysym.value.str_val)) = nullptr; } }
+#line 325 "flang_parser.cpp" // lalr1.cc:599
+        break;
+
+
+      default:
+        break;
+    }
   }
 
 #if YYDEBUG
@@ -533,721 +552,721 @@ namespace flang {
           switch (yyn)
             {
   case 2:
-#line 112 "flang_parser.y" // lalr1.cc:847
+#line 114 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.syntaxNode) = (yystack_[0].value.stmtListNode);
-  program = (yystack_[0].value.stmtListNode);
+  (yylhs.value.syntax_node) = (yystack_[0].value.stmt_list_node);
+  program = (yystack_[0].value.stmt_list_node);
 }
-#line 542 "flang_parser.cpp" // lalr1.cc:847
+#line 561 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 3:
-#line 115 "flang_parser.y" // lalr1.cc:847
+#line 117 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.syntaxNode) = NULL;
+  (yylhs.value.syntax_node) = NULL;
   program = NULL;
 }
-#line 551 "flang_parser.cpp" // lalr1.cc:847
+#line 570 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 4:
-#line 120 "flang_parser.y" // lalr1.cc:847
+#line 122 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.stmtListNode) = new StmtListNode();
-  (yylhs.value.stmtListNode)->setLineNum(scanner.lineno());
-  (yylhs.value.stmtListNode)->addStmt( (yystack_[0].value.syntaxNode) );
-  g_collector.insert( (yylhs.value.stmtListNode) );
+  (yylhs.value.stmt_list_node) = new StmtListNode();
+  (yylhs.value.stmt_list_node)->setLineNum(scanner.lineno());
+  (yylhs.value.stmt_list_node)->addStmt( (yystack_[0].value.syntax_node) );
+  /* g_collector.insert( $$ ); */
 }
-#line 562 "flang_parser.cpp" // lalr1.cc:847
+#line 581 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 5:
-#line 125 "flang_parser.y" // lalr1.cc:847
+#line 127 "flang_parser.y" // lalr1.cc:847
     {
-  (yystack_[1].value.stmtListNode)->addStmt( (yystack_[0].value.syntaxNode) );
-  (yylhs.value.stmtListNode) = (yystack_[1].value.stmtListNode);
+  (yystack_[1].value.stmt_list_node)->addStmt( (yystack_[0].value.syntax_node) );
+  (yylhs.value.stmt_list_node) = (yystack_[1].value.stmt_list_node);
 }
-#line 571 "flang_parser.cpp" // lalr1.cc:847
+#line 590 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 6:
-#line 130 "flang_parser.y" // lalr1.cc:847
+#line 132 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.syntaxNode) = (yystack_[0].value.syntaxNode);
+  (yylhs.value.syntax_node) = (yystack_[0].value.syntax_node);
 }
-#line 579 "flang_parser.cpp" // lalr1.cc:847
+#line 598 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 7:
-#line 132 "flang_parser.y" // lalr1.cc:847
+#line 134 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.syntaxNode) = (yystack_[0].value.syntaxNode);
+  (yylhs.value.syntax_node) = (yystack_[0].value.syntax_node);
 }
-#line 587 "flang_parser.cpp" // lalr1.cc:847
+#line 606 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 8:
-#line 136 "flang_parser.y" // lalr1.cc:847
-    {
-  (yylhs.value.syntaxNode) = (yystack_[0].value.stmtListNode);
-}
-#line 595 "flang_parser.cpp" // lalr1.cc:847
-    break;
-
-  case 9:
 #line 138 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.syntaxNode) = NULL;
-}
-#line 603 "flang_parser.cpp" // lalr1.cc:847
-    break;
-
-  case 10:
-#line 142 "flang_parser.y" // lalr1.cc:847
-    {
-  (yylhs.value.stmtListNode) = new StmtListNode();
-  (yylhs.value.stmtListNode)->setLineNum(scanner.lineno());
-  (yylhs.value.stmtListNode)->addStmt( (yystack_[0].value.syntaxNode) );
-  g_collector.insert( (yylhs.value.stmtListNode) );
+  (yylhs.value.syntax_node) = (yystack_[0].value.stmt_list_node);
 }
 #line 614 "flang_parser.cpp" // lalr1.cc:847
     break;
 
-  case 11:
-#line 147 "flang_parser.y" // lalr1.cc:847
+  case 9:
+#line 140 "flang_parser.y" // lalr1.cc:847
     {
-  (yystack_[1].value.stmtListNode)->addStmt( (yystack_[0].value.syntaxNode) );
+  (yylhs.value.syntax_node) = NULL;
 }
 #line 622 "flang_parser.cpp" // lalr1.cc:847
     break;
 
-  case 12:
-#line 151 "flang_parser.y" // lalr1.cc:847
+  case 10:
+#line 144 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.syntaxNode) = (yystack_[0].value.funcNode);
+  (yylhs.value.stmt_list_node) = new StmtListNode();
+  (yylhs.value.stmt_list_node)->setLineNum(scanner.lineno());
+  (yylhs.value.stmt_list_node)->addStmt( (yystack_[0].value.syntax_node) );
+  g_collector.insert( (yylhs.value.stmt_list_node) );
 }
-#line 630 "flang_parser.cpp" // lalr1.cc:847
+#line 633 "flang_parser.cpp" // lalr1.cc:847
+    break;
+
+  case 11:
+#line 149 "flang_parser.y" // lalr1.cc:847
+    {
+  (yystack_[1].value.stmt_list_node)->addStmt( (yystack_[0].value.syntax_node) );
+}
+#line 641 "flang_parser.cpp" // lalr1.cc:847
+    break;
+
+  case 12:
+#line 153 "flang_parser.y" // lalr1.cc:847
+    {
+  (yylhs.value.syntax_node) = (yystack_[0].value.func_node);
+}
+#line 649 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 13:
-#line 153 "flang_parser.y" // lalr1.cc:847
+#line 155 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.syntaxNode) = (yystack_[0].value.classNode);
+  (yylhs.value.syntax_node) = (yystack_[0].value.class_node);
 }
-#line 638 "flang_parser.cpp" // lalr1.cc:847
+#line 657 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 14:
-#line 157 "flang_parser.y" // lalr1.cc:847
+#line 159 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.syntaxNode) = NULL;
+  (yylhs.value.syntax_node) = NULL;
 }
-#line 646 "flang_parser.cpp" // lalr1.cc:847
+#line 665 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 15:
-#line 159 "flang_parser.y" // lalr1.cc:847
+#line 161 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.syntaxNode) = (yystack_[1].value.expNode);
+  (yylhs.value.syntax_node) = (yystack_[1].value.exp_node);
 }
-#line 654 "flang_parser.cpp" // lalr1.cc:847
+#line 673 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 16:
-#line 161 "flang_parser.y" // lalr1.cc:847
+#line 163 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.syntaxNode) = new PrintNode( (yystack_[1].value.expNode) );
-  (yylhs.value.syntaxNode)->setLineNum( (yystack_[2].value.lineNum) );
-  g_collector.insert( (yylhs.value.syntaxNode) );
+  (yylhs.value.syntax_node) = new PrintNode( (yystack_[1].value.exp_node) );
+  (yylhs.value.syntax_node)->setLineNum( (yystack_[2].value.lineno) );
+  g_collector.insert( (yylhs.value.syntax_node) );
 }
-#line 664 "flang_parser.cpp" // lalr1.cc:847
+#line 683 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 17:
-#line 165 "flang_parser.y" // lalr1.cc:847
+#line 167 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.syntaxNode) = new ReturnNode( (yystack_[1].value.expNode) );
-  (yylhs.value.syntaxNode)->setLineNum( (yystack_[2].value.lineNum) );
-  g_collector.insert( (yylhs.value.syntaxNode) );
+  (yylhs.value.syntax_node) = new ReturnNode( (yystack_[1].value.exp_node) );
+  (yylhs.value.syntax_node)->setLineNum( (yystack_[2].value.lineno) );
+  g_collector.insert( (yylhs.value.syntax_node) );
 }
-#line 674 "flang_parser.cpp" // lalr1.cc:847
+#line 693 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 18:
-#line 169 "flang_parser.y" // lalr1.cc:847
+#line 171 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.syntaxNode) = new ReturnNode();
-  (yylhs.value.syntaxNode)->setLineNum( (yystack_[1].value.lineNum) );
-  g_collector.insert( (yylhs.value.syntaxNode) );
+  (yylhs.value.syntax_node) = new ReturnNode();
+  (yylhs.value.syntax_node)->setLineNum( (yystack_[1].value.lineno) );
+  g_collector.insert( (yylhs.value.syntax_node) );
 }
-#line 684 "flang_parser.cpp" // lalr1.cc:847
+#line 703 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 19:
-#line 173 "flang_parser.y" // lalr1.cc:847
+#line 175 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.syntaxNode) = new BreakNode();
-  (yylhs.value.syntaxNode)->setLineNum( (yystack_[1].value.lineNum) );
-  g_collector.insert( (yylhs.value.syntaxNode) );
+  (yylhs.value.syntax_node) = new BreakNode();
+  (yylhs.value.syntax_node)->setLineNum( (yystack_[1].value.lineno) );
+  g_collector.insert( (yylhs.value.syntax_node) );
 }
-#line 694 "flang_parser.cpp" // lalr1.cc:847
+#line 713 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 20:
-#line 177 "flang_parser.y" // lalr1.cc:847
+#line 179 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.syntaxNode) = (yystack_[1].value.declareNode);
+  (yylhs.value.syntax_node) = (yystack_[1].value.declare_node);
 }
-#line 702 "flang_parser.cpp" // lalr1.cc:847
+#line 721 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 21:
-#line 179 "flang_parser.y" // lalr1.cc:847
+#line 181 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.syntaxNode) = (yystack_[0].value.ifNode);
+  (yylhs.value.syntax_node) = (yystack_[0].value.if_node);
 }
-#line 710 "flang_parser.cpp" // lalr1.cc:847
+#line 729 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 22:
-#line 181 "flang_parser.y" // lalr1.cc:847
+#line 183 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.syntaxNode) = (yystack_[0].value.whileNode);
+  (yylhs.value.syntax_node) = (yystack_[0].value.while_node);
 }
-#line 718 "flang_parser.cpp" // lalr1.cc:847
+#line 737 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 23:
-#line 185 "flang_parser.y" // lalr1.cc:847
+#line 187 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.expNode) = new IntNode( (yystack_[0].value.intVal) );
-  (yylhs.value.expNode)->setLineNum( scanner.lineno() );
-  g_collector.insert( (yylhs.value.expNode) );
+  (yylhs.value.exp_node) = new IntNode( (yystack_[0].value.int_val) );
+  (yylhs.value.exp_node)->setLineNum( scanner.lineno() );
+  g_collector.insert( (yylhs.value.exp_node) );
 }
-#line 728 "flang_parser.cpp" // lalr1.cc:847
+#line 747 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 24:
-#line 189 "flang_parser.y" // lalr1.cc:847
+#line 191 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.expNode) = new BoolNode(true);
-  (yylhs.value.expNode)->setLineNum(scanner.lineno());
-  g_collector.insert( (yylhs.value.expNode) );
+  (yylhs.value.exp_node) = new BoolNode(true);
+  (yylhs.value.exp_node)->setLineNum(scanner.lineno());
+  g_collector.insert( (yylhs.value.exp_node) );
 }
-#line 738 "flang_parser.cpp" // lalr1.cc:847
+#line 757 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 25:
-#line 193 "flang_parser.y" // lalr1.cc:847
+#line 195 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.expNode) = new BoolNode(false);
-  (yylhs.value.expNode)->setLineNum( scanner.lineno() );
-  g_collector.insert( (yylhs.value.expNode) );
+  (yylhs.value.exp_node) = new BoolNode(false);
+  (yylhs.value.exp_node)->setLineNum( scanner.lineno() );
+  g_collector.insert( (yylhs.value.exp_node) );
 }
-#line 748 "flang_parser.cpp" // lalr1.cc:847
+#line 767 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 26:
-#line 197 "flang_parser.y" // lalr1.cc:847
+#line 199 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.expNode) = new StringNode( getStrVal((yystack_[0].value.strIdx)) );
-  (yylhs.value.expNode)->setLineNum( scanner.lineno() );
-  g_collector.insert( (yylhs.value.expNode) );
+  (yylhs.value.exp_node) = new StringNode( *((yystack_[0].value.str_val)) );
+  (yylhs.value.exp_node)->setLineNum( scanner.lineno() );
+  g_collector.insert( (yylhs.value.exp_node) );
 }
-#line 758 "flang_parser.cpp" // lalr1.cc:847
+#line 777 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 27:
-#line 201 "flang_parser.y" // lalr1.cc:847
+#line 203 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.expNode) = new CharNode((yystack_[0].value.charVal));
-  (yylhs.value.expNode)->setLineNum( scanner.lineno() );
-  g_collector.insert( (yylhs.value.expNode) );
+  (yylhs.value.exp_node) = new CharNode((yystack_[0].value.char_val));
+  (yylhs.value.exp_node)->setLineNum( scanner.lineno() );
+  g_collector.insert( (yylhs.value.exp_node) );
 }
-#line 768 "flang_parser.cpp" // lalr1.cc:847
+#line 787 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 28:
-#line 205 "flang_parser.y" // lalr1.cc:847
+#line 207 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.expNode) = new VarRefNode( getStrVal((yystack_[0].value.strIdx)) );
-  (yylhs.value.expNode)->setLineNum( scanner.lineno() );
-  g_collector.insert( (yylhs.value.expNode) );
+  (yylhs.value.exp_node) = new VarRefNode( *((yystack_[0].value.str_val)) );
+  (yylhs.value.exp_node)->setLineNum( scanner.lineno() );
+  g_collector.insert( (yylhs.value.exp_node) );
 }
-#line 778 "flang_parser.cpp" // lalr1.cc:847
+#line 797 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 29:
-#line 209 "flang_parser.y" // lalr1.cc:847
+#line 211 "flang_parser.y" // lalr1.cc:847
     {
-  VarRefNode* var = new VarRefNode(getStrVal((yystack_[2].value.strIdx)));
+  VarRefNode* var = new VarRefNode(*((yystack_[2].value.str_val)));
   var->setLineNum(scanner.lineno());
   g_collector.insert( var );
-  (yylhs.value.expNode) = new AssignNode( var, (yystack_[0].value.expNode) );
-  (yylhs.value.expNode)->setLineNum( scanner.lineno() );
-  g_collector.insert( (yylhs.value.expNode) );
+  (yylhs.value.exp_node) = new AssignNode( var, (yystack_[0].value.exp_node) );
+  (yylhs.value.exp_node)->setLineNum( scanner.lineno() );
+  g_collector.insert( (yylhs.value.exp_node) );
 }
-#line 791 "flang_parser.cpp" // lalr1.cc:847
+#line 810 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 30:
-#line 216 "flang_parser.y" // lalr1.cc:847
+#line 218 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.expNode) = new AddNode( (yystack_[2].value.expNode), (yystack_[0].value.expNode) );
-  (yylhs.value.expNode)->setLineNum( scanner.lineno() );
-  g_collector.insert( (yylhs.value.expNode) );
+  (yylhs.value.exp_node) = new AddNode( (yystack_[2].value.exp_node), (yystack_[0].value.exp_node) );
+  (yylhs.value.exp_node)->setLineNum( scanner.lineno() );
+  g_collector.insert( (yylhs.value.exp_node) );
 }
-#line 801 "flang_parser.cpp" // lalr1.cc:847
+#line 820 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 31:
-#line 220 "flang_parser.y" // lalr1.cc:847
+#line 222 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.expNode) = new SubNode( (yystack_[2].value.expNode), (yystack_[0].value.expNode) );
-  (yylhs.value.expNode)->setLineNum( scanner.lineno() );
-  g_collector.insert( (yylhs.value.expNode) );
+  (yylhs.value.exp_node) = new SubNode( (yystack_[2].value.exp_node), (yystack_[0].value.exp_node) );
+  (yylhs.value.exp_node)->setLineNum( scanner.lineno() );
+  g_collector.insert( (yylhs.value.exp_node) );
 }
-#line 811 "flang_parser.cpp" // lalr1.cc:847
+#line 830 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 32:
-#line 224 "flang_parser.y" // lalr1.cc:847
+#line 226 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.expNode) = new MulNode( (yystack_[2].value.expNode), (yystack_[0].value.expNode) );
-  (yylhs.value.expNode)->setLineNum( scanner.lineno() );
-  g_collector.insert( (yylhs.value.expNode) );
+  (yylhs.value.exp_node) = new MulNode( (yystack_[2].value.exp_node), (yystack_[0].value.exp_node) );
+  (yylhs.value.exp_node)->setLineNum( scanner.lineno() );
+  g_collector.insert( (yylhs.value.exp_node) );
 }
-#line 821 "flang_parser.cpp" // lalr1.cc:847
+#line 840 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 33:
-#line 228 "flang_parser.y" // lalr1.cc:847
+#line 230 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.expNode) = new DivNode( (yystack_[2].value.expNode), (yystack_[0].value.expNode) );
-  (yylhs.value.expNode)->setLineNum( scanner.lineno() );
-  g_collector.insert( (yylhs.value.expNode) );
+  (yylhs.value.exp_node) = new DivNode( (yystack_[2].value.exp_node), (yystack_[0].value.exp_node) );
+  (yylhs.value.exp_node)->setLineNum( scanner.lineno() );
+  g_collector.insert( (yylhs.value.exp_node) );
 }
-#line 831 "flang_parser.cpp" // lalr1.cc:847
+#line 850 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 34:
-#line 232 "flang_parser.y" // lalr1.cc:847
+#line 234 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.expNode) = new LtNode( (yystack_[2].value.expNode), (yystack_[0].value.expNode) );
-  (yylhs.value.expNode)->setLineNum( scanner.lineno() );
-  g_collector.insert( (yylhs.value.expNode) );
+  (yylhs.value.exp_node) = new LtNode( (yystack_[2].value.exp_node), (yystack_[0].value.exp_node) );
+  (yylhs.value.exp_node)->setLineNum( scanner.lineno() );
+  g_collector.insert( (yylhs.value.exp_node) );
 }
-#line 841 "flang_parser.cpp" // lalr1.cc:847
+#line 860 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 35:
-#line 236 "flang_parser.y" // lalr1.cc:847
+#line 238 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.expNode) = new AndNode( (yystack_[2].value.expNode), (yystack_[0].value.expNode) );
-  (yylhs.value.expNode)->setLineNum( scanner.lineno() );
-  g_collector.insert( (yylhs.value.expNode) );
+  (yylhs.value.exp_node) = new AndNode( (yystack_[2].value.exp_node), (yystack_[0].value.exp_node) );
+  (yylhs.value.exp_node)->setLineNum( scanner.lineno() );
+  g_collector.insert( (yylhs.value.exp_node) );
 }
-#line 851 "flang_parser.cpp" // lalr1.cc:847
+#line 870 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 36:
-#line 240 "flang_parser.y" // lalr1.cc:847
+#line 242 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.expNode) = new EqNode( (yystack_[2].value.expNode), (yystack_[0].value.expNode) );
-  (yylhs.value.expNode)->setLineNum( scanner.lineno() );
-  g_collector.insert( (yylhs.value.expNode) );
+  (yylhs.value.exp_node) = new EqNode( (yystack_[2].value.exp_node), (yystack_[0].value.exp_node) );
+  (yylhs.value.exp_node)->setLineNum( scanner.lineno() );
+  g_collector.insert( (yylhs.value.exp_node) );
 }
-#line 861 "flang_parser.cpp" // lalr1.cc:847
+#line 880 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 37:
-#line 244 "flang_parser.y" // lalr1.cc:847
+#line 246 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.expNode) = (yystack_[1].value.expNode);
+  (yylhs.value.exp_node) = (yystack_[1].value.exp_node);
 }
-#line 869 "flang_parser.cpp" // lalr1.cc:847
+#line 888 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 38:
-#line 246 "flang_parser.y" // lalr1.cc:847
+#line 248 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.expNode) = (yystack_[0].value.callNode);
+  (yylhs.value.exp_node) = (yystack_[0].value.call_node);
 }
-#line 877 "flang_parser.cpp" // lalr1.cc:847
+#line 896 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 39:
-#line 248 "flang_parser.y" // lalr1.cc:847
+#line 250 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.expNode) = new NewNode( getStrVal((yystack_[0].value.strIdx)) );
-  g_collector.insert( (yylhs.value.expNode) );
+  (yylhs.value.exp_node) = new NewNode( *((yystack_[0].value.str_val)) );
+  g_collector.insert( (yylhs.value.exp_node) );
 }
-#line 886 "flang_parser.cpp" // lalr1.cc:847
+#line 905 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 40:
-#line 253 "flang_parser.y" // lalr1.cc:847
+#line 255 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.declareNode) = (yystack_[1].value.declareNode);
-  (yystack_[0].value.assignNode)->setVarDataTypeNode( (yystack_[1].value.declareNode)->getDataTypeNode() );
-  (yylhs.value.declareNode)->addDeclare( (yystack_[0].value.assignNode) );
-  (yylhs.value.declareNode)->setLineNum( scanner.lineno() );
+  (yylhs.value.declare_node) = (yystack_[1].value.declare_node);
+  (yystack_[0].value.assign_node)->setVarDataTypeNode( (yystack_[1].value.declare_node)->getDataTypeNode() );
+  (yylhs.value.declare_node)->addDeclare( (yystack_[0].value.assign_node) );
+  (yylhs.value.declare_node)->setLineNum( scanner.lineno() );
 }
-#line 897 "flang_parser.cpp" // lalr1.cc:847
+#line 916 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 41:
-#line 260 "flang_parser.y" // lalr1.cc:847
+#line 262 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.declareNode) = (yystack_[2].value.declareNode);
-  (yystack_[1].value.assignNode)->setVarDataTypeNode( (yystack_[2].value.declareNode)->getDataTypeNode() );
-  (yylhs.value.declareNode)->addDeclare( (yystack_[1].value.assignNode) );
-  (yylhs.value.declareNode)->setLineNum( scanner.lineno() );
+  (yylhs.value.declare_node) = (yystack_[2].value.declare_node);
+  (yystack_[1].value.assign_node)->setVarDataTypeNode( (yystack_[2].value.declare_node)->getDataTypeNode() );
+  (yylhs.value.declare_node)->addDeclare( (yystack_[1].value.assign_node) );
+  (yylhs.value.declare_node)->setLineNum( scanner.lineno() );
 }
-#line 908 "flang_parser.cpp" // lalr1.cc:847
+#line 927 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 42:
-#line 265 "flang_parser.y" // lalr1.cc:847
+#line 267 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.declareNode) = new DeclareNode();
-  (yylhs.value.declareNode)->setDataTypeNode((yystack_[0].value.dataTypeNode));
-  (yylhs.value.declareNode)->setLineNum( scanner.lineno() );
-  g_collector.insert( (yylhs.value.declareNode) );
+  (yylhs.value.declare_node) = new DeclareNode();
+  (yylhs.value.declare_node)->setDataTypeNode((yystack_[0].value.data_type_node));
+  (yylhs.value.declare_node)->setLineNum( scanner.lineno() );
+  g_collector.insert( (yylhs.value.declare_node) );
 }
-#line 919 "flang_parser.cpp" // lalr1.cc:847
+#line 938 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 43:
-#line 272 "flang_parser.y" // lalr1.cc:847
+#line 274 "flang_parser.y" // lalr1.cc:847
     {
-  VarNode* var = new VarDeclareNode( getStrVal((yystack_[0].value.strIdx)) );
+  VarNode* var = new VarDeclareNode( *((yystack_[0].value.str_val)) );
   var->setLineNum( scanner.lineno() );
   g_collector.insert( var );
-  (yylhs.value.assignNode) = new AssignNode( var );
-  (yylhs.value.assignNode)->setLineNum( scanner.lineno() );
-  g_collector.insert( (yylhs.value.assignNode) );
+  (yylhs.value.assign_node) = new AssignNode( var );
+  (yylhs.value.assign_node)->setLineNum( scanner.lineno() );
+  g_collector.insert( (yylhs.value.assign_node) );
 }
-#line 932 "flang_parser.cpp" // lalr1.cc:847
+#line 951 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 44:
-#line 279 "flang_parser.y" // lalr1.cc:847
+#line 281 "flang_parser.y" // lalr1.cc:847
     {
-  VarNode* var = new VarDeclareNode( getStrVal((yystack_[2].value.strIdx)));
+  VarNode* var = new VarDeclareNode(*((yystack_[2].value.str_val)));
   var->setLineNum( scanner.lineno() );
   g_collector.insert( var );
-  (yylhs.value.assignNode) = new AssignNode( var, (yystack_[0].value.expNode) );
-  (yylhs.value.assignNode)->setLineNum( scanner.lineno() );
-  g_collector.insert( (yylhs.value.assignNode) );
+  (yylhs.value.assign_node) = new AssignNode( var, (yystack_[0].value.exp_node) );
+  (yylhs.value.assign_node)->setLineNum( scanner.lineno() );
+  g_collector.insert( (yylhs.value.assign_node) );
 }
-#line 945 "flang_parser.cpp" // lalr1.cc:847
+#line 964 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 45:
-#line 288 "flang_parser.y" // lalr1.cc:847
+#line 290 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.dataTypeNode) = INT_TYPE_NODE;
+  (yylhs.value.data_type_node) = INT_TYPE_NODE;
 }
-#line 953 "flang_parser.cpp" // lalr1.cc:847
+#line 972 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 46:
-#line 290 "flang_parser.y" // lalr1.cc:847
+#line 292 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.dataTypeNode) = BOOL_TYPE_NODE;
+  (yylhs.value.data_type_node) = BOOL_TYPE_NODE;
 }
-#line 961 "flang_parser.cpp" // lalr1.cc:847
+#line 980 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 47:
-#line 292 "flang_parser.y" // lalr1.cc:847
+#line 294 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.dataTypeNode) = CHAR_TYPE_NODE;
+  (yylhs.value.data_type_node) = CHAR_TYPE_NODE;
 }
-#line 969 "flang_parser.cpp" // lalr1.cc:847
+#line 988 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 48:
-#line 294 "flang_parser.y" // lalr1.cc:847
+#line 296 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.dataTypeNode) = STRING_TYPE_NODE;
+  (yylhs.value.data_type_node) = STRING_TYPE_NODE;
 }
-#line 977 "flang_parser.cpp" // lalr1.cc:847
+#line 996 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 49:
-#line 296 "flang_parser.y" // lalr1.cc:847
+#line 298 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.dataTypeNode) = new ClassTypeNode( getStrVal((yystack_[0].value.strIdx)) );
-  (yylhs.value.dataTypeNode)->setLineNum( scanner.lineno());
-  g_collector.insert( (yylhs.value.dataTypeNode) );
+  (yylhs.value.data_type_node) = new ClassTypeNode( *((yystack_[0].value.str_val)) );
+  (yylhs.value.data_type_node)->setLineNum( scanner.lineno());
+  g_collector.insert( (yylhs.value.data_type_node) );
 }
-#line 987 "flang_parser.cpp" // lalr1.cc:847
+#line 1006 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 50:
-#line 306 "flang_parser.y" // lalr1.cc:847
+#line 308 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.ifNode) = new IfNode( (yystack_[8].value.expNode), (yystack_[5].value.syntaxNode), (yystack_[1].value.syntaxNode) );
-  (yylhs.value.ifNode)->setLineNum( (yystack_[10].value.lineNum) );
-  g_collector.insert( (yylhs.value.ifNode) );
+  (yylhs.value.if_node) = new IfNode( (yystack_[8].value.exp_node), (yystack_[5].value.syntax_node), (yystack_[1].value.syntax_node) );
+  (yylhs.value.if_node)->setLineNum( (yystack_[10].value.lineno) );
+  g_collector.insert( (yylhs.value.if_node) );
 }
-#line 997 "flang_parser.cpp" // lalr1.cc:847
+#line 1016 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 51:
-#line 310 "flang_parser.y" // lalr1.cc:847
+#line 312 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.ifNode) = new IfNode( (yystack_[6].value.expNode), (yystack_[3].value.syntaxNode), (yystack_[0].value.syntaxNode) );
-  (yylhs.value.ifNode)->setLineNum( (yystack_[8].value.lineNum) );
-  g_collector.insert( (yylhs.value.ifNode) );
+  (yylhs.value.if_node) = new IfNode( (yystack_[6].value.exp_node), (yystack_[3].value.syntax_node), (yystack_[0].value.syntax_node) );
+  (yylhs.value.if_node)->setLineNum( (yystack_[8].value.lineno) );
+  g_collector.insert( (yylhs.value.if_node) );
 }
-#line 1007 "flang_parser.cpp" // lalr1.cc:847
+#line 1026 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 52:
-#line 314 "flang_parser.y" // lalr1.cc:847
+#line 316 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.ifNode) = new IfNode( (yystack_[6].value.expNode), (yystack_[4].value.syntaxNode), (yystack_[1].value.syntaxNode) );
-  (yylhs.value.ifNode)->setLineNum( (yystack_[8].value.lineNum) );
-  g_collector.insert( (yylhs.value.ifNode) );
+  (yylhs.value.if_node) = new IfNode( (yystack_[6].value.exp_node), (yystack_[4].value.syntax_node), (yystack_[1].value.syntax_node) );
+  (yylhs.value.if_node)->setLineNum( (yystack_[8].value.lineno) );
+  g_collector.insert( (yylhs.value.if_node) );
 }
-#line 1017 "flang_parser.cpp" // lalr1.cc:847
+#line 1036 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 53:
-#line 318 "flang_parser.y" // lalr1.cc:847
+#line 320 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.ifNode) = new IfNode( (yystack_[4].value.expNode), (yystack_[2].value.syntaxNode), (yystack_[0].value.syntaxNode) );
-  (yylhs.value.ifNode)->setLineNum( (yystack_[6].value.lineNum) );
-  g_collector.insert( (yylhs.value.ifNode) );
+  (yylhs.value.if_node) = new IfNode( (yystack_[4].value.exp_node), (yystack_[2].value.syntax_node), (yystack_[0].value.syntax_node) );
+  (yylhs.value.if_node)->setLineNum( (yystack_[6].value.lineno) );
+  g_collector.insert( (yylhs.value.if_node) );
 }
-#line 1027 "flang_parser.cpp" // lalr1.cc:847
+#line 1046 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 54:
-#line 322 "flang_parser.y" // lalr1.cc:847
+#line 324 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.ifNode) = new IfNode( (yystack_[4].value.expNode), (yystack_[1].value.syntaxNode) );
-  (yylhs.value.ifNode)->setLineNum( (yystack_[6].value.lineNum) );
-  g_collector.insert( (yylhs.value.ifNode) );
+  (yylhs.value.if_node) = new IfNode( (yystack_[4].value.exp_node), (yystack_[1].value.syntax_node) );
+  (yylhs.value.if_node)->setLineNum( (yystack_[6].value.lineno) );
+  g_collector.insert( (yylhs.value.if_node) );
 }
-#line 1037 "flang_parser.cpp" // lalr1.cc:847
+#line 1056 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 55:
-#line 326 "flang_parser.y" // lalr1.cc:847
+#line 328 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.ifNode) = new IfNode( (yystack_[2].value.expNode), (yystack_[0].value.syntaxNode) );
-  (yylhs.value.ifNode)->setLineNum( (yystack_[4].value.lineNum) );
-  g_collector.insert( (yylhs.value.ifNode) );
+  (yylhs.value.if_node) = new IfNode( (yystack_[2].value.exp_node), (yystack_[0].value.syntax_node) );
+  (yylhs.value.if_node)->setLineNum( (yystack_[4].value.lineno) );
+  g_collector.insert( (yylhs.value.if_node) );
 }
-#line 1047 "flang_parser.cpp" // lalr1.cc:847
+#line 1066 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 56:
-#line 332 "flang_parser.y" // lalr1.cc:847
+#line 334 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.whileNode) = new WhileNode( (yystack_[4].value.expNode), (yystack_[1].value.syntaxNode) );
-  (yylhs.value.whileNode)->setLineNum( (yystack_[6].value.lineNum) );
-  g_collector.insert( (yylhs.value.whileNode) );
+  (yylhs.value.while_node) = new WhileNode( (yystack_[4].value.exp_node), (yystack_[1].value.syntax_node) );
+  (yylhs.value.while_node)->setLineNum( (yystack_[6].value.lineno) );
+  g_collector.insert( (yylhs.value.while_node) );
 }
-#line 1057 "flang_parser.cpp" // lalr1.cc:847
+#line 1076 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 57:
-#line 336 "flang_parser.y" // lalr1.cc:847
+#line 338 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.whileNode) = new WhileNode( (yystack_[2].value.expNode), (yystack_[0].value.syntaxNode) );
-  (yylhs.value.whileNode)->setLineNum( (yystack_[4].value.lineNum) );
-  g_collector.insert( (yylhs.value.whileNode) );
+  (yylhs.value.while_node) = new WhileNode( (yystack_[2].value.exp_node), (yystack_[0].value.syntax_node) );
+  (yylhs.value.while_node)->setLineNum( (yystack_[4].value.lineno) );
+  g_collector.insert( (yylhs.value.while_node) );
 }
-#line 1067 "flang_parser.cpp" // lalr1.cc:847
+#line 1086 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 58:
-#line 342 "flang_parser.y" // lalr1.cc:847
+#line 344 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.funcNode) = (yystack_[5].value.funcNode);
-  (yylhs.value.funcNode)->setName( getStrVal((yystack_[7].value.strIdx)));
-  (yylhs.value.funcNode)->setRetType((yystack_[3].value.dataTypeNode));
-  (yylhs.value.funcNode)->setBody((yystack_[1].value.syntaxNode));
-  (yylhs.value.funcNode)->setLineNum( (yystack_[8].value.lineNum) );
+  (yylhs.value.func_node) = (yystack_[5].value.func_node);
+  (yylhs.value.func_node)->setName( *((yystack_[7].value.str_val)));
+  (yylhs.value.func_node)->setRetType((yystack_[3].value.data_type_node));
+  (yylhs.value.func_node)->setBody((yystack_[1].value.syntax_node));
+  (yylhs.value.func_node)->setLineNum( (yystack_[8].value.lineno) );
 }
-#line 1079 "flang_parser.cpp" // lalr1.cc:847
+#line 1098 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 59:
-#line 348 "flang_parser.y" // lalr1.cc:847
+#line 350 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.funcNode) = new GlobalFuncNode( getStrVal((yystack_[6].value.strIdx)), (yystack_[3].value.dataTypeNode), (yystack_[1].value.syntaxNode) );
-  (yylhs.value.funcNode)->setLineNum( (yystack_[7].value.lineNum) );
-  g_collector.insert( (yylhs.value.funcNode) );
+  (yylhs.value.func_node) = new GlobalFuncNode( *((yystack_[6].value.str_val)), (yystack_[3].value.data_type_node), (yystack_[1].value.syntax_node) );
+  (yylhs.value.func_node)->setLineNum( (yystack_[7].value.lineno) );
+  g_collector.insert( (yylhs.value.func_node) );
 }
-#line 1089 "flang_parser.cpp" // lalr1.cc:847
+#line 1108 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 60:
-#line 354 "flang_parser.y" // lalr1.cc:847
+#line 356 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.dataTypeNode) = (yystack_[0].value.dataTypeNode);
+  (yylhs.value.data_type_node) = (yystack_[0].value.data_type_node);
 }
-#line 1097 "flang_parser.cpp" // lalr1.cc:847
+#line 1116 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 61:
-#line 356 "flang_parser.y" // lalr1.cc:847
+#line 358 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.dataTypeNode) = VOID_TYPE_NODE;
-}
-#line 1105 "flang_parser.cpp" // lalr1.cc:847
-    break;
-
-  case 62:
-#line 360 "flang_parser.y" // lalr1.cc:847
-    {
-  (yylhs.value.funcNode) = (yystack_[3].value.funcNode);
-  (yylhs.value.funcNode)->addParam( VarNode( getStrVal( (yystack_[0].value.strIdx) ), (yystack_[1].value.dataTypeNode)) );
-}
-#line 1114 "flang_parser.cpp" // lalr1.cc:847
-    break;
-
-  case 63:
-#line 363 "flang_parser.y" // lalr1.cc:847
-    {
-  (yylhs.value.funcNode) = new GlobalFuncNode();
-  (yylhs.value.funcNode)->addParam( VarNode( getStrVal( (yystack_[0].value.strIdx) ), (yystack_[1].value.dataTypeNode) ) );
-  g_collector.insert( (yylhs.value.funcNode) );
+  (yylhs.value.data_type_node) = VOID_TYPE_NODE;
 }
 #line 1124 "flang_parser.cpp" // lalr1.cc:847
     break;
 
-  case 64:
-#line 369 "flang_parser.y" // lalr1.cc:847
+  case 62:
+#line 362 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.callNode) = (yystack_[1].value.callNode);
-  (yylhs.value.callNode)->setFuncName( getStrVal((yystack_[3].value.strIdx)) );
+  (yylhs.value.func_node) = (yystack_[3].value.func_node);
+  (yylhs.value.func_node)->addParam( VarNode( *( (yystack_[0].value.str_val) ), (yystack_[1].value.data_type_node)) );
 }
 #line 1133 "flang_parser.cpp" // lalr1.cc:847
     break;
 
+  case 63:
+#line 365 "flang_parser.y" // lalr1.cc:847
+    {
+  (yylhs.value.func_node) = new GlobalFuncNode();
+  (yylhs.value.func_node)->addParam( VarNode( *( (yystack_[0].value.str_val) ), (yystack_[1].value.data_type_node) ) );
+  g_collector.insert( (yylhs.value.func_node) );
+}
+#line 1143 "flang_parser.cpp" // lalr1.cc:847
+    break;
+
+  case 64:
+#line 371 "flang_parser.y" // lalr1.cc:847
+    {
+  (yylhs.value.call_node) = (yystack_[1].value.call_node);
+  (yylhs.value.call_node)->setFuncName( *((yystack_[3].value.str_val)) );
+}
+#line 1152 "flang_parser.cpp" // lalr1.cc:847
+    break;
+
   case 65:
-#line 372 "flang_parser.y" // lalr1.cc:847
+#line 374 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.callNode) = (yystack_[1].value.callNode);
-  (yylhs.value.callNode)->setLineNum( (yystack_[4].value.lineNum) );
-  (yylhs.value.callNode)->setFuncName( getStrVal((yystack_[3].value.strIdx)) );
-  (yylhs.value.callNode)->setMemberFuncHint( true );
-  (yylhs.value.callNode)->setCallerName(getStrVal( (yystack_[5].value.strIdx) ));
-}
-#line 1145 "flang_parser.cpp" // lalr1.cc:847
-    break;
-
-  case 66:
-#line 378 "flang_parser.y" // lalr1.cc:847
-    {
-  (yylhs.value.callNode) = (yystack_[1].value.callNode);
-  (yylhs.value.callNode)->setLineNum( (yystack_[4].value.lineNum) );
-  (yylhs.value.callNode)->setFuncName( getStrVal((yystack_[3].value.strIdx)) );
-  (yylhs.value.callNode)->setMemberFuncHint( true );
-}
-#line 1156 "flang_parser.cpp" // lalr1.cc:847
-    break;
-
-  case 67:
-#line 385 "flang_parser.y" // lalr1.cc:847
-    {
-  (yylhs.value.callNode) = (yystack_[0].value.callNode);
+  (yylhs.value.call_node) = (yystack_[1].value.call_node);
+  (yylhs.value.call_node)->setLineNum( (yystack_[4].value.lineno) );
+  (yylhs.value.call_node)->setFuncName( *((yystack_[3].value.str_val)) );
+  (yylhs.value.call_node)->setMemberFuncHint( true );
+  (yylhs.value.call_node)->setCallerName(*( (yystack_[5].value.str_val) ));
 }
 #line 1164 "flang_parser.cpp" // lalr1.cc:847
     break;
 
-  case 68:
-#line 387 "flang_parser.y" // lalr1.cc:847
+  case 66:
+#line 380 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.callNode) = new CallNode();
-  g_collector.insert( (yylhs.value.callNode) );
+  (yylhs.value.call_node) = (yystack_[1].value.call_node);
+  (yylhs.value.call_node)->setLineNum( (yystack_[4].value.lineno) );
+  (yylhs.value.call_node)->setFuncName( *((yystack_[3].value.str_val)) );
+  (yylhs.value.call_node)->setMemberFuncHint( true );
 }
-#line 1173 "flang_parser.cpp" // lalr1.cc:847
+#line 1175 "flang_parser.cpp" // lalr1.cc:847
     break;
 
-  case 69:
-#line 392 "flang_parser.y" // lalr1.cc:847
+  case 67:
+#line 387 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.callNode) = (yystack_[2].value.callNode);
-  (yylhs.value.callNode)->addParam( (yystack_[0].value.expNode) );
-  g_collector.insert( (yylhs.value.callNode) );
+  (yylhs.value.call_node) = (yystack_[0].value.call_node);
 }
 #line 1183 "flang_parser.cpp" // lalr1.cc:847
     break;
 
-  case 70:
-#line 396 "flang_parser.y" // lalr1.cc:847
+  case 68:
+#line 389 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.callNode) = new CallNode();
-  (yylhs.value.callNode)->addParam( (yystack_[0].value.expNode) );
-  (yylhs.value.callNode)->setLineNum( scanner.lineno() );
-  g_collector.insert( (yylhs.value.callNode) );
+  (yylhs.value.call_node) = new CallNode();
+  /* g_collector.insert( $$ ); */
 }
-#line 1194 "flang_parser.cpp" // lalr1.cc:847
+#line 1192 "flang_parser.cpp" // lalr1.cc:847
+    break;
+
+  case 69:
+#line 394 "flang_parser.y" // lalr1.cc:847
+    {
+  (yylhs.value.call_node) = (yystack_[2].value.call_node);
+  (yylhs.value.call_node)->addParam( (yystack_[0].value.exp_node) );
+  /* g_collector.insert( $$ ); */
+}
+#line 1202 "flang_parser.cpp" // lalr1.cc:847
+    break;
+
+  case 70:
+#line 398 "flang_parser.y" // lalr1.cc:847
+    {
+  (yylhs.value.call_node) = new CallNode();
+  (yylhs.value.call_node)->addParam( (yystack_[0].value.exp_node) );
+  (yylhs.value.call_node)->setLineNum( scanner.lineno() );
+  /* g_collector.insert( $$ ); */
+}
+#line 1213 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 71:
-#line 403 "flang_parser.y" // lalr1.cc:847
+#line 405 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.classNode) = (yystack_[1].value.classNode);
-  (yylhs.value.classNode)->setName( getStrVal((yystack_[3].value.strIdx)) );
-  (yylhs.value.classNode)->setLineNum( (yystack_[4].value.lineNum) );
+  (yylhs.value.class_node) = (yystack_[1].value.class_node);
+  (yylhs.value.class_node)->setName( *((yystack_[3].value.str_val)) );
+  (yylhs.value.class_node)->setLineNum( (yystack_[4].value.lineno) );
 }
-#line 1204 "flang_parser.cpp" // lalr1.cc:847
+#line 1223 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 72:
-#line 407 "flang_parser.y" // lalr1.cc:847
+#line 409 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.classNode) = (yystack_[1].value.classNode);
-  (yylhs.value.classNode)->setParentName( getStrVal( (yystack_[3].value.strIdx) ) );
-  (yylhs.value.classNode)->setName( getStrVal((yystack_[5].value.strIdx)) );
-  (yylhs.value.classNode)->setLineNum( (yystack_[6].value.lineNum) );
+  (yylhs.value.class_node) = (yystack_[1].value.class_node);
+  (yylhs.value.class_node)->setParentName( *( (yystack_[3].value.str_val) ) );
+  (yylhs.value.class_node)->setName( *((yystack_[5].value.str_val)) );
+  (yylhs.value.class_node)->setLineNum( (yystack_[6].value.lineno) );
 }
-#line 1215 "flang_parser.cpp" // lalr1.cc:847
+#line 1234 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 73:
-#line 414 "flang_parser.y" // lalr1.cc:847
+#line 416 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.classNode) = (yystack_[2].value.classNode);
-  (yylhs.value.classNode)->addVarDeclare( (yystack_[1].value.declareNode) );
+  (yylhs.value.class_node) = (yystack_[2].value.class_node);
+  (yylhs.value.class_node)->addVarDeclare( (yystack_[1].value.declare_node) );
 }
-#line 1224 "flang_parser.cpp" // lalr1.cc:847
+#line 1243 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 74:
-#line 417 "flang_parser.y" // lalr1.cc:847
+#line 419 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.classNode) = (yystack_[1].value.classNode);
+  (yylhs.value.class_node) = (yystack_[1].value.class_node);
   // create a new class function to wrap a global function
-  ClassFuncNode* classFunc = new ClassFuncNode( (yystack_[1].value.classNode), (yystack_[0].value.funcNode) );
+  ClassFuncNode* classFunc = new ClassFuncNode( (yystack_[1].value.class_node), (yystack_[0].value.func_node) );
   // add the function to the class
-  (yylhs.value.classNode)->addFuncion( classFunc );
-  g_collector.insert( classFunc );
-  g_collector.collect( (yystack_[0].value.funcNode) );
+  (yylhs.value.class_node)->addFuncion( classFunc );
+  /* g_collector.insert( classFunc ); */
+  /* g_collector.collect( $2 ); */
 }
-#line 1238 "flang_parser.cpp" // lalr1.cc:847
+#line 1257 "flang_parser.cpp" // lalr1.cc:847
     break;
 
   case 75:
-#line 425 "flang_parser.y" // lalr1.cc:847
+#line 427 "flang_parser.y" // lalr1.cc:847
     {
-  (yylhs.value.classNode) = new ClassNode();
-  g_collector.insert( (yylhs.value.classNode) );
+  (yylhs.value.class_node) = new ClassNode();
+  /* g_collector.insert( $$ ); */
 }
-#line 1247 "flang_parser.cpp" // lalr1.cc:847
+#line 1266 "flang_parser.cpp" // lalr1.cc:847
     break;
 
 
-#line 1251 "flang_parser.cpp" // lalr1.cc:847
+#line 1270 "flang_parser.cpp" // lalr1.cc:847
             default:
               break;
             }
@@ -1626,14 +1645,14 @@ namespace flang {
   const unsigned short int
   FlangParser::yyrline_[] =
   {
-       0,   112,   112,   115,   120,   125,   130,   132,   136,   138,
-     142,   147,   151,   153,   157,   159,   161,   165,   169,   173,
-     177,   179,   181,   185,   189,   193,   197,   201,   205,   209,
-     216,   220,   224,   228,   232,   236,   240,   244,   246,   248,
-     253,   260,   265,   272,   279,   288,   290,   292,   294,   296,
-     302,   310,   314,   318,   322,   326,   332,   336,   342,   348,
-     354,   356,   360,   363,   369,   372,   378,   385,   387,   392,
-     396,   403,   407,   414,   417,   425
+       0,   114,   114,   117,   122,   127,   132,   134,   138,   140,
+     144,   149,   153,   155,   159,   161,   163,   167,   171,   175,
+     179,   181,   183,   187,   191,   195,   199,   203,   207,   211,
+     218,   222,   226,   230,   234,   238,   242,   246,   248,   250,
+     255,   262,   267,   274,   281,   290,   292,   294,   296,   298,
+     304,   312,   316,   320,   324,   328,   334,   338,   344,   350,
+     356,   358,   362,   365,   371,   374,   380,   387,   389,   394,
+     398,   405,   409,   416,   419,   427
   };
 
   // Print the state stack on the debug stream.
@@ -1717,13 +1736,9 @@ namespace flang {
 
 #line 5 "flang_parser.y" // lalr1.cc:1155
 } // flang
-#line 1721 "flang_parser.cpp" // lalr1.cc:1155
-#line 430 "flang_parser.y" // lalr1.cc:1156
+#line 1740 "flang_parser.cpp" // lalr1.cc:1155
+#line 432 "flang_parser.y" // lalr1.cc:1156
 
-
-/* void yyerror(SyntaxNode* &program, const char* msg ){ */
-  /* printf( "error at line %d : %s\n", scanner.lineno(), msg ); */
-/* } */
 
 void flang::FlangParser::error( const std::string &err_message ) {
    std::cerr << "Error: " << err_message << "\n";

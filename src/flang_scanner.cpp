@@ -581,7 +581,7 @@ static yyconst flex_int16_t yy_rule_linenum[30] =
     {   0,
        49,   54,   59,   64,   69,   74,   79,   84,   89,   94,
        99,  104,  109,  114,  119,  124,  129,  134,  139,  141,
-      146,  151,  157,  162,  168,  173,  178,  183,  188
+      146,  151,  158,  163,  170,  175,  180,  185,  190
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -917,7 +917,7 @@ case 1:
 YY_RULE_SETUP
 #line 49 "flang_scanner.l"
 {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::WHILE;
 }
 	YY_BREAK
@@ -925,7 +925,7 @@ case 2:
 YY_RULE_SETUP
 #line 54 "flang_scanner.l"
 {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::IF;
 }
 	YY_BREAK
@@ -933,7 +933,7 @@ case 3:
 YY_RULE_SETUP
 #line 59 "flang_scanner.l"
 {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::ELSE;
 }
 	YY_BREAK
@@ -941,7 +941,7 @@ case 4:
 YY_RULE_SETUP
 #line 64 "flang_scanner.l"
 {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::BREAK;
 }
 	YY_BREAK
@@ -949,7 +949,7 @@ case 5:
 YY_RULE_SETUP
 #line 69 "flang_scanner.l"
 {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::DEF;
 }
 	YY_BREAK
@@ -957,7 +957,7 @@ case 6:
 YY_RULE_SETUP
 #line 74 "flang_scanner.l"
 {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::CLASS;
 }
 	YY_BREAK
@@ -965,7 +965,7 @@ case 7:
 YY_RULE_SETUP
 #line 79 "flang_scanner.l"
 {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::PRINT;
 }
 	YY_BREAK
@@ -973,7 +973,7 @@ case 8:
 YY_RULE_SETUP
 #line 84 "flang_scanner.l"
 {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::RETURN;
 }
 	YY_BREAK
@@ -981,7 +981,7 @@ case 9:
 YY_RULE_SETUP
 #line 89 "flang_scanner.l"
 {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::THIS;
 }
 	YY_BREAK
@@ -989,7 +989,7 @@ case 10:
 YY_RULE_SETUP
 #line 94 "flang_scanner.l"
 {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::NEW;
 }
 	YY_BREAK
@@ -997,7 +997,7 @@ case 11:
 YY_RULE_SETUP
 #line 99 "flang_scanner.l"
 {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::INT;
 }
 	YY_BREAK
@@ -1005,7 +1005,7 @@ case 12:
 YY_RULE_SETUP
 #line 104 "flang_scanner.l"
 {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::BOOL;
 }
 	YY_BREAK
@@ -1013,7 +1013,7 @@ case 13:
 YY_RULE_SETUP
 #line 109 "flang_scanner.l"
 {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::CHAR;
 }
 	YY_BREAK
@@ -1021,7 +1021,7 @@ case 14:
 YY_RULE_SETUP
 #line 114 "flang_scanner.l"
 {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::STRING;
 }
 	YY_BREAK
@@ -1029,7 +1029,7 @@ case 15:
 YY_RULE_SETUP
 #line 119 "flang_scanner.l"
 {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::TRUE;
 }
 	YY_BREAK
@@ -1037,7 +1037,7 @@ case 16:
 YY_RULE_SETUP
 #line 124 "flang_scanner.l"
 {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::FALSE;
 }
 	YY_BREAK
@@ -1045,7 +1045,7 @@ case 17:
 YY_RULE_SETUP
 #line 129 "flang_scanner.l"
 {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::OR;
 }
 	YY_BREAK
@@ -1053,7 +1053,7 @@ case 18:
 YY_RULE_SETUP
 #line 134 "flang_scanner.l"
 {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::AND;
 }
 	YY_BREAK
@@ -1067,7 +1067,7 @@ case 20:
 YY_RULE_SETUP
 #line 141 "flang_scanner.l"
 {
-  yylval->intVal = atoi(yytext);
+  yylval->int_val = atoi(yytext);
   return Token::NUMBER;
 }
 	YY_BREAK
@@ -1075,7 +1075,7 @@ case 21:
 YY_RULE_SETUP
 #line 146 "flang_scanner.l"
 {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return *yytext;
 }
 	YY_BREAK
@@ -1084,73 +1084,75 @@ case 22:
 YY_RULE_SETUP
 #line 151 "flang_scanner.l"
 {
-  yylval->strIdx = g_strVals.size();
-  g_strVals.push_back( string( yytext+1, yyleng-2 ) );
+  yylval->str_val = new std::string(yytext + 1, yyleng - 2);
+  // g_strVals.size();
+  /* g_strVals.push_back( string( yytext+1, yyleng-2 ) ); */
   return Token::STR;
 }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 157 "flang_scanner.l"
+#line 158 "flang_scanner.l"
 {
-  yylval->charVal = *yytext;
+  yylval->char_val = *yytext;
   return Token::CHARVAL;
 }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 162 "flang_scanner.l"
+#line 163 "flang_scanner.l"
 {
-  g_strVals.push_back( string( yytext, yyleng ) );
-  yylval->strIdx = g_strVals.size() - 1;
+  yylval->str_val = new std::string(yytext, yyleng);
+  /* g_strVals.push_back( string( yytext, yyleng ) ); */
+  /* yylval->strIdx = g_strVals.size() - 1; */
   return Token::ID;
 }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 168 "flang_scanner.l"
+#line 170 "flang_scanner.l"
 {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::LE;
 }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 173 "flang_scanner.l"
+#line 175 "flang_scanner.l"
 {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::GE;
 }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 178 "flang_scanner.l"
+#line 180 "flang_scanner.l"
 {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::EQ;
 }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 183 "flang_scanner.l"
+#line 185 "flang_scanner.l"
 {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::NE;
 }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 188 "flang_scanner.l"
+#line 190 "flang_scanner.l"
 {
   printf("Unknown char at line %d : %c\n", lineno(), yytext[0]);
 };
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 192 "flang_scanner.l"
+#line 194 "flang_scanner.l"
 ECHO;
 	YY_BREAK
-#line 1154 "flang_scanner.cpp"
+#line 1156 "flang_scanner.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2198,7 +2200,7 @@ void yyfree (void * ptr )
 
 /* %ok-for-header */
 
-#line 191 "flang_scanner.l"
+#line 193 "flang_scanner.l"
 
 
 

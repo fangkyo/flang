@@ -47,141 +47,143 @@ char '.'
 %%
 
 while {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::WHILE;
 }
 
 if {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::IF;
 }
 
 else {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::ELSE;
 }
 
 break {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::BREAK;
 }
 
 def {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::DEF;
 }
 
 class {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::CLASS;
 }
 
 print {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::PRINT;
 }
 
 return {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::RETURN;
 }
 
 this {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::THIS;
 }
 
 new {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::NEW;
 }
 
 int {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::INT;
 }
 
 bool {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::BOOL;
 }
 
 char {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::CHAR;
 }
 
 string {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::STRING;
 }
 
 true {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::TRUE;
 }
 
 false {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::FALSE;
 }
 
 or {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::OR;
 }
 
 and {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::AND;
 }
 
 [ \n\r\t] ;
 
 {number} {
-  yylval->intVal = atoi(yytext);
+  yylval->int_val = atoi(yytext);
   return Token::NUMBER;
 }
 
 {op} {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return *yytext;
 }
 
 {string} {
-  yylval->strIdx = g_strVals.size();
-  g_strVals.push_back( string( yytext+1, yyleng-2 ) );
+  yylval->str_val = new std::string(yytext + 1, yyleng - 2);
+  // g_strVals.size();
+  /* g_strVals.push_back( string( yytext+1, yyleng-2 ) ); */
   return Token::STR;
 }
 
 {char} {
-  yylval->charVal = *yytext;
+  yylval->char_val = *yytext;
   return Token::CHARVAL;
 }
 
 {identifier} {
-  g_strVals.push_back( string( yytext, yyleng ) );
-  yylval->strIdx = g_strVals.size() - 1;
+  yylval->str_val = new std::string(yytext, yyleng);
+  /* g_strVals.push_back( string( yytext, yyleng ) ); */
+  /* yylval->strIdx = g_strVals.size() - 1; */
   return Token::ID;
 }
 
 "<=" {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::LE;
 }
 
 ">=" {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::GE;
 }
 
 "==" {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::EQ;
 }
 
 "!=" {
-  yylval->lineNum = lineno();
+  yylval->lineno = lineno();
   return Token::NE;
 }
 
