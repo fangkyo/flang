@@ -16,7 +16,7 @@ class TypeCheckVisitor : public Visitor,
                          public ErrorEngine,
                          public ScopeManager {
  private:
-  static LoggerPtr ms_logger;
+  static LoggerPtr logger_;
 
  public:
   void doStmtListNode(StmtListNode* node);

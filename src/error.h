@@ -106,8 +106,7 @@ class FuncRedefinedError : public Error {
         FuncNode* m_newFunc;
     public:
         FuncRedefinedError( FuncNode* orgFunc, FuncNode* newFunc )
-        : m_orgFunc( orgFunc ), m_newFunc( newFunc ) 
-        { 
+        : m_orgFunc( orgFunc ), m_newFunc( newFunc ) {
             assert( m_orgFunc );
             assert( m_newFunc );
         }

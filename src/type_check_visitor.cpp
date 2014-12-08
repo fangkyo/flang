@@ -1,18 +1,18 @@
 #include <iostream>
 #include <cassert>
 
-#include <Arg.h>
+// #include <Arg.h>
 
 #include "type_check_visitor.h"
 #include "error.h"
 using namespace std;
 
-LoggerPtr TypeCheckVisitor::ms_logger(Logger::getLogger("TypeCheckVisitor"));
+LoggerPtr TypeCheckVisitor::logger_(Logger::getLogger("flang.TypeCheckVisitor"));
 
 void TypeCheckVisitor::doStmtListNode(StmtListNode* node) {}
 
 void TypeCheckVisitor::doDeclareNode(DeclareNode* node) {
-  LOG4CXX_TRACE(ms_logger, "doDeclareNode() called");
+  LOG4CXX_TRACE(logger_, "doDeclareNode() called");
   if (NULL == node) return;
 
   node->getDataTypeNode()->accept(*this);
@@ -24,20 +24,20 @@ void TypeCheckVisitor::doDeclareNode(DeclareNode* node) {
     declareList[i]->accept(*this);
   }
 
-  LOG4CXX_TRACE(ms_logger, "doDeclareNode() return");
+  LOG4CXX_TRACE(logger_, "doDeclareNode() return");
 }
 
 void TypeCheckVisitor::doPrintNode(PrintNode* node) {
-  LOG4CXX_TRACE(ms_logger, "doPrintNode() called");
+  LOG4CXX_TRACE(logger_, "doPrintNode() called");
   if (NULL == node) {
-    LOG4CXX_ERROR(ms_logger, "print node is null!");
+    LOG4CXX_ERROR(logger_, "print node is null!");
     return;
   }
 
   DataTypeNode* dtypeNode = node->m_exp->getDataTypeNode();
 
   if (!node->canPrint(dtypeNode)) {
-    LOG4CXX_DEBUG(ms_logger, "expression \""
+    LOG4CXX_DEBUG(logger_, "expression \""
                                  << node->m_exp->toString() << "\" with type \""
                                  << node->m_exp->getDataTypeNode()->toString()
                                  << "\" can't be printed");
@@ -45,7 +45,7 @@ void TypeCheckVisitor::doPrintNode(PrintNode* node) {
     emitError(&error);
   }
 
-  LOG4CXX_TRACE(ms_logger, "doPrintNode() return");
+  LOG4CXX_TRACE(logger_, "doPrintNode() return");
 }
 
 void TypeCheckVisitor::doOpNode(OpNode* node) {
@@ -68,7 +68,7 @@ void TypeCheckVisitor::doOpNode(OpNode* node) {
 }
 
 void TypeCheckVisitor::doVarNode(VarNode* node) {
-  LOG4CXX_TRACE(ms_logger, "doVarNode() called");
+  LOG4CXX_TRACE(logger_, "doVarNode() called");
   if (NULL == node) return;
 
   VarNode* var = testVarConflict(node->m_name);
@@ -80,11 +80,11 @@ void TypeCheckVisitor::doVarNode(VarNode* node) {
     addVar(node);
   }
 
-  LOG4CXX_TRACE(ms_logger, "doVarNode() return");
+  LOG4CXX_TRACE(logger_, "doVarNode() return");
 }
 
 void TypeCheckVisitor::doVarRefNode(VarRefNode* node) {
-  LOG4CXX_TRACE(ms_logger, "doVarRefNode() called");
+  LOG4CXX_TRACE(logger_, "doVarRefNode() called");
   if (NULL == node) return;
 
   VarNode* var = findVar(node->m_name);
@@ -98,71 +98,71 @@ void TypeCheckVisitor::doVarRefNode(VarRefNode* node) {
     node->setVarNode(var);
   }
 
-  LOG4CXX_TRACE(ms_logger, "doVarRefNode() return");
+  LOG4CXX_TRACE(logger_, "doVarRefNode() return");
 }
 
 void TypeCheckVisitor::doAndNode(AndNode* node) {
-  LOG4CXX_TRACE(ms_logger, "doAndNode() called");
+  LOG4CXX_TRACE(logger_, "doAndNode() called");
 
   if (NULL == node) return;
 
   doBoolOpNode(node);
 
-  LOG4CXX_TRACE(ms_logger, "doAndNode() return");
+  LOG4CXX_TRACE(logger_, "doAndNode() return");
 }
 
 void TypeCheckVisitor::doEqNode(EqNode* node) {
-  LOG4CXX_TRACE(ms_logger, "doEqNode() called");
+  LOG4CXX_TRACE(logger_, "doEqNode() called");
 
   doOpNode(node);
   node->setDataTypeNode(BOOL_TYPE_NODE);
 
-  LOG4CXX_TRACE(ms_logger, "doEqNode() return");
+  LOG4CXX_TRACE(logger_, "doEqNode() return");
 }
 
 void TypeCheckVisitor::doLtNode(LtNode* node) {
-  LOG4CXX_TRACE(ms_logger, "doLtNode() called");
+  LOG4CXX_TRACE(logger_, "doLtNode() called");
 
   doOpNode(node);
   node->setDataTypeNode(BOOL_TYPE_NODE);
 
-  LOG4CXX_TRACE(ms_logger, "doLtNode() return");
+  LOG4CXX_TRACE(logger_, "doLtNode() return");
 }
 
 void TypeCheckVisitor::doAddNode(AddNode* node) {
-  LOG4CXX_TRACE(ms_logger, "doAddNode() called");
+  LOG4CXX_TRACE(logger_, "doAddNode() called");
 
   doIntOpNode(node);
 
-  LOG4CXX_TRACE(ms_logger, "doAddNode() return");
+  LOG4CXX_TRACE(logger_, "doAddNode() return");
 }
 
 void TypeCheckVisitor::doSubNode(SubNode* node) {
-  LOG4CXX_TRACE(ms_logger, "doSubNode() called");
+  LOG4CXX_TRACE(logger_, "doSubNode() called");
 
   doIntOpNode(node);
 
-  LOG4CXX_TRACE(ms_logger, "doSubNode() return");
+  LOG4CXX_TRACE(logger_, "doSubNode() return");
 }
 
 void TypeCheckVisitor::doMulNode(MulNode* node) {
-  LOG4CXX_TRACE(ms_logger, "doMulNode() called");
+  LOG4CXX_TRACE(logger_, "doMulNode() called");
 
   doIntOpNode(node);
 
-  LOG4CXX_TRACE(ms_logger, "doMulNode() return");
+  LOG4CXX_TRACE(logger_, "doMulNode() return");
 }
 
 void TypeCheckVisitor::doDivNode(DivNode* node) {
-  LOG4CXX_TRACE(ms_logger, "doDivNode() called");
+  LOG4CXX_TRACE(logger_, "doDivNode() called");
 
   doIntOpNode(node);
 
-  LOG4CXX_TRACE(ms_logger, "doDivNode() return");
+  LOG4CXX_TRACE(logger_, "doDivNode() return");
 }
 
 void TypeCheckVisitor::doBoolOpNode(OpNode* node) {
-  LOG4CXX_TRACE(ms_logger, "doBoolOpNode() called");
+  LOG4CXX_TRACE(logger_, "doBoolOpNode() called");
   assert(node);
 
   char error[ERROR_STR_LEN];
@@ -188,11 +188,11 @@ void TypeCheckVisitor::doBoolOpNode(OpNode* node) {
 
   node->setDataTypeNode(BOOL_TYPE_NODE);
 
-  LOG4CXX_TRACE(ms_logger, "doBoolOpNode() return");
+  LOG4CXX_TRACE(logger_, "doBoolOpNode() return");
 }
 
 void TypeCheckVisitor::doIntOpNode(OpNode* node) {
-  LOG4CXX_TRACE(ms_logger, "doIntOpNode() called");
+  LOG4CXX_TRACE(logger_, "doIntOpNode() called");
 
   assert(node->hasLeftOpnd());
   DataTypeNode* leftType = node->getLeftDataTypeNode();
@@ -213,15 +213,15 @@ void TypeCheckVisitor::doIntOpNode(OpNode* node) {
   }
   node->setDataTypeNode(INT_TYPE_NODE);
 
-  LOG4CXX_TRACE(ms_logger, "doIntOpNode() return");
+  LOG4CXX_TRACE(logger_, "doIntOpNode() return");
 }
 
 void TypeCheckVisitor::doAssignNode(AssignNode* node) {
-  LOG4CXX_TRACE(ms_logger, "doAssignNode() called");
+  LOG4CXX_TRACE(logger_, "doAssignNode() called");
   if (NULL == node) return;
 
   if (NULL == node->getExpNode()) {
-    LOG4CXX_DEBUG(ms_logger, "right expression of expNode is null");
+    LOG4CXX_DEBUG(logger_, "right expression of expNode is null");
     return;
   }
 
@@ -235,18 +235,18 @@ void TypeCheckVisitor::doAssignNode(AssignNode* node) {
 
   node->setDataTypeNode(varType);
 
-  LOG4CXX_TRACE(ms_logger, "doAssignNode() return");
+  LOG4CXX_TRACE(logger_, "doAssignNode() return");
 }
 
 void TypeCheckVisitor::doIfNode(IfNode* node) {
-  LOG4CXX_TRACE(ms_logger, "doIfNode() called");
+  LOG4CXX_TRACE(logger_, "doIfNode() called");
 
   if (NULL == node) return;
 
   assert(node->getTest());
 
   if (node->getTest() == NULL) {
-    LOG4CXX_FATAL(ms_logger, "if_stmt's \"test\" is null!");
+    LOG4CXX_FATAL(logger_, "if_stmt's \"test\" is null!");
     return;
   }
 
@@ -267,7 +267,7 @@ void TypeCheckVisitor::doIfNode(IfNode* node) {
     popLevel();
 
   } else {
-    LOG4CXX_DEBUG(ms_logger, "if_stmt's \"if\" part is null");
+    LOG4CXX_DEBUG(logger_, "if_stmt's \"if\" part is null");
   }
 
   if (node->m_else) {
@@ -276,10 +276,10 @@ void TypeCheckVisitor::doIfNode(IfNode* node) {
     popLevel();
 
   } else {
-    LOG4CXX_DEBUG(ms_logger, "if_stmt's \"else\" part is null");
+    LOG4CXX_DEBUG(logger_, "if_stmt's \"else\" part is null");
   }
 
-  LOG4CXX_TRACE(ms_logger, "doIfNode() return");
+  LOG4CXX_TRACE(logger_, "doIfNode() return");
 }
 
 void TypeCheckVisitor::doWhileNode(WhileNode* node) {
@@ -288,7 +288,7 @@ void TypeCheckVisitor::doWhileNode(WhileNode* node) {
   ExpNode* test = node->getTest();
   assert(test);
   if (NULL == test) {
-    LOG4CXX_FATAL(ms_logger, "while_stmt's \"test\" part is null!");
+    LOG4CXX_FATAL(logger_, "while_stmt's \"test\" part is null!");
     return;
   }
 
@@ -310,12 +310,12 @@ void TypeCheckVisitor::doWhileNode(WhileNode* node) {
     node->getBody()->accept(*this);
     popLevel();
   } else {
-    LOG4CXX_DEBUG(ms_logger, "while_stmt's \"body\" part is null");
+    LOG4CXX_DEBUG(logger_, "while_stmt's \"body\" part is null");
   }
 }
 
 void TypeCheckVisitor::doBreakNode(BreakNode* node) {
-  LOG4CXX_TRACE(ms_logger, "doBreakNode() called");
+  LOG4CXX_TRACE(logger_, "doBreakNode() called");
   if (NULL == node) return;
 
   WhileNode* whileNode = NULL;
@@ -327,38 +327,38 @@ void TypeCheckVisitor::doBreakNode(BreakNode* node) {
     node->setWhileNode(whileNode);
   }
 
-  LOG4CXX_TRACE(ms_logger, "doBreakNode() return");
+  LOG4CXX_TRACE(logger_, "doBreakNode() return");
 }
 
 void TypeCheckVisitor::doGlobalFuncNode(GlobalFuncNode* funcNode) {
-  LOG4CXX_TRACE(ms_logger, "doGlobalFuncNode() called");
+  LOG4CXX_TRACE(logger_, "doGlobalFuncNode() called");
 
   if (NULL == funcNode) return;
 
-  LOG4CXX_DEBUG(ms_logger, "handle function \"" << funcNode->getName()
+  LOG4CXX_DEBUG(logger_, "handle function \"" << funcNode->getName()
                                                 << "\"()");
 
   FuncNode* funcTmp = findFunc(funcNode->getName());
 
   if (NULL != funcTmp) {
-    LOG4CXX_DEBUG(ms_logger, "function \"" << funcNode->getName()
+    LOG4CXX_DEBUG(logger_, "function \"" << funcNode->getName()
                                            << "\" redefined");
     FuncRedefinedError error(funcTmp, funcNode);
     emitError(&error);
 
   } else {
-    LOG4CXX_DEBUG(ms_logger, "add function \"" << funcNode->getName() << "\"");
+    LOG4CXX_DEBUG(logger_, "add function \"" << funcNode->getName() << "\"");
     addFunc(funcNode);
   }
 
   doFuncNodePart(funcNode);
 
-  LOG4CXX_TRACE(ms_logger, "doGlobalFuncNode() return");
+  LOG4CXX_TRACE(logger_, "doGlobalFuncNode() return");
 }
 
 void TypeCheckVisitor::doClassFuncNode(ClassFuncNode* node) {
   /*
-  LOG4CXX_TRACE( ms_logger, "doClassFuncNode() called" );
+  LOG4CXX_TRACE( logger_, "doClassFuncNode() called" );
   if( NULL == node )
       return;
   FuncNode* funcTmp = NULL;
@@ -373,12 +373,12 @@ void TypeCheckVisitor::doClassFuncNode(ClassFuncNode* node) {
 
   // doFuncNodePart( node );
 
-  LOG4CXX_TRACE( ms_logger, "doClassFuncNode() return" );
+  LOG4CXX_TRACE( logger_, "doClassFuncNode() return" );
   */
 }
 
 void TypeCheckVisitor::doFuncNodePart(FuncNode* node) {
-  LOG4CXX_TRACE(ms_logger, "doFuncNodePart() called");
+  LOG4CXX_TRACE(logger_, "doFuncNodePart() called");
 
   if (NULL == node) return;
 
@@ -391,7 +391,7 @@ void TypeCheckVisitor::doFuncNodePart(FuncNode* node) {
       pushFuncLevel( node );
 
       vector<VarNode>& paramList = node->getParamList();
-      LOG4CXX_DEBUG( ms_logger,"add function \"" <<
+      LOG4CXX_DEBUG( logger_,"add function \"" <<
                                 node->getName()
                                 << "\" parameters" );
       for( int i=0; i< paramList.size(); ++i ) {
@@ -412,33 +412,33 @@ void TypeCheckVisitor::doFuncNodePart(FuncNode* node) {
           emitError( &error );
       }*/
 
-  LOG4CXX_TRACE(ms_logger, "doFuncNodePart() return");
+  LOG4CXX_TRACE(logger_, "doFuncNodePart() return");
 }
 
 void TypeCheckVisitor::doReturnNode(ReturnNode* node) {
-  LOG4CXX_TRACE(ms_logger, "doReturnNode() called");
+  LOG4CXX_TRACE(logger_, "doReturnNode() called");
   if (NULL == node) return;
 
   FuncNode* funcNode = NULL;
   findFuncScope(funcNode);
   if (NULL == funcNode) {
-    LOG4CXX_DEBUG(ms_logger, "return not in function");
+    LOG4CXX_DEBUG(logger_, "return not in function");
     SingleReturnError error(node);
     emitError(&error);
   } else {
     if (!funcNode->getRetType()->isEqual(node->getRetType())) {
-      LOG4CXX_DEBUG(ms_logger, "return type not match function return type");
+      LOG4CXX_DEBUG(logger_, "return type not match function return type");
       ReturnTypeError error(funcNode, node);
       emitError(&error);
     }
   }
   funcNode->setReturn(true);
 
-  LOG4CXX_TRACE(ms_logger, "doReturnNode() return");
+  LOG4CXX_TRACE(logger_, "doReturnNode() return");
 }
 
 void TypeCheckVisitor::doCallNode(CallNode* node) {
-  LOG4CXX_TRACE(ms_logger, "doCallNode() called");
+  LOG4CXX_TRACE(logger_, "doCallNode() called");
 
   if (NULL == node) return;
 
@@ -449,16 +449,16 @@ void TypeCheckVisitor::doCallNode(CallNode* node) {
 
   // 由语法分析显示指出该调用是成员函数调用
   if (node->getMemberFuncHint()) {
-    LOG4CXX_DEBUG(ms_logger, "hint function \"" << node->getFuncName()
+    LOG4CXX_DEBUG(logger_, "hint function \"" << node->getFuncName()
                                                 << "\" is a member function");
     if (node->getCallerName().size() == 0) {
       // this call
-      LOG4CXX_DEBUG(ms_logger, "hint function referenced by THIS key word");
+      LOG4CXX_DEBUG(logger_, "hint function referenced by THIS key word");
       func = findMemberFunc(node->getFuncName(), paramsType);
 
     } else {
       // var call
-      LOG4CXX_DEBUG(ms_logger, "hint function referenced by caller \""
+      LOG4CXX_DEBUG(logger_, "hint function referenced by caller \""
                                    << node->getCallerName() << "\"");
       VarNode* caller = findVar(node->getCallerName());
       node->setCaller(caller);
@@ -486,21 +486,21 @@ void TypeCheckVisitor::doCallNode(CallNode* node) {
   }
 
   if (NULL == func) {
-    LOG4CXX_DEBUG(ms_logger, "not find function " << node->getFuncName());
+    LOG4CXX_DEBUG(logger_, "not find function " << node->getFuncName());
     FuncNotDefineError error(node->getFuncName(), node->getLineNum());
     emitError(&error);
 
   } else {
-    LOG4CXX_DEBUG(ms_logger, "find function " << node->getFuncName());
+    LOG4CXX_DEBUG(logger_, "find function " << node->getFuncName());
     assert(func->getRetType());
     node->setDataTypeNode(func->getRetType());
   }
 
-  LOG4CXX_TRACE(ms_logger, "doCallNode() return");
+  LOG4CXX_TRACE(logger_, "doCallNode() return");
 }
 
 void TypeCheckVisitor::doClassNode(ClassNode* node) {
-  LOG4CXX_TRACE(ms_logger, "doClassNode() called");
+  LOG4CXX_TRACE(logger_, "doClassNode() called");
 
   if (NULL == node) return;
 
@@ -521,7 +521,7 @@ void TypeCheckVisitor::doClassNode(ClassNode* node) {
 
   ClassNode* clazz = findClass(node->getName());
   if (NULL != clazz) {
-    LOG4CXX_DEBUG(ms_logger, "class \"" << node->getName() << "\" redefined");
+    LOG4CXX_DEBUG(logger_, "class \"" << node->getName() << "\" redefined");
     ClassRedefinedError error(clazz, node);
     emitError(&error);
   } else {
@@ -537,11 +537,11 @@ void TypeCheckVisitor::doClassNode(ClassNode* node) {
 
   popLevel();
 
-  LOG4CXX_TRACE(ms_logger, "doClassNode() return");
+  LOG4CXX_TRACE(logger_, "doClassNode() return");
 }
 
 void TypeCheckVisitor::doNewNode(NewNode* node) {
-  LOG4CXX_TRACE(ms_logger, "doNewNode() called");
+  LOG4CXX_TRACE(logger_, "doNewNode() called");
   if (NULL == node) return;
 
   ClassNode* classNode = findClass(node->getClassName());
@@ -554,11 +554,11 @@ void TypeCheckVisitor::doNewNode(NewNode* node) {
     node->setDataTypeNode(new ClassTypeNode(classNode->getName(), classNode));
   }
 
-  LOG4CXX_TRACE(ms_logger, "doNewNode() return");
+  LOG4CXX_TRACE(logger_, "doNewNode() return");
 }
 
 void TypeCheckVisitor::doClassTypeNode(ClassTypeNode* node) {
-  LOG4CXX_TRACE(ms_logger, "doClassTypeNode() called");
+  LOG4CXX_TRACE(logger_, "doClassTypeNode() called");
 
   if (NULL == node) return;
 
@@ -571,7 +571,7 @@ void TypeCheckVisitor::doClassTypeNode(ClassTypeNode* node) {
     node->setClassNode(classNode);
   }
 
-  LOG4CXX_TRACE(ms_logger, "doClassTypeNode() return");
+  LOG4CXX_TRACE(logger_, "doClassTypeNode() return");
 }
 
 /*

@@ -1,21 +1,20 @@
 
-
 def generate_lex(source, target, env, for_signature):
   assert len(target) > 0
   if len(target) == 1:
-    return "flex -o %s %s" % (target[0], source[0])
+    return "flex -c++ -o %s %s" % (target[0], source[0])
   else:
-    return "flex --header-file=%s -o %s %s" % (target[0], target[1], source[0])
+    return "flex --c++ --header-file=%s -o %s %s" % (target[0], target[1], source[0])
 
 lex = Builder(generator=generate_lex)
 
 def generate_yacc(source, target, env, for_signature):
-  return "bison --defines=%s -o %s %s" % (target[0], target[1], source[0])
+  return "bison -L c++ --defines=%s -o %s %s" % (target[0], target[1], source[0])
 yacc = Builder(generator = generate_yacc)
 
 env = Environment(BUILDERS={"Lex": lex, "Yacc" : yacc})
 env.Replace(CCFLAGS="-std=c++11", CPPPATH=".")
-env.Replace(LIBS=["log4cxx"])
+env.Replace(LIBS=["log4cxx",])
 env.Replace(LIBPATH=".")
 
 lex_file = "flang_scanner.l"
@@ -25,27 +24,36 @@ lex_cpp = env.Lex(target=[lex_cpp], source=lex_file)
 yacc_file = "flang_parser.y"
 yacc_cpp  = "flang_parser.cpp"
 yacc_h    = "flang_parser.h"
-yacc_h, yacc_cpp = env.Yacc(target=[yacc_h, yacc_cpp], source=yacc_file)
+yacc_h, yacc_cpp, _ = env.Yacc(target=[yacc_h, yacc_cpp, "stack.hh"], source=yacc_file)
 
 srcs = Glob("*.cpp")
 lex_obj = env.Object(lex_cpp)
 yacc_obj = env.Object(yacc_cpp)
 
-synax_tree_lib = env.Library(
-    target = "synax_tree_lib",
-    source = Glob("syntax_tree/*.cpp")
+synax_tree_lib = env.SharedLibrary(
+    target = "synax_tree",
+    source = Glob("syntax_tree/*.cpp"),
+    LIBS = ["error"]
 )
 
-Alias("synax_tree_lib", synax_tree_lib)
+error_lib = env.SharedLibrary(
+    target = "error",
+    source = ["error.cpp"]
+)
 
-# objs = env.Object(srcs)
-# objs.append(lex_obj)
-# objs.append(yacc_obj)
-#
-# obj_map = {}
-# for obj in objs:
-#   obj_map[str(obj)] = obj
-#
-# flang = env.Program("flang", objs)
-# Default( flang )
+
+flang = env.Program(
+    target = "flang",
+    source = [
+        "main.cpp",
+        lex_obj,
+        yacc_obj],
+    LIBS = [
+        "error",
+        "synax_tree",
+        "log4cxx",
+    ]
+)
+
+Default(flang)
 
