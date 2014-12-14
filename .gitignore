@@ -1,13 +1,4 @@
-**/*.o
-fun
-ftest
-**/*.swp
-**/*.output
-include/tinyc_lex.h
-include/tinyc_yacc.h
-src/tinyc_lex.cpp
-src/tinyc_yacc.cpp
 .sconsign.dblite
-tags
-sconstruct.py
 .*
+doc
+build
