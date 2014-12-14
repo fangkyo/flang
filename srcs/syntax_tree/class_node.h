@@ -48,7 +48,7 @@ class ClassNode : public SyntaxNode{
 
         void acceptVars( Visitor& visitor );
 
-        void acceptFuncs( Visitor& visitor, ScopeManager& scopeManager,  ErrorEngine& errorEngine );
+        void acceptFuncs(Visitor& visitor, ScopeManager& scopeManager, ErrorEngine& errorEngine);
 
         string toString() {
             string str( "class " );

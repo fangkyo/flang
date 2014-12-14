@@ -1,47 +1,42 @@
 Import('*')
 
-SConscript(
-    ["syntax_tree/SConscript"],
-    exports = 'env',
-)
-
 lex_file = "flang_scanner.l"
 lex_cpp  = "flang_scanner.cpp"
-lex_cpp = env.Lex(
-    target = [lex_cpp],
-    source = lex_file
-)
+lex_cpp = env.Lex(target=[lex_cpp], source=lex_file)
 
 yacc_file = "flang_parser.y"
 yacc_cpp  = "flang_parser.cpp"
 yacc_h    = "flang_parser.h"
-yacc_h, yacc_cpp, stack_hh = env.Yacc(
-    target = [yacc_h, yacc_cpp, "stack.hh"],
-    source=yacc_file
-)
+yacc_h, yacc_cpp, _ = env.Yacc(target=[yacc_h, yacc_cpp, "stack.hh"], source=yacc_file)
 
 srcs = Glob("*.cpp")
 lex_obj = env.Object(lex_cpp)
 yacc_obj = env.Object(yacc_cpp)
 
-error_lib = env.Library(
-    target = "error",
-    source = ["error.cpp"],
+synax_tree_lib = env.SharedLibrary(
+    target = "synax_tree",
+    source = Glob("syntax_tree/*.cpp"),
+    LIBS = ["error"]
 )
+
+error_lib = env.SharedLibrary(
+    target = "error",
+    source = ["error.cpp"]
+)
+
 
 flang = env.Program(
     target = "flang",
     source = [
         "main.cpp",
         lex_obj,
-        yacc_obj,
-    ],
+        yacc_obj],
     LIBS = [
-        "syntax_tree",
         "error",
+        "synax_tree",
         "log4cxx",
-    ],
-    LIBPATH = [".","syntax_tree"],
+    ]
 )
 
 Default(flang)
+

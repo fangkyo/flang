@@ -13,9 +13,9 @@ def generate_yacc(source, target, env, for_signature):
 yacc = Builder(generator = generate_yacc)
 
 env = Environment(BUILDERS={"Lex": lex, "Yacc" : yacc})
-env.Replace(CCFLAGS="-std=c++11", CPPPATH=".")
+env.Replace(CCFLAGS="-std=c++11", CPPPATH=["#build", "#srcs"])
 env.Replace(LIBS=["log4cxx",])
-env.Replace(LIBPATH=".")
+env.Replace(LIBPATH="#build")
 
 SConscript(
     ["srcs/SConscript"],

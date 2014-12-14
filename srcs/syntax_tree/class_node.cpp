@@ -17,7 +17,8 @@ void ClassNode::setParent(ClassNode* parent) {
 
 void ClassNode::addVarDeclare(DeclareNode* declare) {
 
-  if (NULL != declare) m_varList.push_back(declare);
+  if (NULL != declare)
+    m_varList.push_back(declare);
 }
 
 void ClassNode::addFuncion(ClassFuncNode* func) {
@@ -27,7 +28,9 @@ void ClassNode::addFuncion(ClassFuncNode* func) {
   }
 }
 
-void ClassNode::accept(Visitor& visitor) { visitor.doClassNode(this); }
+void ClassNode::accept(Visitor& visitor) {
+  visitor.doClassNode(this);
+}
 
 void ClassNode::acceptVars(Visitor& visitor) {
 
@@ -89,7 +92,6 @@ ClassFuncNode* ClassNode::findMemberFunc(const string& funcName) {
 VarNode* ClassNode::findMemberVar(const string& varName) {
 
   VarNode* varNode = NULL;
-
   for (size_t i = 0; i < m_varList.size(); ++i) {
     varNode = m_varList[i]->findVar(varName);
     if (varNode) return varNode;

@@ -1,0 +1,6 @@
+Import('*')
+
+env.Library(
+    target = "syntax_tree",
+    source = Glob("*.cpp"),
+)
