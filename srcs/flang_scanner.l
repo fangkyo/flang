@@ -18,15 +18,6 @@
 #include "flang_parser.h"
 #include "flang_scanner.h"
 
-/* typedef flang::FLangParser::token FLangToken; */
-
-// 存储lex识别的字符串token( identifier 或者 string )
-// Tokens that recognized by lex.
-std::vector<string> g_strVals;
-
-std::string& getStrVal( int idx ) {
-  return g_strVals[idx];
-}
 /* typedef to make the returns for the tokens shorter */
 typedef flang::FlangParser::token Token;
 
