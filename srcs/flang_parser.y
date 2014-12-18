@@ -39,8 +39,7 @@ namespace flang {
 using namespace std;
 using namespace log4cxx;
 
-/* extern string& getStrVal(int idx); */
-LoggerPtr g_logger(Logger::getLogger("yacc"));
+LoggerPtr g_logger(Logger::getLogger("flang.scanner_parser"));
 
 static int yylex(flang::FlangParser::semantic_type *yylval,
                  flang::FlangScanner &scanner) {
@@ -108,7 +107,6 @@ static int yylex(flang::FlangParser::semantic_type *yylval,
 
 %start program
 
-
 %%
 
 program : stmt_list {
@@ -122,10 +120,9 @@ program : stmt_list {
 stmt_list : stmt {
   $$ = new StmtListNode();
   $$->setLineNum(scanner.lineno());
-  $$->addStmt( $1 );
-  /* g_collector.insert( $$ ); */
+  $$->addStmt($1);
 } | stmt_list stmt {
-  $1->addStmt( $2 );
+  $1->addStmt($2);
   $$ = $1;
 };
 
@@ -144,10 +141,9 @@ simple_program : simple_stmt_list {
 simple_stmt_list : simple_stmt {
   $$ = new StmtListNode();
   $$->setLineNum(scanner.lineno());
-  $$->addStmt( $1 );
-  /* g_collector.insert( $$ ); */
+  $$->addStmt($1);
 } | simple_stmt_list simple_stmt {
-  $1->addStmt( $2 );
+  $1->addStmt($2);
 };
 
 complex_stmt : function {
@@ -163,19 +159,15 @@ simple_stmt : ';' {
 } | PRINT expr ';' {
   $$ = new PrintNode( $2 );
   $$->setLineNum( $1 );
-  /* g_collector.insert( $$ ); */
 } | RETURN expr ';' {
   $$ = new ReturnNode( $2 );
   $$->setLineNum( $1 );
-  /* g_collector.insert( $$ ); */
 } | RETURN ';' {
   $$ = new ReturnNode();
   $$->setLineNum( $1 );
-  /* g_collector.insert( $$ ); */
 } | BREAK ';' {
   $$ = new BreakNode();
   $$->setLineNum( $1 );
-  /* g_collector.insert( $$ ); */
 } | declare ';' {
   $$ = $1;
 } | if_stmt {
@@ -185,71 +177,57 @@ simple_stmt : ';' {
 };
 
 expr : NUMBER {
-  $$ = new IntNode( $1 );
-  $$->setLineNum( scanner.lineno() );
-  /* g_collector.insert( $$ ); */
+  $$ = new IntNode($1);
+  $$->setLineNum(scanner.lineno());
 } | TRUE {
   $$ = new BoolNode(true);
   $$->setLineNum(scanner.lineno());
-  /* g_collector.insert( $$ ); */
 } | FALSE {
   $$ = new BoolNode(false);
   $$->setLineNum( scanner.lineno() );
-  /* g_collector.insert( $$ ); */
 } | STR {
   $$ = new StringNode( *($1) );
   $$->setLineNum( scanner.lineno() );
-  /* g_collector.insert( $$ ); */
 } | CHARVAL {
   $$ = new CharNode($1);
   $$->setLineNum( scanner.lineno() );
-  /* g_collector.insert( $$ ); */
 } | ID {
-  $$ = new VarRefNode( *($1) );
+  $$ = new VarRefNode(*($1));
   $$->setLineNum( scanner.lineno() );
-  /* g_collector.insert( $$ ); */
 } | ID '=' expr {
   VarRefNode* var = new VarRefNode(*($1));
   var->setLineNum(scanner.lineno());
-  /* g_collector.insert( var ); */
-  $$ = new AssignNode( var, $3 );
+  $$ = new AssignNode(var, $3);
   $$->setLineNum( scanner.lineno() );
-  /* g_collector.insert( $$ ); */
 } | expr '+' expr {
-  $$ = new AddNode( $1, $3 );
+  $$ = new AddNode($1, $3);
   $$->setLineNum( scanner.lineno() );
-  /* g_collector.insert( $$ ); */
 } | expr '-' expr {
-  $$ = new SubNode( $1, $3 );
+  $$ = new SubNode($1, $3);
   $$->setLineNum( scanner.lineno() );
-  /* g_collector.insert( $$ ); */
 } | expr '*' expr {
-  $$ = new MulNode( $1, $3 );
+  $$ = new MulNode($1, $3);
   $$->setLineNum( scanner.lineno() );
-  /* g_collector.insert( $$ ); */
 } | expr '/' expr {
-  $$ = new DivNode( $1, $3 );
+  $$ = new DivNode($1, $3);
   $$->setLineNum( scanner.lineno() );
-  /* g_collector.insert( $$ ); */
 } | expr '<' expr {
-  $$ = new LtNode( $1, $3 );
+  $$ = new LtNode($1, $3);
   $$->setLineNum( scanner.lineno() );
-  /* g_collector.insert( $$ ); */
 } | expr AND  expr {
-  $$ = new AndNode( $1, $3 );
+  $$ = new AndNode($1, $3);
   $$->setLineNum( scanner.lineno() );
-  /* g_collector.insert( $$ ); */
 } | expr EQ  expr {
-  $$ = new EqNode( $1, $3 );
+  $$ = new EqNode($1, $3);
   $$->setLineNum( scanner.lineno() );
-  /* g_collector.insert( $$ ); */
 } | '(' expr ')' {
   $$ = $2;
 } | call {
   $$ = $1;
 } | NEW ID {
-  $$ = new NewNode( *($2) );
-  /* g_collector.insert( $$ ); */
+  $$ = new NewNode(*($2));
+} | THIS '.' ID {
+  $$ = new MemberVarRefNode(*($3));
 };
 
 declare : var_list declare_var {
@@ -268,23 +246,18 @@ var_list : var_list declare_var ',' {
   $$ = new DeclareNode();
   $$->setDataTypeNode($1);
   $$->setLineNum( scanner.lineno() );
-  /* g_collector.insert( $$ ); */
 };
 
 declare_var : ID {
   VarNode* var = new VarDeclareNode( *($1) );
   var->setLineNum( scanner.lineno() );
-  /* g_collector.insert( var ); */
   $$ = new AssignNode( var );
   $$->setLineNum( scanner.lineno() );
-  /* g_collector.insert( $$ ); */
 } | ID '=' expr {
   VarNode* var = new VarDeclareNode(*($1));
   var->setLineNum( scanner.lineno() );
-  /* g_collector.insert( var ); */
   $$ = new AssignNode( var, $3 );
   $$->setLineNum( scanner.lineno() );
-  /* g_collector.insert( $$ ); */
 };
 
 type : INT {
@@ -298,7 +271,6 @@ type : INT {
 } | ID {
   $$ = new ClassTypeNode( *($1) );
   $$->setLineNum( scanner.lineno());
-  /* g_collector.insert( $$ ); */
 };
 
 if_stmt : IF '(' expr ')' '{'
@@ -308,27 +280,21 @@ if_stmt : IF '(' expr ')' '{'
           '}' {
   $$ = new IfNode( $3, $6, $10 );
   $$->setLineNum( $1 );
-  /* g_collector.insert( $$ ); */
 } | IF '(' expr ')' '{' simple_program '}' ELSE  stmt {
   $$ = new IfNode( $3, $6, $9 );
   $$->setLineNum( $1 );
-  /* g_collector.insert( $$ ); */
 } | IF '(' expr ')'  stmt ELSE '{' simple_program '}' {
   $$ = new IfNode( $3, $5, $8 );
   $$->setLineNum( $1 );
-  /* g_collector.insert( $$ ); */
 } | IF '(' expr ')'  stmt  ELSE stmt {
   $$ = new IfNode( $3, $5, $7 );
   $$->setLineNum( $1 );
-  /* g_collector.insert( $$ ); */
 } | IF '(' expr ')' '{' simple_program '}' %prec IFX {
   $$ = new IfNode( $3, $6 );
   $$->setLineNum( $1 );
-  /* g_collector.insert( $$ ); */
 } | IF '(' expr ')'  stmt  %prec IFX {
   $$ = new IfNode( $3, $5 );
   $$->setLineNum( $1 );
-  /* g_collector.insert( $$ ); */
 };
 
 while_stmt : WHILE '(' expr ')' '{' simple_program '}' {
@@ -338,7 +304,6 @@ while_stmt : WHILE '(' expr ')' '{' simple_program '}' {
 } | WHILE '(' expr ')' stmt {
   $$ = new WhileNode( $3, $5 );
   $$->setLineNum( $1 );
-  /* g_collector.insert( $$ ); */
 };
 
 function : DEF ID '(' func_param_list ')' ret_type '{' simple_program '}' {
@@ -346,11 +311,10 @@ function : DEF ID '(' func_param_list ')' ret_type '{' simple_program '}' {
   $$->setName( *($2));
   $$->setRetType($6);
   $$->setBody($8);
-  $$->setLineNum( $1 );
+  $$->setLineNum($1);
 } | DEF ID '(' ')' ret_type '{'simple_program '}' {
-  $$ = new GlobalFuncNode( *($2), $5, $7 );
-  $$->setLineNum( $1 );
-  /* g_collector.insert( $$ ); */
+  $$ = new GlobalFuncNode(*($2), $5, $7);
+  $$->setLineNum($1);
 };
 
 ret_type : type {
@@ -361,103 +325,69 @@ ret_type : type {
 
 func_param_list : func_param_list ',' type ID {
   $$ = $1;
-  $$->addParam( VarNode( *( $4 ), $3) );
+  $$->addParam(VarNode(*($4), $3));
 } | type ID {
   $$ = new GlobalFuncNode();
-  $$->addParam( VarNode( *( $2 ), $1 ) );
-  /* g_collector.insert( $$ ); */
+  $$->addParam(VarNode(*($2), $1));
 };
 
 call : ID '(' call_param_list ')' {
   $$ = $3;
-  $$->setFuncName( *($1) );
+  $$->setFuncName(*($1));
 } | ID '.' ID '(' call_param_list ')' {
   $$ = $5;
-  $$->setLineNum( $<lineno>2 );
-  $$->setFuncName( *($3) );
-  $$->setMemberFuncHint( true );
-  $$->setCallerName(*( $1 ));
+  $$->setLineNum($<lineno>2);
+  $$->setFuncName(*($3));
+  $$->setMemberFuncHint(true);
+  $$->setCallerName(*($1));
 } | THIS '.' ID '(' call_param_list ')' {
   $$ = $5;
-  $$->setLineNum( $<lineno>2 );
-  $$->setFuncName( *($3) );
-  $$->setMemberFuncHint( true );
+  $$->setLineNum($<lineno>2);
+  $$->setFuncName(*($3));
+  $$->setMemberFuncHint(true);
 };
 
 call_param_list : param_list {
   $$ = $1;
 } | {
   $$ = new CallNode();
-  /* g_collector.insert( $$ ); */
 };
 
 param_list : param_list ',' expr {
   $$ = $1;
-  $$->addParam( $3 );
-  /* g_collector.insert( $$ ); */
+  $$->addParam($3);
 } | expr {
   $$ = new CallNode();
-  $$->addParam( $1 );
-  $$->setLineNum( scanner.lineno() );
-  /* g_collector.insert( $$ ); */
+  $$->addParam($1);
+  $$->setLineNum(scanner.lineno());
 };
 
 class : CLASS ID '{' class_stmt_list  '}' {
   $$ = $4;
-  $$->setName( *($2) );
-  $$->setLineNum( $1 );
+  $$->setName(*($2));
+  $$->setLineNum($1);
 } | CLASS ID ':' ID '{' class_stmt_list '}' {
   $$ = $6;
-  $$->setParentName( *( $4 ) );
-  $$->setName( *($2) );
-  $$->setLineNum( $1 );
+  $$->setParentName(*($4));
+  $$->setName(*($2));
+  $$->setLineNum($1);
 };
 
 class_stmt_list : class_stmt_list declare ';' {
   $$ = $1;
-  $$->addVarDeclare( $2 );
+  $$->addVarDeclare($2);
 } | class_stmt_list function {
   $$ = $1;
   // create a new class function to wrap a global function
-  ClassFuncNode* classFunc = new ClassFuncNode( $1, $2 );
+  ClassFuncNode* classFunc = new ClassFuncNode($1, $2);
   // add the function to the class
-  $$->addFuncion( classFunc );
-  /* g_collector.insert( classFunc ); */
-  /* g_collector.collect( $2 ); */
+  $$->addFuncion(classFunc);
 } | {
   $$ = new ClassNode();
-  /* g_collector.insert( $$ ); */
 };
 
 %%
 
-void flang::FlangParser::error( const std::string &err_message ) {
+void flang::FlangParser::error(const std::string& err_message) {
    std::cerr << "Error: " << err_message << "\n";
 }
-
-/* int main(){ */
-
-  /* PropertyConfigurator::configure("log4cxx.properties"); */
-  /* LOG4CXX_INFO( g_logger, "start to parse program and build abstract syntax tree" ); */
-  /* SyntaxTree* program = NULL; */
-  /* yyparse( program ); */
-
-  /* if( NULL == program ){ */
-    /* LOG4CXX_INFO( g_logger, "program is null" ); */
-    /* return 0; */
-  /* } */
-
-  /* LOG4CXX_INFO( g_logger, "abstract syntax tree built completed" ); */
-  /* LOG4CXX_INFO( g_logger, "start to do type check" ); */
-
-  /* TypeCheckVisitor typeCheckVisitor; */
-  /* program->accept( typeCheckVisitor ); */
-  /* typeCheckVisitor.printError(); */
-
-  /* LOG4CXX_INFO( g_logger, "type check completed" ); */
-  /* program = NULL; */
-
-  /* return 0; */
-/* } */
-
-

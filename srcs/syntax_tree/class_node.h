@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 
+#include "exp_node.h"
 #include "func_node.h"
 #include "declare_node.h"
 #include "scope.h"
@@ -13,6 +14,8 @@
 using namespace std;
 
 class ErrorEngine;
+
+
 class ClassNode : public SyntaxNode{
 
     private:
@@ -64,6 +67,21 @@ class ClassNode : public SyntaxNode{
         VarNode*  findMemberVar( const string& varName );
 
         ClassNode* getClassNode() { return this; }
+};
+
+/*!
+ * \brief MemberVarRefNode is the reference of a class member.
+ */
+class MemberVarRefNode : public ExpNode {
+ public:
+  MemberVarRefNode(const std::string& var_name);
+  virtual ~MemberVarRefNode() {}
+  void setOwner(ClassNode* owner) {
+    owner_ = owner;
+  }
+ private:
+  ClassNode* owner_; //< The owner class of this member variable.
+  std::string var_name_;
 };
 
 #endif

@@ -141,8 +141,6 @@ and {
 
 {string} {
   yylval->str_val = new std::string(yytext + 1, yyleng - 2);
-  // g_strVals.size();
-  /* g_strVals.push_back( string( yytext+1, yyleng-2 ) ); */
   return Token::STR;
 }
 
@@ -153,8 +151,6 @@ and {
 
 {identifier} {
   yylval->str_val = new std::string(yytext, yyleng);
-  /* g_strVals.push_back( string( yytext, yyleng ) ); */
-  /* yylval->strIdx = g_strVals.size() - 1; */
   return Token::ID;
 }
 

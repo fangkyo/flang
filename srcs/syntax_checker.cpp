@@ -1,13 +1,11 @@
 #include <iostream>
 #include <cassert>
 
-// #include <Arg.h>
-
-#include "type_check_visitor.h"
+#include "syntax_checker.h"
 #include "error.h"
 using namespace std;
 
-LoggerPtr TypeCheckVisitor::logger_(Logger::getLogger("flang.TypeCheckVisitor"));
+LoggerPtr TypeCheckVisitor::logger_(Logger::getLogger("flang.syntax_checker"));
 
 void TypeCheckVisitor::doStmtListNode(StmtListNode* node) {}
 

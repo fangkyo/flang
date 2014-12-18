@@ -7,6 +7,7 @@
 
 #include "flang_parser.h"
 #include "flang_scanner.h"
+#include "syntax_checker.h"
 
 int main(int argc, char* argv[]){
   TCLAP::CmdLine cmd("Command description message", ' ', "0.9");

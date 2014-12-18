@@ -4,7 +4,7 @@
 #include <list>
 #include <log4cxx/logger.h>
 
-#include "syntax_tree.h"
+#include "syntax_tree/syntax_tree.h"
 #include "scope.h"
 #include "visitor.h"
 #include "error.h"

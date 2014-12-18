@@ -102,3 +102,7 @@ VarNode* ClassNode::findMemberVar(const string& varName) {
   else
     return NULL;
 }
+
+MemberVarRefNode::MemberVarRefNode(const std::string& var_name) {
+  var_name_ = var_name;
+}

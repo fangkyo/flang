@@ -41,7 +41,11 @@ flang = env.Program(
         "error",
         "log4cxx",
     ],
-    LIBPATH = [".","syntax_tree"],
+    LIBPATH = [
+      ".",
+      "syntax_tree",
+      "symbol_table",
+    ],
 )
 
 Default(flang)
