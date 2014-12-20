@@ -20,13 +20,12 @@ yacc_h, yacc_cpp, stack_hh = env.Yacc(
     source=yacc_file
 )
 
-srcs = Glob("*.cpp")
 lex_obj = env.Object(lex_cpp)
 yacc_obj = env.Object(yacc_cpp)
 
 error_lib = env.Library(
     target = "error",
-    source = ["error.cpp"],
+    source = ["error.h","error.cpp"],
 )
 
 flang = env.Program(
