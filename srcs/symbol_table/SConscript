@@ -2,5 +2,5 @@ Import('*')
 
 env.Library(
     target = "symbol_table",
-    source = ["symbol_table.cpp"],
+    source = ["symbol_table.cpp", "symbol_table.h"],
 )

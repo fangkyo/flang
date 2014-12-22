@@ -1,0 +1,8 @@
+syntax = "proto2";
+
+package flang;
+
+message SymbolInfo {
+  required string name = 1;
+  optional int32 abc = 2;
+}
