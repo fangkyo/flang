@@ -2,7 +2,7 @@
 def generate_lex(source, target, env, for_signature):
   assert len(target) > 0
   if len(target) == 1:
-    return "flex -c++ -o %s %s" % (target[0], source[0])
+    return "flex --c++ -o %s %s" % (target[0], source[0])
   else:
     return "flex --c++ --header-file=%s -o %s %s" % (target[0], target[1], source[0])
 

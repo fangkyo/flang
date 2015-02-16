@@ -2,3 +2,5 @@
 .*
 doc
 build
+srcs/blade*
+srcs/build*

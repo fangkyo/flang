@@ -50,6 +50,7 @@ enum CodeType {
 
 class Code{
     public:
+        virtual ~Code(){}
         CodeType m_type;
         int      m_oprndNum;
         Addr     m_oprnds[2];
@@ -80,7 +81,5 @@ class MovCode : public Code {
             m_oprnds[1] = dst;
         }
 };
-
-
 
 #endif
