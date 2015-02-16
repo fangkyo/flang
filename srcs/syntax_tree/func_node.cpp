@@ -15,11 +15,10 @@ void GlobalFuncNode::accept( Visitor& visitor ) {
 }
 
 bool GlobalFuncNode::matchParamsType( vector<DataTypeNode*>& paramsType ){
-
     if( paramsType.size() != m_paramList.size() )
         return false;
     
-    for( int i=0; i< paramsType.size(); ++i ) {
+    for(size_t i=0; i< paramsType.size(); ++i ) {
         
         if( paramsType[i] == NULL && m_paramList[i].getDataTypeNode() == NULL )
             continue;
@@ -48,7 +47,7 @@ bool GlobalFuncNode::equals( const FuncNode& funcNode ){
 void GlobalFuncNode::getParamsType( vector<DataTypeNode*>& paramsType ){
     
     paramsType.clear();
-    for( int i=0; i< m_paramList.size(); ++i ){
+    for(size_t i=0; i< m_paramList.size(); ++i ){
         paramsType.push_back( m_paramList[i].getDataTypeNode() );
     }
 }
@@ -63,7 +62,7 @@ string GlobalFuncNode::toString() {
     if( paramsType.size() > 0 ){
         
         strStream << paramsType[0]->toString();
-        for( int i=1; i< paramsType.size(); ++i )
+        for(size_t i=1; i< paramsType.size(); ++i )
             strStream << ", "
                       << paramsType[i]->toString();
     }
@@ -110,7 +109,7 @@ void CallNode::addParam( ExpNode* param ) {
 
 void CallNode::accept( Visitor& visitor ){
     
-    for( int i=0; i<m_paramList.size(); ++i )
+    for(size_t i=0; i<m_paramList.size(); ++i )
         if( m_paramList[i] )
             m_paramList[i]->accept( visitor );
 
@@ -124,7 +123,7 @@ string CallNode::toString() {
    strStream << "(";
    if( m_paramList.size() > 0 ) {
         strStream << " " << m_paramList[0]->toString();
-        for( int i=1; i< m_paramList.size(); ++i )
+        for(size_t i=1; i< m_paramList.size(); ++i )
             if( m_paramList[i] ){
                 strStream << ", ";
                 strStream << m_paramList[i]->toString();
@@ -139,7 +138,7 @@ string CallNode::toString() {
 
 void CallNode::getParamsType( vector<DataTypeNode*>& paramsType ){
 
-    for( int i=0; i < m_paramList.size(); ++i )
+    for(size_t i=0; i < m_paramList.size(); ++i )
         paramsType.push_back( m_paramList[i]->getDataTypeNode() );
 
 }

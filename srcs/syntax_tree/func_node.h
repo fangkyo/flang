@@ -122,7 +122,7 @@ class ClassFuncNode : public FuncNode {
         * @classNode the class it belongs to 
         * @funcNode  the decorated function node  
         */
-       ClassFuncNode( ClassNode* classNode, FuncNode* funcNode ) : m_func( funcNode ) { 
+       ClassFuncNode( ClassNode* classNode, FuncNode* funcNode ) : m_func( funcNode ), m_class(classNode) { 
            assert( funcNode ); 
            assert( classNode );
        }
@@ -131,7 +131,7 @@ class ClassFuncNode : public FuncNode {
            return m_func;
        }
 
-       FuncNode* setFuncNode( FuncNode* funcNode ){
+       void setFuncNode( FuncNode* funcNode ){
            m_func = funcNode;
        }
 
@@ -217,9 +217,9 @@ class CallNode : public ExpNode{
         vector<ExpNode*> m_paramList;
         string m_funcName;
         FuncNode* m_func;
-        bool m_memberFuncHint;  // hint that this is a member functiuon call
         string m_callerName;
         VarNode* m_caller;
+        bool m_memberFuncHint;  // hint that this is a member functiuon call
 
     public:
         CallNode() : m_func(NULL), m_caller(NULL), m_memberFuncHint(false) {}

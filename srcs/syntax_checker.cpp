@@ -17,7 +17,7 @@ void TypeCheckVisitor::doDeclareNode(DeclareNode* node) {
 
   vector<AssignNode*>& declareList = node->getDeclareList();
 
-  for (int i = 0; i < declareList.size(); ++i) {
+  for (size_t i = 0; i < declareList.size(); ++i) {
     declareList[i]->setVarDataTypeNode(node->getDataTypeNode()->clone());
     declareList[i]->accept(*this);
   }
@@ -114,7 +114,6 @@ void TypeCheckVisitor::doEqNode(EqNode* node) {
 
   doOpNode(node);
   node->setDataTypeNode(BOOL_TYPE_NODE);
-
   LOG4CXX_TRACE(logger_, "doEqNode() return");
 }
 

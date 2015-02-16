@@ -28,6 +28,7 @@
 
 class Visitor {
  public:
+  virtual ~Visitor() {}
   virtual void doStmtListNode(StmtListNode* node) = 0;
   virtual void doPrintNode(PrintNode* node) = 0;
   virtual void doDeclareNode(DeclareNode* node) = 0;

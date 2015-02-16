@@ -20,7 +20,7 @@ VarNode* DeclareNode::findVar(const string& varName) {
 }
 
 void DeclareNode::setVarClass(ClassNode* clazz) {
-  for (int i = 0; i < m_varList.size(); ++i) {
+  for (size_t i = 0; i < m_varList.size(); ++i) {
     m_varList[i]->getVarNode()->setClass(clazz);
   }
 }

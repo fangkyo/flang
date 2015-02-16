@@ -19,6 +19,7 @@
 class Error {
 
     public:
+        virtual ~Error() {}
         virtual string toString() { return string(""); }
 };
 
@@ -27,6 +28,7 @@ class ErrorEngine {
     private:
         list<string> m_errorList;
     public:
+        virtual ~ErrorEngine() {}
         virtual void emitError( Error* error );
         virtual bool hasError() { return m_errorList.size() > 0;  }
         virtual void printError();
