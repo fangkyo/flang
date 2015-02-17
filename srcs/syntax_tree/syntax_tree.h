@@ -37,6 +37,8 @@ enum OpType {
   OP_NOT
 };
 
+// Abstract syntax tree visitor
+class ASTVisitor;
 class Visitor;
 
 typedef class SyntaxTree {
@@ -54,6 +56,51 @@ typedef class SyntaxTree {
   virtual string toString() { return string(""); }
 
 } SyntaxNode;
+
+// This class is abstract syntax tree node, which is the baseclass
+// for all the concret syntax tree nodes. 
+class ASTNode {
+ public:
+  enum ASTNodeType {
+    PROGRAM_NODE, // Program node
+    STMT_NODE, // Statement node
+    FUNC_NODE, // Function definition node
+    CLASS_NODE, // Class definition node
+    BLOCK_NODE, // Code block node
+    EXP_STMT_NODE, // Expression statement node
+    IF_STMT_NODE, // If statement node
+    WHILE_STMT_NODE, // While statement node
+    EMPTY_STMT_NODE, // Empty statement node
+    RETURN_STMT_NODE, // Return statement node
+    EXP_NODE, // Expression node
+    ASSIGNMENT_NODE, // Assignment node
+    INFIX_EXP_NODE, // Infix Expression node
+    PREFIX_EXP_NODE, // Prefix expression node
+    PARENTHESIZED_EXP_NODE, // Parenthesized expression node
+    PRIMITIVE_NODE, // Primitive node
+    INTEGER_NODE, // Integer node
+    STRING_NODE, // String node
+    FLOAT_NODE, // Float node
+    CHAR_NODE, // Char node
+    BOOL_NODE, // Bool node
+    NAME_NODE, // Name node
+    NULL_NODE, // Null node
+    SIMPLE_NAME_NODE, // Simple name node
+    FUNC_INVOCATION_NODE, // Function invocation node
+    QUALIFIED_NAME_NODE, // Qualified name node
+  };
+
+  ASTNode(ASTNodeType node_type) :
+      node_type_(node_type), parent_(nullptr) {}
+  virtual ~ASTNode(){}
+  virtual void accept(ASTVisitor* visitor) = 0; 
+  ASTNodeType nodeType() { return node_type_; }
+  void setParent(ASTNode* parent) { parent_ = parent; }
+  ASTNode* parent() { return parent_; }
+ protected:
+  ASTNodeType node_type_;
+  ASTNode* parent_;
+};
 
 class StmtListNode : public SyntaxNode {
  public:

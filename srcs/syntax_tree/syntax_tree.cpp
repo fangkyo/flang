@@ -21,6 +21,9 @@ const char* dataTypeStr( DataType dtype ){
   return typeStr[dtype];
 }
 
+void ASTNode::accept(ASTVisitor* visitor) {
+}
+
 /*********************************************
  *               StmtListNode
  *********************************************/
