@@ -58,7 +58,7 @@ typedef class SyntaxTree {
 } SyntaxNode;
 
 // This class is abstract syntax tree node, which is the baseclass
-// for all the concret syntax tree nodes. 
+// for all the concret syntax tree nodes.
 class ASTNode {
  public:
   enum ASTNodeType {
@@ -93,10 +93,12 @@ class ASTNode {
   ASTNode(ASTNodeType node_type) :
       node_type_(node_type), parent_(nullptr) {}
   virtual ~ASTNode(){}
-  virtual void accept(ASTVisitor* visitor) = 0; 
+  virtual void accept(ASTVisitor* visitor) = 0;
   ASTNodeType nodeType() { return node_type_; }
+  // Accessor for parent
   void setParent(ASTNode* parent) { parent_ = parent; }
   ASTNode* parent() { return parent_; }
+
  protected:
   ASTNodeType node_type_;
   ASTNode* parent_;

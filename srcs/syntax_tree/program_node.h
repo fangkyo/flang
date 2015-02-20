@@ -1,7 +1,7 @@
 #ifndef SYNTAX_TREE_PROGRAM_NODE_H_
 #define SYNTAX_TREE_PROGRAM_NODE_H_
 
-#include <vector>
+#include <list>
 
 #include "syntax_tree/syntax_tree.h"
 #include "syntax_tree/stmt_node.h"
@@ -15,10 +15,10 @@ class ProgramNode : public ASTNode {
   ProgramNode();
   virtual ~ProgramNode();
   void accept(ASTVisitor* visitor) override;
-  const vector<StmtNode>& stmtList() { return stmt_list_; };
+  const list<StmtNode*>& stmtList() { return stmt_list_; };
   void addStmt(StmtNode* stmt_node);
  private:
-  std::vector<StmtNode*> stmt_list_;
+  std::list<StmtNode*> stmt_list_;
 };
 
 } // namespace flang
