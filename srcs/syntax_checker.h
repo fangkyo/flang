@@ -75,18 +75,4 @@ class TypeCheckVisitor : public Visitor,
   void doFuncNodePart(FuncNode* node);
 };
 
-/*
-        void doOrNode( OrNode* node );
-
-        void doNotNode( NotNode* node );
-
-        void doNeNode( NeNode* node );
-
-        void doGtNode( GtNode* node );
-
-        void doGeNode( GeNode* node );
-
-    void doLeNode( LeNode* node );
-
-*/
 #endif

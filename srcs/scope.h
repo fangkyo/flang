@@ -28,7 +28,7 @@ class WhileNode;
 class FuncNode;
 class ClassNode;
 class ClassFuncNode;
-
+class DataTypeNode;
 
 class Scope{
 
