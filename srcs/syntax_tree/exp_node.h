@@ -1,87 +1,59 @@
-#ifndef EXP_NODE_H
-#define EXP_NODE_H
+#ifndef SYNTAX_TREE_EXP_NODE_H
+#define SYNTAX_TREE_EXP_NODE_H
 
 #include <sstream>
 #include <memory>
 
 #include <log4cxx/logger.h>
 
-#include "data_type.h"
-#include "syntax_tree.h"
+#include "syntax_tree/data_type.h"
+#include "syntax_tree/stmt_node.h"
+#include "syntax_tree/syntax_tree.h"
 
 using namespace std;
 using namespace log4cxx;
 
+namespace flang {
+
 class ClassNode;
 
-class ExpNode : public SyntaxNode {
-
+class ExpNode : public StmtNode {
  public:
-  // unique_ptr<DataTypeNode> m_dtype;
-  DataTypeNode* m_dtype;
-
-  ExpNode(DataTypeNode* dtype) : m_dtype(dtype) {}
-
-  ExpNode() { m_dtype = UndefTypeNode::getInstance(); }
-
-  void setDataTypeNode(DataTypeNode* dtype) { m_dtype = dtype; }
-
-  DataTypeNode* getDataTypeNode() { return m_dtype; }
-
-  bool matchType(ExpNode* expNode);
-
-  bool matchType(DataTypeNode* dtypeNode);
-
+  ExpNode(ASTNode::ASTNodeType node_type = ASTNode::EXP_NODE) :
+    StmtNode(node_type) {}
   virtual bool isConst() { return false; }
-
-  void accept(Visitor& visitor);
+  void accept(Visitor& visitor) override;
 };
 
-class IntNode : public ExpNode {
-
- public:
-  // member data
-  int m_val;
-
-  // member function
-  IntNode(int val) : m_val(val) { setDataTypeNode(IntTypeNode::getInstance()); }
-
-  virtual bool isConst() { return true; }
+template <class T>
+class PrimitiveNode : public ExpNode {
+  public:
+    PrimitiveNode(ASTNodeType node_type) : ExpNode(node_type) {}
+    void setValue(const T& value) { value_ = value; }
+    const T& value() { return value_; }
+  protected:
+    T value_;
 };
 
-class StringNode : public ExpNode {
-
+class IntegerNode : public PrimitiveNode<int> {
  public:
-  // member data
-  string m_val;
+  IntegerNode() : PrimitiveNode(ASTNode::INTEGER_NODE) {}
+  bool isConst() override { return true; }
+};
 
-  // member function
-
-  StringNode(const string& str) : ExpNode(StringTypeNode::getInstance()), m_val(str) {
-  }
-
-  StringNode(const char* str) : m_val(str) {
-    setDataTypeNode(StringTypeNode::getInstance());
-  }
-
-  virtual bool isConst() { return true; }
-
-  string toString() {
-    stringstream stream;
-    stream << m_val;
-    return stream.str();
-  }
+class StringNode : public PrimitiveNode<std::string> {
+ public:
+  StringNode() : PrimitiveNode(ASTNode::STRING_NODE) {}
+  bool isConst() override { return true; }
 };
 
 class BoolNode : public ExpNode {
  public:
-  bool m_val;
-
   BoolNode(bool val) : m_val(val) {
     setDataTypeNode(BoolTypeNode::getInstance());
   }
 
-  virtual bool isConst() { return true; }
+  bool isConst() override { return true; }
 
   string toString() { return m_val ? string("true") : string("false"); }
 };
@@ -271,6 +243,8 @@ class NewNode : public ExpNode {
 
   void accept(Visitor& visitor);
 };
+
+} // namespace flang
 
 /*
 class OrNode : public OpNode {

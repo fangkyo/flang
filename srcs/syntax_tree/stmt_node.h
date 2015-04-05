@@ -8,7 +8,9 @@ namespace flang {
 // This class represents a statement node.
 class StmtNode : public ASTNode {
  public:
-  virtual ~StmtNode();
+  StmtNode(ASTNode::ASTNodeType node_type = ASTNode::STMT_NODE) :
+    ASTNode(node_type) {}
+  virtual ~StmtNode() {}
 };
 
 } // namespace flang
