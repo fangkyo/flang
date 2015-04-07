@@ -1,6 +1,7 @@
 #ifndef SYNTAX_TREE_H
 #define SYNTAX_TREE_H
 
+#include <memory>
 #include <string>
 #include <list>
 #include <set>
@@ -37,28 +38,32 @@ enum OpType {
   OP_NOT
 };
 
+
 // Abstract syntax tree visitor
 class ASTVisitor;
-class Visitor;
 
-typedef class SyntaxTree {
- public:
-  int m_lineNum;
+//typedef class SyntaxTree {
+ //public:
+  //int m_lineNum;
 
-  SyntaxTree() : m_lineNum(0) {}
-  virtual ~SyntaxTree() {}
+  //SyntaxTree() : m_lineNum(0) {}
+  //virtual ~SyntaxTree() {}
 
-  void setLineNum(int lineNum) { m_lineNum = lineNum; }
-  int getLineNum() { return m_lineNum; }
+  //void setLineNum(int lineNum) { m_lineNum = lineNum; }
+  //int getLineNum() { return m_lineNum; }
 
-  virtual void print() {}
-  virtual void accept(Visitor& visitor) {};
-  virtual string toString() { return string(""); }
+  //virtual void print() {}
+  //virtual void accept(ASTVisitor*) {};
+  //virtual string toString() { return string(""); }
 
-} SyntaxNode;
+//} SyntaxNode;
 
 // This class is abstract syntax tree node, which is the baseclass
 // for all the concret syntax tree nodes.
+
+
+
+// Abstract syntax tree node class.
 class ASTNode {
  public:
   enum ASTNodeType {
@@ -92,10 +97,14 @@ class ASTNode {
 
   ASTNode(ASTNodeType node_type) :
       node_type_(node_type), parent_(nullptr) {}
+
   virtual ~ASTNode(){}
-  virtual void accept(ASTVisitor* visitor) = 0;
+  virtual void accept(ASTVisitor*) = 0;
+
+  // NodeType's getter
   ASTNodeType nodeType() { return node_type_; }
-  // Accessor for parent
+
+  // Parent's accessor
   void setParent(ASTNode* parent) { parent_ = parent; }
   ASTNode* parent() { return parent_; }
 
@@ -104,28 +113,38 @@ class ASTNode {
   ASTNode* parent_;
 };
 
-class StmtListNode : public SyntaxNode {
- public:
-  list<SyntaxNode*> m_stmtList;
 
-  ~StmtListNode();
-  void addStmt(SyntaxNode* stmt);
-  void accept(Visitor& visitor);
+//class SyntaxNodeCollector {
+ //private:
+  //set<SyntaxNode*> m_nodes;
+
+ //public:
+  //SyntaxNodeCollector();
+  //~SyntaxNodeCollector();
+
+  //void insert(SyntaxNode* node);
+  //void remove(SyntaxNode* node);
+  //void collect(SyntaxNode* node);
+//};
+
+
+class ProgramNode;
+
+class ASTNodeFactory {
+ public:
+  static ProgramNode* NewProgramNode(ASTNode* parent); 
 };
 
-class SyntaxNodeCollector {
- private:
-  set<SyntaxNode*> m_nodes;
 
- public:
-  SyntaxNodeCollector();
-  ~SyntaxNodeCollector();
+class SyntaxTree {
+  public:
+    SyntaxTree() {}
+    void accept(ASTVisitor*);
 
-  void insert(SyntaxNode* node);
-  void remove(SyntaxNode* node);
-  void collect(SyntaxNode* node);
+  private:
+    std::unique_ptr<ProgramNode> root_;
 };
 
-extern SyntaxNodeCollector g_collector;
+//extern SyntaxNodeCollector g_collector;
 
 #endif

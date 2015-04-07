@@ -1,10 +1,10 @@
 #include <cstring>
 #include <iostream>
 
+#include "ast_visitor/ast_visitor.h"
 #include "base/check.h"
 #include "base/utils.h"
-#include "syntax_tree.h"
-#include "visitor.h"
+#include "syntax_tree/syntax_tree.h"
 
 using namespace std;
 
@@ -21,51 +21,32 @@ const char* dataTypeStr( DataType dtype ){
   return typeStr[dtype];
 }
 
-void ASTNode::accept(ASTVisitor* visitor) {
+void SyntaxTree::accept(ASTVisitor* visitor) {
+  visitor->doProgramNode(root_.get());
 }
 
-/*********************************************
- *               StmtListNode
- *********************************************/
+//SyntaxNodeCollector::SyntaxNodeCollector() {
+//}
 
-StmtListNode::~StmtListNode() {
-  stdDeleteElements(m_stmtList);
-}
+//SyntaxNodeCollector::~SyntaxNodeCollector() {
+  //stdDeleteElements(m_nodes);
+//}
 
-void StmtListNode::addStmt( SyntaxNode* stmt ) {
-  CHECK(stmt);
-  m_stmtList.push_back(stmt);
-}
+//void SyntaxNodeCollector::insert( SyntaxNode* node ) {
+  //CHECK(node);
+  //m_nodes.insert(node);
+//}
 
-void StmtListNode::accept( Visitor& visitor ) {
-  visitor.doStmtListNode(this);
-  for (SyntaxNode* node : m_stmtList) {
-    node->accept(visitor);
-  }
-}
+//void SyntaxNodeCollector::remove( SyntaxNode* node ) {
+  //CHECK(node);
+  //m_nodes.erase( node );
+//}
 
-SyntaxNodeCollector::SyntaxNodeCollector() {
-}
+//void SyntaxNodeCollector::collect( SyntaxNode* node ) {
+  //if( node ) {
+    //m_nodes.erase( node );
+    //delete node;
+  //}
+//}
 
-SyntaxNodeCollector::~SyntaxNodeCollector() {
-  stdDeleteElements(m_nodes);
-}
-
-void SyntaxNodeCollector::insert( SyntaxNode* node ) {
-  CHECK(node);
-  m_nodes.insert(node);
-}
-
-void SyntaxNodeCollector::remove( SyntaxNode* node ) {
-  CHECK(node);
-  m_nodes.erase( node );
-}
-
-void SyntaxNodeCollector::collect( SyntaxNode* node ) {
-  if( node ) {
-    m_nodes.erase( node );
-    delete node;
-  }
-}
-
-SyntaxNodeCollector g_collector;
+//SyntaxNodeCollector g_collector;
