@@ -25,21 +25,6 @@ enum DataType {
 
 //const char* dataTypeStr(DataType);
 
-enum OpType {
-  OP_ADD,
-  OP_SUB,
-  OP_MUL,
-  OP_DIV,
-  OP_EQ,
-  OP_NE,
-  OP_GT,
-  OP_GE,
-  OP_LT,
-  OP_LE,
-  OP_AND,
-  OP_OR,
-  OP_NOT
-};
 
 
 // Abstract syntax tree visitor

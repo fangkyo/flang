@@ -30,6 +30,8 @@ class NewNode;
 class ClassTypeNode;
 class ClassFuncNode;
 class OpNode;
+class UnaryExpNode;
+class BinaryExpNode;
 
 class ASTVisitor {
  public:
@@ -39,6 +41,8 @@ class ASTVisitor {
   virtual void doPrintNode(PrintNode*) {};
   virtual void doDeclareNode(DeclareNode*) {};
   virtual void doOpNode(OpNode*) {};
+  virtual void doUnaryExpNode(UnaryExpNode*) {};
+  virtual void doBinaryExpNode(BinaryExpNode*) {};
   virtual void doVarNode(VarNode*) {};
   virtual void doVarRefNode(VarRefNode*) {};
   virtual void doAndNode(AndNode*) {};

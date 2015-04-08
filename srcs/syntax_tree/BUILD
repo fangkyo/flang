@@ -21,3 +21,10 @@ cc_library(
     'program_node.cpp',
   ],
 )
+
+cc_library(
+  name = 'unary_exp_node',
+  srcs = [
+    'unary_exp_node.cpp',
+  ],
+)

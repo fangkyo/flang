@@ -246,38 +246,4 @@ class NewNode : public ExpNode {
 
 } // namespace flang
 
-/*
-class OrNode : public OpNode {
-    public:
-        OrNode( ExpNode* left, ExpNode* right ) : OpNode( OP_OR, left, right )
-{}
-};
-class GtNode : public OpNode {
-    public:
-        GtNode( ExpNode* left, ExpNode* right ) : OpNode( OP_GT, left, right )
-{}
-};
-class GeNode : public OpNode {
-    public:
-        GeNode( ExpNode* left, ExpNode* right ) : OpNode( OP_GE, left, right )
-{}
-};
-
-class LeNode : public OpNode {
-    public:
-        LeNode( ExpNode* left, ExpNode* right ) : OpNode( OP_LE, left, right )
-{}
-};
-class NotNode : public OpNode {
-    public:
-        NotNode( ExpNode* exp ) : OpNode( OP_NOT, NULL, exp ) {}
-
-};
-
-class NeNode : public OpNode {
-    public:
-        NeNode( ExpNode* left, ExpNode* right ) : OpNode( OP_NE, left, right )
-{}
-};*/
-
 #endif

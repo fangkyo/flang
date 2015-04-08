@@ -3,9 +3,9 @@
 
 #include <cstdint>
 
-namespace flang {
+#include "ast_visitor/ast_visitor.h"
 
-class ASTVisitor;
+namespace flang {
 
 // Abstract syntax tree node class.
 class ASTNode {
@@ -22,6 +22,8 @@ class ASTNode {
     EMPTY_STMT_NODE, // Empty statement node
     RETURN_STMT_NODE, // Return statement node
     EXP_NODE, // Expression node
+    UNARY_EXP_NODE, // Unary expression node
+    BINARY_EXP_NODE, // Binary expression node
     ASSIGNMENT_NODE, // Assignment node
     INFIX_EXP_NODE, // Infix Expression node
     PREFIX_EXP_NODE, // Prefix expression node
