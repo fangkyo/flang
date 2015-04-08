@@ -1,7 +1,10 @@
 #ifndef UNARY_EXP_NODE_H_
 #define UNARY_EXP_NODE_H_
 
+#include <memory>
+
 #include "syntax_tree/ast_node.h"
+#include "syntax_tree/exp_node.h"
 
 namespace flang {
 
@@ -16,16 +19,21 @@ class UnaryExpNode : public ASTNode {
     OP_NOT, // !
   };
 
-  UnaryExpNode(UnaryOpType op, ASTNode* parent);
+  UnaryExpNode(UnaryOpType op, ExpNode* exp_node, ASTNode* parent);
   ~UnaryExpNode() override {}
 
-  void accept(ASTVisitor* visitor);
+  void accept(ASTVisitor* visitor) override;
 
-  // Getter of op
+  // Accessor of op
   UnaryOpType op() { return op_; }
+
+  // Accessor of exp_node
+  void setExpNode(ExpNode* exp_node) { exp_node_.reset(exp_node); }
+  ExpNode* expNode() { return exp_node.get(); }
 
  protected:
   UnaryOpType op_;
+  std::unique_ptr<ExpNode> exp_node_;
 };
 
 }  // namespace flang
