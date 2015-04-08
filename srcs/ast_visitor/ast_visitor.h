@@ -1,43 +1,64 @@
 #ifndef VISITOR_H_
 #define VISITOR_H_
 
-#include "syntax_tree/syntax_tree.h"
-#include "syntax_tree/exp_node.h"
-#include "syntax_tree/print_node.h"
-#include "syntax_tree/ctrl_node.h"
-#include "syntax_tree/func_node.h"
-#include "syntax_tree/class_node.h"
-#include "syntax_tree/declare_node.h"
-
 namespace flang {
+
+class ProgramNode;
+class StmtListNode;
+class PrintNode;
+class DeclareNode;
+class VarNode;
+class VarRefNode;
+class AndNode;
+class LtNode;
+class EqNode;
+class LtNode;
+class AddNode;
+class SubNode;
+class MulNode;
+class DivNode;
+class AssignNode;
+class IfNode;
+class WhileNode;
+class BreakNode;
+class GlobalFuncNode;
+class ClassNode;
+class ReturnNode;
+class CallNode;
+class ClassNode;
+class NewNode;
+class ClassTypeNode;
+class ClassFuncNode;
+class OpNode;
 
 class ASTVisitor {
  public:
   virtual ~ASTVisitor() {}
-  virtual void doStmtListNode(StmtListNode* node) {};
-  virtual void doPrintNode(PrintNode* node) {};
-  virtual void doDeclareNode(DeclareNode* node) = {};
-  virtual void doOpNode(OpNode* node) {};
-  virtual void doVarNode(VarNode* node) {};
-  virtual void doVarRefNode(VarRefNode* node) {};
-  virtual void doAndNode(AndNode* node) {};
-  virtual void doEqNode(EqNode* node) {};
-  virtual void doLtNode(LtNode* node) {};
-  virtual void doAddNode(AddNode* node) {};
-  virtual void doSubNode(SubNode* node) {};
-  virtual void doMulNode(MulNode* node) {};
-  virtual void doDivNode(DivNode* node) {};
-  virtual void doAssignNode(AssignNode* node) {};
-  virtual void doIfNode(IfNode* node) {};
-  virtual void doWhileNode(WhileNode* node) {};
-  virtual void doBreakNode(BreakNode* node) {};
-  virtual void doGlobalFuncNode(GlobalFuncNode* node) {};
-  virtual void doClassFuncNode(ClassFuncNode* node) {};
-  virtual void doReturnNode(ReturnNode* node) {};
-  virtual void doCallNode(CallNode* node) {};
-  virtual void doClassNode(ClassNode* node) {};
-  virtual void doNewNode(NewNode* node) {};
-  virtual void doClassTypeNode(ClassTypeNode* node) {};
+  virtual void doProgramNode(ProgramNode*) {};
+  virtual void doStmtListNode(StmtListNode*) {};
+  virtual void doPrintNode(PrintNode*) {};
+  virtual void doDeclareNode(DeclareNode*) {};
+  virtual void doOpNode(OpNode*) {};
+  virtual void doVarNode(VarNode*) {};
+  virtual void doVarRefNode(VarRefNode*) {};
+  virtual void doAndNode(AndNode*) {};
+  virtual void doEqNode(EqNode*) {};
+  virtual void doLtNode(LtNode*) {};
+  virtual void doAddNode(AddNode*) {};
+  virtual void doSubNode(SubNode*) {};
+  virtual void doMulNode(MulNode*) {};
+  virtual void doDivNode(DivNode*) {};
+  virtual void doAssignNode(AssignNode*) {};
+  virtual void doIfNode(IfNode*) {};
+  virtual void doWhileNode(WhileNode*) {};
+  virtual void doBreakNode(BreakNode*) {};
+  virtual void doGlobalFuncNode(GlobalFuncNode*) {};
+  virtual void doClassFuncNode(ClassFuncNode*) {};
+  virtual void doReturnNode(ReturnNode*) {};
+  virtual void doCallNode(CallNode*) {};
+  virtual void doClassNode(ClassNode*) {};
+  virtual void doNewNode(NewNode*) {};
+  virtual void doClassTypeNode(ClassTypeNode*) {};
 };
 
 }  // namespace flang

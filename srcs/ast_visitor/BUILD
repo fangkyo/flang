@@ -1,5 +1,5 @@
 cc_library (
-    name = 'ast_visitor',
+    name = 'type_checker',
     srcs = [
       'type_checker.cpp',
     ],

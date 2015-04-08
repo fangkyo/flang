@@ -1,7 +1,8 @@
 #include <iostream>
-#include <cassert>
 
 #include "ast_visitor/type_checker.h"
+#include "syntax_tree/syntax_tree.h"
+
 using namespace std;
 
 namespace flang {

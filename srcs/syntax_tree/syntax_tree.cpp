@@ -8,45 +8,28 @@
 
 using namespace std;
 
-const char* dataTypeStr( DataType dtype ){
-  static const char* typeStr[] = {
-    "int",
-    "bool",
-    "char",
-    "string",
-    "class",
-    "void",
-    "undefined"
-  };
-  return typeStr[dtype];
-}
+//const char* dataTypeStr( DataType dtype ){
+  //static const char* typeStr[] = {
+    //"int",
+    //"bool",
+    //"char",
+    //"string",
+    //"class",
+    //"void",
+    //"undefined"
+  //};
+  //return typeStr[dtype];
+//}
 
+namespace flang {
+
+// static
+ProgramNode* SyntaxTree::CreateProgramNode(ASTNode* parent) {
+  return new ProgramNode(parent); 
+}
+  
 void SyntaxTree::accept(ASTVisitor* visitor) {
   visitor->doProgramNode(root_.get());
 }
 
-//SyntaxNodeCollector::SyntaxNodeCollector() {
-//}
-
-//SyntaxNodeCollector::~SyntaxNodeCollector() {
-  //stdDeleteElements(m_nodes);
-//}
-
-//void SyntaxNodeCollector::insert( SyntaxNode* node ) {
-  //CHECK(node);
-  //m_nodes.insert(node);
-//}
-
-//void SyntaxNodeCollector::remove( SyntaxNode* node ) {
-  //CHECK(node);
-  //m_nodes.erase( node );
-//}
-
-//void SyntaxNodeCollector::collect( SyntaxNode* node ) {
-  //if( node ) {
-    //m_nodes.erase( node );
-    //delete node;
-  //}
-//}
-
-//SyntaxNodeCollector g_collector;
+}  // namespace flang

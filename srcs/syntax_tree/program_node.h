@@ -1,24 +1,26 @@
 #ifndef SYNTAX_TREE_PROGRAM_NODE_H_
 #define SYNTAX_TREE_PROGRAM_NODE_H_
 
-#include <list>
+#include <vector>
 
-#include "syntax_tree/syntax_tree.h"
-#include "syntax_tree/stmt_node.h"
+#include "syntax_tree/ast_node.h"
 
 namespace flang {
+
+class StmtNode;
 
 // This class represents the program of a file, which is the root
 // of a syntax tree.
 class ProgramNode : public ASTNode {
  public:
-  ProgramNode();
+  ProgramNode(ASTNode* parent);
   virtual ~ProgramNode();
   void accept(ASTVisitor* visitor) override;
-  const list<StmtNode*>& stmtList() { return stmt_list_; };
+  const std::vector<StmtNode*>& stmtList() { return stmt_list_; };
   void addStmt(StmtNode* stmt_node);
+
  private:
-  std::list<StmtNode*> stmt_list_;
+  std::vector<StmtNode*> stmt_list_;
 };
 
 } // namespace flang
