@@ -1,101 +1,33 @@
-#ifndef EXP_NODE_H
-#define EXP_NODE_H
+#ifndef SYNTAX_TREE_EXP_NODE_H
+#define SYNTAX_TREE_EXP_NODE_H
 
 #include <sstream>
 #include <memory>
 
 #include <log4cxx/logger.h>
 
-#include "data_type.h"
-#include "syntax_tree.h"
+#include "ast_visitor/ast_visitor.h"
+#include "syntax_tree/data_type.h"
+#include "syntax_tree/stmt_node.h"
 
 using namespace std;
 using namespace log4cxx;
 
+namespace flang {
+
 class ClassNode;
 
-class ExpNode : public SyntaxNode {
-
+// Expression node
+class ExpNode : public StmtNode {
  public:
-  // unique_ptr<DataTypeNode> m_dtype;
-  DataTypeNode* m_dtype;
-
-  ExpNode(DataTypeNode* dtype) : m_dtype(dtype) {}
-
-  ExpNode() { m_dtype = UndefTypeNode::getInstance(); }
-
-  void setDataTypeNode(DataTypeNode* dtype) { m_dtype = dtype; }
-
-  DataTypeNode* getDataTypeNode() { return m_dtype; }
-
-  bool matchType(ExpNode* expNode);
-
-  bool matchType(DataTypeNode* dtypeNode);
-
+  ~ExpNode() override {}
   virtual bool isConst() { return false; }
 
-  void accept(Visitor& visitor);
+ protected:
+  ExpNode(ASTNode::ASTNodeType node_type, ASTNode* parent) :
+      StmtNode(node_type, parent) {}
 };
 
-class IntNode : public ExpNode {
-
- public:
-  // member data
-  int m_val;
-
-  // member function
-  IntNode(int val) : m_val(val) { setDataTypeNode(IntTypeNode::getInstance()); }
-
-  virtual bool isConst() { return true; }
-};
-
-class StringNode : public ExpNode {
-
- public:
-  // member data
-  string m_val;
-
-  // member function
-
-  StringNode(const string& str) : ExpNode(StringTypeNode::getInstance()), m_val(str) {
-  }
-
-  StringNode(const char* str) : m_val(str) {
-    setDataTypeNode(StringTypeNode::getInstance());
-  }
-
-  virtual bool isConst() { return true; }
-
-  string toString() {
-    stringstream stream;
-    stream << m_val;
-    return stream.str();
-  }
-};
-
-class BoolNode : public ExpNode {
- public:
-  bool m_val;
-
-  BoolNode(bool val) : m_val(val) {
-    setDataTypeNode(BoolTypeNode::getInstance());
-  }
-
-  virtual bool isConst() { return true; }
-
-  string toString() { return m_val ? string("true") : string("false"); }
-};
-
-class CharNode : public ExpNode {
- public:
-  char m_val;
-
-  CharNode(char val) : m_val(val) {
-    setDataTypeNode(CharTypeNode::getInstance());
-  }
-
-  virtual bool isConst() { return true; }
-};
 
 class VarNode : public ExpNode {
  public:
@@ -117,7 +49,7 @@ class VarNode : public ExpNode {
 
   void setClass(ClassNode* clazz) { m_class = clazz; }
 
-  void accept(Visitor& visitor);
+  void accept(ASTVisitor* visitor) override;
 
   const string& getName() { return m_name; }
   void setName(const string& name) { m_name = name; }
@@ -148,162 +80,22 @@ class VarRefNode : public VarNode {
 
   VarNode* getVarNode() { return m_var; }
 
-  void accept(Visitor& visitor);
-};
-
-class OpNode : public ExpNode {
- public:
-  OpType m_op;
-  ExpNode* m_leftOpnd;
-  ExpNode* m_rightOpnd;
-
-  OpNode(OpType op, ExpNode* leftOpnd, ExpNode* rightOpnd)
-      : m_op(op), m_leftOpnd(leftOpnd), m_rightOpnd(rightOpnd) {}
-
-  OpType getOp() { return m_op; }
-
-  void accept(Visitor& visitor);
-
-  bool hasLeftOpnd() { return m_leftOpnd != NULL; }
-  bool hasRightOpnd() { return m_rightOpnd != NULL; }
-
-  const char* getOpStr();
-
-  string toString();
-
-  DataTypeNode* getLeftDataTypeNode() { return m_leftOpnd->getDataTypeNode(); }
-  DataTypeNode* getRightDataTypeNode() {
-    return m_rightOpnd->getDataTypeNode();
-  }
-};
-
-class AssignNode : public ExpNode {
- public:
-  VarNode* m_var;
-  ExpNode* m_exp;
-
-  AssignNode(VarNode* var, ExpNode* exp = NULL) : m_var(var), m_exp(exp) {
-    assert(m_var);
-  }
-
-  void setVarNode(VarNode* varNode) { m_var = varNode; }
-  VarNode* getVarNode() { return m_var; }
-
-  void setExpNode(ExpNode* expNode) { m_exp = expNode; }
-  ExpNode* getExpNode() { return m_exp; }
-
-  DataTypeNode* getVarDataTypeNode() {
-    if (NULL == m_var) return UNDEF_TYPE_NODE;
-    return m_var->getDataTypeNode();
-  }
-
-  DataTypeNode* getExpDataTypeNode() {
-    if (NULL == m_exp) return UNDEF_TYPE_NODE;
-    return m_exp->getDataTypeNode();
-  }
-
-  void setVarDataTypeNode(DataTypeNode* dtype) {
-    if (NULL == dtype || NULL == m_var) return;
-    m_var->setDataTypeNode(dtype);
-  }
-
-  void accept(Visitor& visitor);
-};
-
-class AddNode : public OpNode {
-
- public:
-  AddNode(ExpNode* left, ExpNode* right) : OpNode(OP_ADD, left, right) {}
-
-  void accept(Visitor& visitor);
-};
-
-class SubNode : public OpNode {
- public:
-  SubNode(ExpNode* left, ExpNode* right) : OpNode(OP_SUB, left, right) {}
-
-  void accept(Visitor& visitor);
-};
-
-class MulNode : public OpNode {
- public:
-  MulNode(ExpNode* left, ExpNode* right) : OpNode(OP_MUL, left, right) {}
-
-  void accept(Visitor& visitor);
-};
-
-class DivNode : public OpNode {
- public:
-  DivNode(ExpNode* left, ExpNode* right) : OpNode(OP_DIV, left, right) {}
-
-  void accept(Visitor& visitor);
-};
-
-class AndNode : public OpNode {
- public:
-  AndNode(ExpNode* left, ExpNode* right) : OpNode(OP_AND, left, right) {}
-
-  void accept(Visitor& visitor);
-};
-
-class LtNode : public OpNode {
- public:
-  LtNode(ExpNode* left, ExpNode* right) : OpNode(OP_LT, left, right) {}
-};
-
-class EqNode : public OpNode {
- public:
-  EqNode(ExpNode* left, ExpNode* right) : OpNode(OP_EQ, left, right) {}
+  void accept(ASTVisitor* visitor) override;
 };
 
 class NewNode : public ExpNode {
- private:
-  string m_className;
-  ClassNode* m_class;
-
  public:
-  NewNode(const string& className) : m_className(className), m_class(NULL) {}
+  NewNode(const string& class_name) : class_name_(class_name) {}
   ~NewNode();
 
-  string& getClassName() { return m_className; }
-  void setClassNode(ClassNode* clazz) { m_class = clazz; }
-  ClassNode* getClassNode() { return m_class; }
+  string& getClassName() { return class_name_; }
 
-  void accept(Visitor& visitor);
-};
+  void accept(ASTVisitor* visitor) override;
 
-/*
-class OrNode : public OpNode {
-    public:
-        OrNode( ExpNode* left, ExpNode* right ) : OpNode( OP_OR, left, right )
-{}
-};
-class GtNode : public OpNode {
-    public:
-        GtNode( ExpNode* left, ExpNode* right ) : OpNode( OP_GT, left, right )
-{}
-};
-class GeNode : public OpNode {
-    public:
-        GeNode( ExpNode* left, ExpNode* right ) : OpNode( OP_GE, left, right )
-{}
+ private:
+  string class_name_;
 };
 
-class LeNode : public OpNode {
-    public:
-        LeNode( ExpNode* left, ExpNode* right ) : OpNode( OP_LE, left, right )
-{}
-};
-class NotNode : public OpNode {
-    public:
-        NotNode( ExpNode* exp ) : OpNode( OP_NOT, NULL, exp ) {}
-
-};
-
-class NeNode : public OpNode {
-    public:
-        NeNode( ExpNode* left, ExpNode* right ) : OpNode( OP_NE, left, right )
-{}
-};*/
+} // namespace flang
 
 #endif

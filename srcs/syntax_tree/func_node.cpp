@@ -131,7 +131,6 @@ string CallNode::toString() {
         strStream << " ";
    }  
    strStream << ")";
-
    return strStream.str();
 
 }

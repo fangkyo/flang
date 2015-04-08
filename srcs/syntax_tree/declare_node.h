@@ -1,31 +1,28 @@
 #ifndef DECLARE_NODE_H
 #define DECLARE_NODE_H
 
-#include "data_type.h"
-#include "exp_node.h"
+#include <vector>
 
-class DeclareNode : public SyntaxNode {
+#include "syntax_tree/stmt_node.h"
+
+namespace flang {
+
+class DeclareNode : public StmtNode {
  public:
-  DataTypeNode* m_dataType;
-  vector<AssignNode*> m_varList;
-
-  DeclareNode() { m_dataType = UNDEF_TYPE_NODE; }
+  DeclareNode(ASTNode* parent);
   ~DeclareNode();
 
-  void accept(Visitor& visitor);
+  void accept(ASTVisitor* visitor) override;
 
-  void setDataTypeNode(DataTypeNode* dataType) { m_dataType = dataType; }
-  DataTypeNode* getDataTypeNode() { return m_dataType; }
+  void addDeclare(AssignNode* assignNode) { var_list_.push_back(assignNode); }
 
-  void addDeclare(AssignNode* assignNode) { m_varList.push_back(assignNode); }
+  const std::vector<AssignNode*>& varList() { return var_list_; }
 
-  vector<AssignNode*>& getDeclareList() { return m_varList; }
+ private:
+  std::vector<AssignNode*> var_list_;
 
-  // find declared var by varName
-  VarNode* findVar(const string& varName);
-
-  // set the var's class it belongs to
-  void setVarClass(ClassNode* clazz);
 };
+
+}  // namespace flang
 
 #endif

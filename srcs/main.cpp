@@ -41,5 +41,6 @@ int main(int argc, char* argv[]){
   LOG4CXX_INFO(logger, "type check completed");
   program = NULL;
 
+  flang::AssignNode
   return 0;
 }

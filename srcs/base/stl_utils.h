@@ -1,5 +1,5 @@
-#ifndef UTILS_H_
-#define UTILS_H_
+#ifndef STL_UTILS_H_
+#define STL_UTILS_H_
 
 /**
  * Delete the elements of the container

@@ -1,15 +1,16 @@
-#include "base/utils.h"
+#include "base/stl_utils.h"
 #include "declare_node.h"
 #include "visitor.h"
 
-/*********************************************
- *                 DeclareNode
- *********************************************/
+namespace flang {
+
 DeclareNode::~DeclareNode() {
   stdDeleteElements(m_varList);
 }
 
-void DeclareNode::accept(Visitor& visitor) { visitor.doDeclareNode(this); }
+void DeclareNode::accept(ASTVisitor* visitor) {
+  visitor->doDeclareNode(this);
+}
 
 VarNode* DeclareNode::findVar(const string& varName) {
   for (auto* var : m_varList) {
@@ -24,3 +25,5 @@ void DeclareNode::setVarClass(ClassNode* clazz) {
     m_varList[i]->getVarNode()->setClass(clazz);
   }
 }
+
+}  // namespace flang

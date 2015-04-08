@@ -54,7 +54,7 @@ static int yylex(flang::FlangParser::semantic_type *yylval,
   std::string*   str_val; // string value
   int   lineno; // line number
 
-  SyntaxNode*      syntax_node;
+  ASTNode*         ast_node;
   DeclareNode*     declare_node;
   StmtListNode*    stmt_list_node;
   ExpNode*         exp_node;
@@ -93,7 +93,7 @@ static int yylex(flang::FlangParser::semantic_type *yylval,
 %right '!'
 
 %nonassoc UMINUS
-%type <syntax_node> program simple_program stmt simple_stmt complex_stmt
+%type <ast_node> program simple_program stmt simple_stmt complex_stmt
 %type <exp_node> expr
 %type <declare_node> declare var_list
 %type <stmt_list_node> stmt_list simple_stmt_list
