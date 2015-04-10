@@ -1,11 +1,13 @@
 #ifndef FUNCTION_H
 #define FUNCTION_H
 
+#include <vector>
 #include <string>
 
 #include "exp_node.h"
+#include "stmt_node.h"
 
-using namespace std;
+namespace flang {
 
 class ClassNode;
 
@@ -14,39 +16,30 @@ enum FuncType {
   FUNC_CLASS    // class function
 };
 
-/**
- * A interface of function node
- */
-class FuncNode : public SyntaxNode {
+class FuncNode : public StmtNode {
  public:
-  virtual const string& getName() = 0;
-  virtual void setName(const string& name) = 0;
+  virtual const std::string& getName() = 0;
+  virtual void setName(const std::string& name) = 0;
 
-  virtual void setRetType(DataTypeNode* retType) = 0;
-  virtual DataTypeNode* getRetType() = 0;
+  virtual void setBody(ASTNode* body) = 0;
+  virtual ASTNode* getBody() = 0;
 
-  virtual void setBody(SyntaxNode* body) = 0;
-  virtual SyntaxNode* getBody() = 0;
-
-  virtual void setParamList(vector<VarNode>& paramList) = 0;
-  virtual vector<VarNode>& getParamList() = 0;
+  virtual void setParamList(std::vector<VarNode>& paramList) = 0;
+  virtual std::vector<VarNode>& getParamList() = 0;
   virtual void addParam(const VarNode& var) = 0;
 
   virtual bool hasReturn() = 0;
   virtual void setReturn(bool hasRet) = 0;
 
   virtual bool equals(const FuncNode& funcNode) = 0;
-  virtual bool equals(const string& funcName,
-                      vector<DataTypeNode*>& paramsType) = 0;
+  virtual bool equals(const std::string& funcName,
+                      std::vector<DataTypeNode*>& paramsType) = 0;
 
-  virtual void getParamsType(vector<DataTypeNode*>& paramsType) = 0;
+  virtual void getParamsType(std::vector<DataTypeNode*>& paramsType) = 0;
 
   virtual FuncType getFuncType() = 0;
 };
 
-/**
- * Global function node
- */
 class GlobalFuncNode : public FuncNode {
  protected:
   string m_name;                // function name
@@ -204,7 +197,8 @@ class CallNode : public ExpNode {
   void setCaller(VarNode* caller) { m_caller = caller; }
   VarNode* getCaller() { return m_caller; }
 
-  string toString();
 };
+
+}  // namespace flang
 
 #endif

@@ -14,7 +14,7 @@ class StmtNode;
 class ProgramNode : public ASTNode {
  public:
   ProgramNode();
-  virtual ~ProgramNode();
+  ~ProgramNode() override;
   void accept(ASTVisitor* visitor) override;
   const std::vector<StmtNode*>& stmtList() { return stmt_list_; };
   void addStmt(StmtNode* stmt_node);

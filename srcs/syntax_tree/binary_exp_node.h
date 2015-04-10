@@ -28,7 +28,7 @@ class BinaryExpNode : public ExpNode {
   BinaryExpNode(BinaryOpType op, ExpNode* left_exp, ExpNode* right_exp);
   ~BinaryExpNode() override {};
 
-  void accept(ASTVisitor& visitor);
+  void accept(ASTVisitor* visitor) override;
 
   BinaryOpType op() { return op_; }
   ExpNode* leftExp() { return left_exp_.get(); }

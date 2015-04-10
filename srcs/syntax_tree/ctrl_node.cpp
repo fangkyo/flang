@@ -1,21 +1,30 @@
-#include "ctrl_node.h"
-#include "visitor.h"
+#include "syntax_tree/ctrl_node.h"
 
-void IfNode::accept( Visitor& visitor ){
+namespace flang {
 
-    visitor.doIfNode( this );
+IfNode::IfNode(ExpNode* test_node, ASTNode* if_node, ASTNode* else_node) :
+    StmtNode(ASTNode::IF_NODE),
+    test_node_(test_node), if_node_(if_node), else_node_(else_node) {
+}
+
+void IfNode::accept(ASTVisitor* visitor) {
+  visitor->doIfNode(this);
 }
 
 
-
-
-
-void WhileNode::accept( Visitor& visitor ){
-
-   visitor.doWhileNode( this );
+WhileNode::WhileNode(ExpNode* test_node, ASTNode* body_node) :
+    StmtNode(ASTNode::WHILE_NODE),
+    test_node_(test_node), body_node_(body_node) {
 }
 
-void BreakNode::accept( Visitor& visitor ){
-
-   visitor.doBreakNode( this );
+void WhileNode::accept(ASTVisitor* visitor) {
+  visitor->doWhileNode(this);
 }
+
+BreakNode::BreakNode() : StmtNode(ASTNode::BREAK_NODE) {}
+
+void BreakNode::accept(ASTVisitor* visitor) {
+  visitor->doBreakNode(this);
+}
+
+}  // namespace flang

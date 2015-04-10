@@ -8,7 +8,7 @@ namespace flang {
 // This node indicates a statement.
 class StmtNode : public ASTNode {
  public:
-  virtual ~StmtNode() {}
+  ~StmtNode() override {}
 
  protected:
   StmtNode(ASTNode::ASTNodeType node_type) :

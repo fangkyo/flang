@@ -3,7 +3,7 @@
 namespace flang {
 
 AssignNode::AssignNode(VarNode* var_node, ExpNode* exp_node) :
-      ExpNode(ASTNode::ASSIGNMENT_NODE),
+      ExpNode(ASTNode::ASSIGN_EXP_NODE),
       var_node_(var_node),
       exp_node_(exp_node) {
 }

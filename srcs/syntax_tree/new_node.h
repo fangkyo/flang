@@ -1,21 +1,24 @@
 #ifndef NEW_NODE_H_
 #define NEW_NODE_H_
 
+#include <string>
+
 #include "syntax_tree/exp_node.h"
 
 namespace flang {
 
 class NewNode : public ExpNode {
  public:
-  NewNode(const string& class_name) : class_name_(class_name) {}
-  ~NewNode();
+  NewNode(const std::string& class_name);
+  ~NewNode() override {};
 
-  string& getClassName() { return class_name_; }
+  std::string& className() { return class_name_; }
+  void setClassName(const std::string& class_name) { class_name_ = class_name; }
 
   void accept(ASTVisitor* visitor) override;
 
  private:
-  string class_name_;
+  std::string class_name_;
 };
 
 }  // namespace flang

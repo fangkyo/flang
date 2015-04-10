@@ -6,7 +6,7 @@
 
 namespace flang {
 
-ProgramNode::ProgramNode() : ASTNode(ASTNode::PROGRAM_NODE){
+ProgramNode::ProgramNode() : ASTNode(ASTNode::PROGRAM_NODE) {
 }
 
 ProgramNode::~ProgramNode() {

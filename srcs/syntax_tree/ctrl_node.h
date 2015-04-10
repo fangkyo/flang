@@ -1,65 +1,61 @@
 #ifndef CTRL_NODE_H
 #define CTRL_NODE_H
 
-#include <cassert>
+#include <memory>
 
-#include "syntax_tree.h"
-#include "exp_node.h"
+#include "syntax_tree/stmt_node.h"
+#include "syntax_tree/exp_node.h"
 
-class IfNode : public SyntaxNode {
+namespace flang {
 
-    public:
-        ExpNode*  m_test;
-        SyntaxNode*  m_if;
-        SyntaxNode*  m_else;
-        
-        IfNode( ExpNode* testPart, SyntaxNode* ifPart = NULL, SyntaxNode* elsePart = NULL ) 
-        : m_test( testPart ), m_if( ifPart), m_else( elsePart )
-        { assert( testPart );  }
+class IfNode : public StmtNode {
+ public:
+  IfNode(ExpNode* test_node, ASTNode* if_node, ASTNode* else_node);
+  ~IfNode() override {}
 
-        void setTest( ExpNode* testPart )    { assert( testPart ); m_test = testPart; }
-        void setIf( SyntaxNode* ifPart )     { m_if = ifPart;  }
-        void setElse( SyntaxNode* elsePart ) { m_else = elsePart; }
+  void setTestNode(ExpNode* test_node) { test_node_.reset(test_node); }
+  ExpNode* testNode() { return test_node_.get(); }
 
-        ExpNode* getTest()    { return m_test; }
-        SyntaxNode* getIf()   { return m_if; }
-        SyntaxNode* getElse() { return m_else; }
+  void setIfNode(ASTNode* if_node) { if_node_.reset(if_node); }
+  ASTNode* getIfNode() { return if_node_.get(); }
 
-        void accept( Visitor& visitor );
+  void setElseNode(ASTNode* else_node) { else_node_.reset(else_node); }
+  ASTNode* elseNode() { return else_node_.get(); }
 
+  void accept(ASTVisitor* visitor) override;
+
+ private:
+  std::unique_ptr<ExpNode> test_node_;
+  std::unique_ptr<ASTNode> if_node_;
+  std::unique_ptr<ASTNode> else_node_;
 };
 
-class WhileNode : public SyntaxNode {
-    public: 
-        ExpNode* m_test;
-        SyntaxNode* m_body;
+class WhileNode : public StmtNode {
+ public:
+  WhileNode(ExpNode* test_node, ASTNode* body_node);
+  ~WhileNode() override {}
 
-        WhileNode( ExpNode* test , SyntaxNode* body = NULL ) 
-        : m_test( test ), m_body( body ) { 
-            assert(m_test); 
-        }
+  void setTestNode(ExpNode* test_node) { test_node_.reset(test_node); }
+  ExpNode* testNode() { return test_node_.get(); }
 
-        void setTest( ExpNode* testPart )    { assert( testPart ); m_test = testPart; }
-        ExpNode* getTest()    { return m_test; }
+  void setBodyNode(ASTNode* body_node) { body_node_.reset(body_node); }
+  ASTNode* bodyNode() { return body_node_.get(); }
 
-        void setBody( SyntaxNode* body )     { m_body = body;  }
-        SyntaxNode* getBody() { return m_body; }
+  void accept(ASTVisitor* visitor) override;
 
-        void accept( Visitor& visitor );
+ private:
+  std::unique_ptr<ExpNode> test_node_;
+  std::unique_ptr<ASTNode> body_node_;
 };
 
+class BreakNode : public StmtNode {
+ public:
+  BreakNode();
+  ~BreakNode() override {}
 
-class BreakNode : public SyntaxNode {
-    private:
-        WhileNode* m_while;
-    public:
-        BreakNode() : m_while( NULL ) {}
-
-        void setWhileNode( WhileNode* whileNode ) { m_while = whileNode; }
-        WhileNode* getWhileNode() { return m_while; }
-
-        void accept( Visitor& visitor );
+  void accept(ASTVisitor* visitor) override;
 };
 
+}  // namespace flang
 
 #endif

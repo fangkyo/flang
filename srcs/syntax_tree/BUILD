@@ -53,3 +53,16 @@ cc_library(
   ]
 )
 
+cc_library(
+  name = 'ctrl_node',
+  srcs = [
+    'ctrl_node.cpp'
+  ]
+)
+
+cc_library(
+  name = 'new_node',
+  srcs = [
+    'new_node.cpp',
+  ]
+)

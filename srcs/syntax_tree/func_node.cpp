@@ -116,25 +116,6 @@ void CallNode::accept( Visitor& visitor ){
     visitor.doCallNode( this );
 }
 
-string CallNode::toString() {
-
-   stringstream strStream;
-   strStream << m_funcName ;
-   strStream << "(";
-   if( m_paramList.size() > 0 ) {
-        strStream << " " << m_paramList[0]->toString();
-        for(size_t i=1; i< m_paramList.size(); ++i )
-            if( m_paramList[i] ){
-                strStream << ", ";
-                strStream << m_paramList[i]->toString();
-            }
-        strStream << " ";
-   }  
-   strStream << ")";
-   return strStream.str();
-
-}
-
 void CallNode::getParamsType( vector<DataTypeNode*>& paramsType ){
 
     for(size_t i=0; i < m_paramList.size(); ++i )

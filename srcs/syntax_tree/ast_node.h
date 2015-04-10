@@ -17,16 +17,15 @@ class ASTNode {
     FUNC_NODE, // Function definition node
     CLASS_NODE, // Class definition node
     BLOCK_NODE, // Code block node
-    EXP_STMT_NODE, // Expression statement node
-    IF_STMT_NODE, // If statement node
-    WHILE_STMT_NODE, // While statement node
-    EMPTY_STMT_NODE, // Empty statement node
-    RETURN_STMT_NODE, // Return statement node
+    IF_NODE, // If statement node
+    WHILE_NODE, // While statement node
+    BREAK_NODE, // break statement node
+    EMPTY_NODE, // Empty statement node
+    RETURN_NODE, // Return statement node
     UNARY_EXP_NODE, // Unary expression node
     BINARY_EXP_NODE, // Binary expression node
-    ASSIGNMENT_NODE, // Assignment node
-    INFIX_EXP_NODE, // Infix Expression node
-    PREFIX_EXP_NODE, // Prefix expression node
+    ASSIGN_EXP_NODE, // Assignment node
+    NEW_EXP_NODE, // New expression node
     PARENTHESIZED_EXP_NODE, // Parenthesized expression node
     PRIMITIVE_NODE, // Primitive node
     INT_VAL_NODE, // Int value node
