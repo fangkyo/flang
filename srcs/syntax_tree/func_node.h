@@ -207,25 +207,4 @@ class CallNode : public ExpNode {
   string toString();
 };
 
-/*
-class MemberCallNode : public CallNode {
-    protected:
-        VarNode* m_var;
-        string  m_varName;
-    public:
-        MemberCallNode() : m_var (NULL) {}
-        void accept( Visitor& visitor );
-
-        void setVarName( const string& varName ) { m_varName = varName; }
-        string& getVarName () { return m_varName; }
-
-        VarNode* getVar() { return m_var; }
-        void setVar( VarNode* var ) { m_var = var; }
-};
-
-class ThisCallNode : public CallNode {
-    public:
-        void accept( Visitor& visitor );
-};*/
-
 #endif

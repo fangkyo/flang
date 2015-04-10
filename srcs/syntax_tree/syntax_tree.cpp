@@ -3,7 +3,6 @@
 
 #include "ast_visitor/ast_visitor.h"
 #include "base/check.h"
-#include "base/utils.h"
 #include "syntax_tree/syntax_tree.h"
 
 using namespace std;
@@ -25,9 +24,9 @@ namespace flang {
 
 // static
 ProgramNode* SyntaxTree::CreateProgramNode(ASTNode* parent) {
-  return new ProgramNode(parent); 
+  return new ProgramNode(parent);
 }
-  
+
 void SyntaxTree::accept(ASTVisitor* visitor) {
   visitor->doProgramNode(root_.get());
 }

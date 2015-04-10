@@ -10,6 +10,7 @@ namespace flang {
 // Abstract syntax tree node class.
 class ASTNode {
  public:
+  // The type of ast nodes, which are the subclasses of ASTNode.
   enum ASTNodeType {
     PROGRAM_NODE, // Program node
     STMT_NODE, // Statement node
@@ -38,6 +39,7 @@ class ASTNode {
     SIMPLE_NAME_NODE, // Simple name node
     FUNC_INVOCATION_NODE, // Function invocation node
     QUALIFIED_NAME_NODE, // Qualified name node
+    PRINT_NODE, // Print node
   };
 
   ASTNode(ASTNodeType node_type, ASTNode* parent = nullptr) :

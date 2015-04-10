@@ -1,19 +1,22 @@
 #ifndef PRINT_NODE_H
 #define PRINT_NODE_H
 
-#include "exp_node.h"
+#include <memory>
 
-class PrintNode : public SyntaxNode {
-    public:
-        ExpNode* m_exp;
+#include "syntax_tree/exp_node.h"
+#include "syntax_tree/stmt_node.h"
 
-        PrintNode( ExpNode* exp ) : m_exp(exp) { assert(m_exp); }
+namespace flang {
 
-        // TODO  将canPrint()方法放在DataNodeType内部
-        bool canPrint( DataTypeNode* dtypeNode ) {  return dtypeNode->getDataType() <= TYPE_STRING; }
-        void accept( Visitor& visitor );
+class PrintNode : public StmtNode {
+ public:
+  PrintNode(ExpNode* exp_node);
+  void accept(ASTVisitor* visitor) override;
+
+ private:
+  std::unique_ptr<ExpNode> exp_node_;
 };
 
-
+}  // namespace flang
 
 #endif
