@@ -23,8 +23,8 @@ using namespace std;
 namespace flang {
 
 // static
-ProgramNode* SyntaxTree::CreateProgramNode(ASTNode* parent) {
-  return new ProgramNode(parent);
+ProgramNode* SyntaxTree::CreateProgramNode() {
+  return new ProgramNode();
 }
 
 void SyntaxTree::accept(ASTVisitor* visitor) {

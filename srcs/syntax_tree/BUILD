@@ -36,3 +36,20 @@ cc_library(
   ],
 )
 
+cc_library(
+  name = 'assign_node',
+  srcs = [
+    'assign_node.cpp',
+  ],
+  deps = [
+    ':var_node',
+  ]
+)
+
+cc_library(
+  name = 'var_node',
+  srcs = [
+    'var_node.cpp'
+  ]
+)
+

@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "syntax_tree/exp_node.h"
+#include "syntax_tree/var_node.h"
 
 namespace flang {
 
@@ -17,30 +18,14 @@ class AssignNode : public ExpNode {
     OP_DIV_ASSIGN,
   };
 
-  AssignNode(VarNode* var, ExpNode* exp = NULL) : m_var(var), m_exp(exp) {
-    assert(m_var);
-  }
+  AssignNode(VarNode* var_node, ExpNode* exp_node);
+  ~AssignNode() override {}
 
   void setVarNode(VarNode* var_node) { var_node_.reset(var_node); }
   VarNode* getVarNode() { return var_node_.get(); }
 
-  void setExpNode(ExpNode* exp_node_) { var_node_.reset(exp_node); }
+  void setExpNode(ExpNode* exp_node) { exp_node_.reset(exp_node); }
   ExpNode* getExpNode() { return exp_node_.get(); }
-
-  // DataTypeNode* getVarDataTypeNode() {
-    // if (NULL == m_var) return UNDEF_TYPE_NODE;
-    // return m_var->getDataTypeNode();
-  // }
-
-  // DataTypeNode* getExpDataTypeNode() {
-    // if (NULL == m_exp) return UNDEF_TYPE_NODE;
-    // return m_exp->getDataTypeNode();
-  /* } */
-
-  void setVarDataTypeNode(DataTypeNode* dtype) {
-    if (NULL == dtype || NULL == m_var) return;
-    m_var->setDataTypeNode(dtype);
-  }
 
   void accept(ASTVisitor* visitor) override;
 

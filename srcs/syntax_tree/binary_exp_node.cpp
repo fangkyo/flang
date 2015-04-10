@@ -3,10 +3,9 @@
 namespace flang {
 
 BinaryExpNode::BinaryExpNode(
-    BinaryOpType op, ExpNode* left_exp,
-    ExpNode* right_exp, ASTNode* parent) :
-    ExpNode(ASTNodeType::BINARY_EXP_NODE, parent),
-    op_(op), m_leftOpnd(left_exp), m_rightOpnd(right_exp) {
+    BinaryOpType op, ExpNode* left_exp, ExpNode* right_exp) :
+    ExpNode(ASTNodeType::BINARY_EXP_NODE),
+    op_(op), left_exp_(left_exp), right_exp_(right_exp) {
 }
 
 void BinaryExpNode::accept(ASTVisitor* visitor) {

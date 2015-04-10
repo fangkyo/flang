@@ -25,17 +25,16 @@ class BinaryExpNode : public ExpNode {
     OP_OR,  // ||
   };
 
-  BinaryExpNode(BinaryOpType op, ExpNode* left_exp,
-                ExpNode* right_exp, ASTNode* parent);
+  BinaryExpNode(BinaryOpType op, ExpNode* left_exp, ExpNode* right_exp);
   ~BinaryExpNode() override {};
 
   void accept(ASTVisitor& visitor);
 
   BinaryOpType op() { return op_; }
-  ExpNode* leftExp() { return left_exp_; }
-  void setLeftExp(ExpNode* exp_node) { left_exp_ = exp_node; }
-  ExpNode* rightExp() { return right_exp_; }
-  void setRightExp(ExpNode* exp_node) { right_exp_ = exp_node; }
+  ExpNode* leftExp() { return left_exp_.get(); }
+  void setLeftExp(ExpNode* exp_node) { left_exp_.reset(exp_node); }
+  ExpNode* rightExp() { return right_exp_.get(); }
+  void setRightExp(ExpNode* exp_node) { right_exp_.reset(exp_node); }
 
  protected:
   BinaryOpType op_;

@@ -19,7 +19,7 @@ class UnaryExpNode : public ASTNode {
     OP_NOT, // !
   };
 
-  UnaryExpNode(UnaryOpType op, ExpNode* exp_node, ASTNode* parent);
+  UnaryExpNode(UnaryOpType op, ExpNode* exp_node);
   ~UnaryExpNode() override {}
 
   void accept(ASTVisitor* visitor) override;

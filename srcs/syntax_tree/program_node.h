@@ -13,7 +13,7 @@ class StmtNode;
 // of a syntax tree.
 class ProgramNode : public ASTNode {
  public:
-  ProgramNode(ASTNode* parent);
+  ProgramNode();
   virtual ~ProgramNode();
   void accept(ASTVisitor* visitor) override;
   const std::vector<StmtNode*>& stmtList() { return stmt_list_; };

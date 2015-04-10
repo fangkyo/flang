@@ -11,8 +11,8 @@ class StmtNode : public ASTNode {
   virtual ~StmtNode() {}
 
  protected:
-  StmtNode(ASTNode::ASTNodeType node_type, ASTNode* parent) :
-    ASTNode(node_type, parent) {}
+  StmtNode(ASTNode::ASTNodeType node_type) :
+    ASTNode(node_type) {}
 };
 
 } // namespace flang

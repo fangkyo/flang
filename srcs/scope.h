@@ -1,6 +1,7 @@
 #ifndef SCOPE_H
 #define SCOPE_H
 
+#include <cstdint>
 #include <cassert>
 #include <string>
 #include <list>
@@ -8,8 +9,6 @@
 #include <vector>
 
 #include <log4cxx/logger.h>
-
-#include "base/types.h"
 
 using namespace std;
 using namespace log4cxx;

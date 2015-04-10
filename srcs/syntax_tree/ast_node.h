@@ -40,6 +40,7 @@ class ASTNode {
     FUNC_INVOCATION_NODE, // Function invocation node
     QUALIFIED_NAME_NODE, // Qualified name node
     PRINT_NODE, // Print node
+    VAR_NODE, // Variable node
   };
 
   ASTNode(ASTNodeType node_type, ASTNode* parent = nullptr) :

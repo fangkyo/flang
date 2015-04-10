@@ -2,8 +2,8 @@
 
 namespace flang {
 
-UnaryExpNode::UnaryExpNode(UnaryOpType op, ExpNode* exp_node, ASTNode* parent) :
-    ASTNode(ASTNode::UNARY_EXP_NODE, parent),
+UnaryExpNode::UnaryExpNode(UnaryOpType op, ExpNode* exp_node) :
+    ASTNode(ASTNode::UNARY_EXP_NODE),
     op_(op), exp_node_(exp_node) {
 }
 

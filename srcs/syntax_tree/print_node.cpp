@@ -3,7 +3,7 @@
 namespace flang {
 
 PrintNode::PrintNode(ExpNode* exp_node)
-    : StmtNode(ASTNode::PRINT_NODE, nullptr), exp_node_(exp_node) {}
+    : StmtNode(ASTNode::PRINT_NODE), exp_node_(exp_node) {}
 
 void PrintNode::accept(ASTVisitor* visitor) {
   exp_node_->accept(visitor);

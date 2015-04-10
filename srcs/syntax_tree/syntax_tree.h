@@ -38,7 +38,7 @@ class SyntaxTree {
   void accept(ASTVisitor*);
 
   // ASTNode factory methods
-  static ProgramNode* CreateProgramNode(ASTNode* parent);
+  static ProgramNode* CreateProgramNode();
  private:
   std::unique_ptr<ProgramNode> root_;
 };
