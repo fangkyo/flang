@@ -15,6 +15,7 @@ class ASTNode {
     PROGRAM_NODE, // Program node
     STMT_NODE, // Statement node
     FUNC_NODE, // Function definition node
+    CALL_NODE, // call function node
     CLASS_NODE, // Class definition node
     BLOCK_NODE, // Code block node
     IF_NODE, // If statement node

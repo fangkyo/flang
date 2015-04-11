@@ -73,7 +73,8 @@ cc_library(
     'declare_node.cpp',
   ],
   deps = [
-    '#boost_system'
+    '#boost_system',
+    ':data_type_node',
   ]
 )
 
@@ -81,5 +82,16 @@ cc_library(
   name = 'data_type_node',
   srcs = [
     'data_type_node.cpp'
+  ]
+)
+
+cc_library(
+  name = 'func_node',
+  srcs = [
+    'func_node.cpp'
+  ],
+  deps = [
+    '#boost_system',
+    ':declare_node',
   ]
 )

@@ -1,6 +1,5 @@
 #include "base/stl_utils.h"
 #include "declare_node.h"
-#include "visitor.h"
 
 namespace flang {
 

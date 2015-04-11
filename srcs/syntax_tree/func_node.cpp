@@ -1,16 +1,17 @@
-#include <sstream>
-
-#include "func_node.h"
-#include "visitor.h"
-
-using namespace std;
+#include "ast_visitor/ast_visitor.h"
+#include "syntax_tree/func_node.h"
 
 namespace flang {
 
-ReturnNode::ReturnNode(ExpNode* exp_returned) :
-  StmtNode(ASTNode::RETURN_NODE), exp_returned_(exp_returned) {
-
+void FuncNode::accept(ASTVisitor* visitor) {
+  for (auto& param : param_list_) {
+    param.accept(visitor);
+  }
+  visitor->doFuncNode(this);
 }
+
+ReturnNode::ReturnNode(ExpNode* exp_returned)
+    : StmtNode(ASTNode::RETURN_NODE), exp_returned_(exp_returned) {}
 
 void ReturnNode::accept(ASTVisitor* visitor) {
   if (exp_returned_) {
@@ -19,27 +20,15 @@ void ReturnNode::accept(ASTVisitor* visitor) {
   visitor->doReturnNode(this);
 }
 
-
-void CallNode::addParam( ExpNode* param ) {
-    if( NULL == param )
-        return;
-    m_paramList.push_back( param );
+CallNode::CallNode(const std::string& name) :
+  ExpNode(ASTNode::RETURN_NODE), name_(name){
 }
 
-void CallNode::accept( Visitor& visitor ){
-    
-    for(size_t i=0; i<m_paramList.size(); ++i )
-        if( m_paramList[i] )
-            m_paramList[i]->accept( visitor );
-
-    visitor.doCallNode( this );
-}
-
-void CallNode::getParamsType( vector<DataTypeNode*>& paramsType ){
-
-    for(size_t i=0; i < m_paramList.size(); ++i )
-        paramsType.push_back( m_paramList[i]->getDataTypeNode() );
-
+void CallNode::accept(ASTVisitor* visitor) {
+  for (ExpNode& param : param_list_) {
+    param.accept(visitor);
+  }
+  visitor->doCallNode(this);
 }
 
 }  // namespace flang

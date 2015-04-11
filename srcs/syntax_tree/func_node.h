@@ -7,6 +7,7 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 
 #include "syntax_tree/data_type_node.h"
+#include "syntax_tree/declare_node.h"
 #include "syntax_tree/exp_node.h"
 #include "syntax_tree/stmt_node.h"
 
@@ -24,7 +25,10 @@ class FuncNode : public StmtNode {
   void setBody(ASTNode* body) { body_.reset(body); }
 
   boost::ptr_vector<DeclareNode>& paramList() { return param_list_; }
-  void addParameter(DeclareNode* param) { param_list_.push_back(param); }
+  // Add parameter for the function node
+  void addParam(DeclareNode* param) { param_list_.push_back(param); }
+
+  void accept(ASTVisitor* visitor) override;
 
  private:
   std::string name_;
@@ -49,33 +53,21 @@ class ReturnNode : public StmtNode {
 };
 
 class CallNode : public ExpNode {
-
  public:
-  CallNode() : m_func(NULL), m_caller(NULL), m_memberFuncHint(false) {}
-  ~CallNode();
+  CallNode(const std::string& name);
+  ~CallNode() override;
 
   void accept(ASTVisitor* visitor) override;
 
-  void setFuncName(const string& funcName) { m_funcName = funcName; }
-  string& getFuncName() { return m_funcName; }
+  void setName(const std::string& name) { name_ = name; }
+  const std::string& name() { return name_; }
 
-  void setFuncNode(FuncNode* func) { m_func = func; }
-  FuncNode* getFuncNode() { return m_func; }
+  void addParam(ExpNode* param) { param_list_.push_back(param); }
+  boost::ptr_vector<ExpNode>& paramList() { return param_list_; }
 
-  void addParameter(ExpNode* parameter);
-
-  void getParamsType(vector<DataTypeNode*>& paramsType);  // paramsType is
-                                                          // output
-
-  void setMemberFuncHint(bool hint) { m_memberFuncHint = hint; }
-  bool getMemberFuncHint() { return m_memberFuncHint; }
-
-  void setCallerName(const string& name) { m_callerName = name; }
-  string& getCallerName() { return m_callerName; }
-
- protected:
+ private:
   boost::ptr_vector<ExpNode> param_list_;
-  std::string func_name_;
+  std::string name_;
 };
 
 }  // namespace flang
