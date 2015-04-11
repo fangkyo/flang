@@ -66,3 +66,20 @@ cc_library(
     'new_node.cpp',
   ]
 )
+
+cc_library(
+  name = 'declare_node',
+  srcs = [
+    'declare_node.cpp',
+  ],
+  deps = [
+    '#boost_system'
+  ]
+)
+
+cc_library(
+  name = 'data_type_node',
+  srcs = [
+    'data_type_node.cpp'
+  ]
+)

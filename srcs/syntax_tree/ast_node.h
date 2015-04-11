@@ -40,10 +40,19 @@ class ASTNode {
     QUALIFIED_NAME_NODE, // Qualified name node
     PRINT_NODE, // Print node
     VAR_NODE, // Variable node
+    INT_TYPE_NODE,
+    FLOAT_TYPE_NODE,
+    CHAR_TYPE_NODE,
+    STRING_TYPE_NODE,
+    BOOL_TYPE_NODE,
+    VOID_TYPE_NODE,
+    COMPOSITE_TYPE_NODE,
+    CLASS_TYPE_NODE,
+    ARRAY_TYPE_NODE,
   };
 
-  ASTNode(ASTNodeType node_type, ASTNode* parent = nullptr) :
-      node_type_(node_type), parent_(parent) {}
+  ASTNode(ASTNodeType node_type) :
+      node_type_(node_type), parent_(nullptr) {}
 
   virtual ~ASTNode() {}
   virtual void accept(ASTVisitor*) = 0;
@@ -56,13 +65,13 @@ class ASTNode {
   ASTNode* parent() { return parent_; }
 
   // Lineno's accessor
-  void setLineno(int32_t lineno) { lineno_ = lineno; }
-  int32_t lineno() { return lineno_; }
+  void setLineNum(int32_t line_num) { line_num_ = line_num; }
+  int32_t lineNum() { return line_num_; }
 
  protected:
   ASTNodeType node_type_;
   ASTNode* parent_;
-  int32_t lineno_;
+  int32_t line_num_;
 };
 
 }  // namespace flang
