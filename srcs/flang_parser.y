@@ -118,7 +118,7 @@ program : stmt_list {
 };
 
 stmt_list : stmt {
-  $$ = new StmtListNode();
+  $$ = new ProgramNode();
   $$->setLineNum(scanner.lineno());
   $$->addStmt($1);
 } | stmt_list stmt {
