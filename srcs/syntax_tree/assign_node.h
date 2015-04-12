@@ -4,34 +4,38 @@
 #include <memory>
 
 #include "syntax_tree/exp_node.h"
-#include "syntax_tree/var_node.h"
+#include "syntax_tree/name_node.h"
 
 namespace flang {
 
 class AssignNode : public ExpNode {
  public:
   enum AssignOpType {
-    OP_ASSIGN,
-    OP_ADD_ASSIGN,
-    OP_SUB_ASSIGN,
-    OP_MUL_ASSIGN,
-    OP_DIV_ASSIGN,
+    OP_ASSIGN,  // =
+    OP_ADD_ASSIGN, // +=
+    OP_SUB_ASSIGN, // -=
+    OP_MUL_ASSIGN, // *=
+    OP_DIV_ASSIGN, // /=
   };
 
-  AssignNode(VarNode* var_node, ExpNode* exp_node);
+  AssignNode(ExpNode* left_side, ExpNode* right_side);
   ~AssignNode() override {}
 
-  void setVarNode(VarNode* var_node) { var_node_.reset(var_node); }
-  VarNode* getVarNode() { return var_node_.get(); }
+  void setLeftSide(ExpNode* exp_node) { left_side_.reset(exp_node); }
+  ExpNode* getLeftSide() { return left_side_.get(); }
 
-  void setExpNode(ExpNode* exp_node) { exp_node_.reset(exp_node); }
-  ExpNode* getExpNode() { return exp_node_.get(); }
+  void setRightSide(ExpNode* exp_node) { right_side_.reset(exp_node); }
+  ExpNode* getRightSide() { return right_side_.get(); }
+
+  AssignOpType getOperator() { return operator_; }
+  void setOperator(AssignOpType op) { operator_ = op; }
 
   void accept(ASTVisitor* visitor) override;
 
  private:
-  std::unique_ptr<VarNode> var_node_;
-  std::unique_ptr<ExpNode> exp_node_;
+  std::unique_ptr<ExpNode> left_side_;
+  std::unique_ptr<ExpNode> right_side_;
+  AssignOpType operator_;
 };
 
 }  // namespace flang

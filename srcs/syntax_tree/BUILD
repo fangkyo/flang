@@ -41,15 +41,12 @@ cc_library(
   srcs = [
     'assign_node.cpp',
   ],
-  deps = [
-    ':var_node',
-  ]
 )
 
 cc_library(
-  name = 'var_node',
+  name = 'name_node',
   srcs = [
-    'var_node.cpp'
+    'name_node.cpp'
   ]
 )
 

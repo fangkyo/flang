@@ -1,6 +1,7 @@
-#ifndef VAR_NODE_H_
-#define VAR_NODE_H_
+#ifndef NAME_NODE_H_
+#define NAME_NODE_H_
 
+#include <memory>
 #include <string>
 
 #include "syntax_tree/exp_node.h"
@@ -27,12 +28,21 @@ class SimpleNameNode : public NameNode {
 };
 
 // QualifiedName.SimpleName
-class QualifiedName : public NameNode {
+class QualifiedNameNode : public NameNode {
  public:
-  QualifiedName();
-  ~QualifiedName() override {}
+  QualifiedNameNode(NameNode* qualifier, SimpleNameNode* name);
+  ~QualifiedNameNode() override {}
+
+  void accept(ASTVisitor* visitor) override;
+
+  void setName(SimpleNameNode* name) { name_.reset(name); }
+  SimpleNameNode* getName() { return name_.get(); }
+
+  void setQualifier(NameNode* qualifier) { qualifier_.reset(qualifier); }
+  NameNode* getQualifier() { return qualifier_.get(); }
  private:
-  
+  std::unique_ptr<NameNode> qualifier_;
+  std::unique_ptr<SimpleNameNode> name_;
 };
 
 class VarNode : public ExpNode {

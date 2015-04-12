@@ -1,15 +1,18 @@
-#include "syntax_tree/var_node.h"
+#include "syntax_tree/name_node.h"
 
 namespace flang {
 
-VarNode::VarNode(const std::string& name) :
-    ExpNode(ASTNode::VAR_NODE),
-    name_(name) {
+SimpleNameNode::SimpleNameNode(const std::string name) :
+  NameNode(ASTNode::SIMPLE_NAME_NODE),
+  name_(name) {
 }
 
-void VarNode::accept(ASTVisitor* visitor) {
-  visitor->doVarNode(this);
+QualifiedNameNode::QualifiedNameNode(NameNode* qualifier, SimpleNameNode* name) :
+    NameNode(ASTNode::QUALIFIED_NAME_NODE),
+    qualifier_(qualifier), name_(name) {
+
 }
+
 
 }  // namespace flang
 

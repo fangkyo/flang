@@ -2,15 +2,15 @@
 
 namespace flang {
 
-AssignNode::AssignNode(VarNode* var_node, ExpNode* exp_node) :
+AssignNode::AssignNode(ExpNode* left_side, ExpNode* right_side) :
       ExpNode(ASTNode::ASSIGN_EXP_NODE),
-      var_node_(var_node),
-      exp_node_(exp_node) {
+      left_side_(left_side),
+      right_side_(right_side) {
 }
 
 void AssignNode::accept(ASTVisitor* visitor) {
-  var_node_->accept(visitor);
-  exp_node_->accept(visitor);
+  left_side_->accept(visitor);
+  right_side_->accept(visitor);
   visitor->doAssignNode(this);
 }
 
