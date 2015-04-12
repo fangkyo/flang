@@ -8,15 +8,6 @@ class StmtListNode;
 class PrintNode;
 class DeclareNode;
 class VarNode;
-class VarRefNode;
-class AndNode;
-class LtNode;
-class EqNode;
-class LtNode;
-class AddNode;
-class SubNode;
-class MulNode;
-class DivNode;
 class AssignNode;
 class IfNode;
 class WhileNode;
@@ -28,35 +19,32 @@ class CallNode;
 class ClassNode;
 class NewNode;
 class ClassTypeNode;
-class OpNode;
 class UnaryExpNode;
 class BinaryExpNode;
+
+#define VISIT_METHOD(ASTNodeClass) \
+    virtual bool beforeVisit(ASTNodeClass*) { return true; } \
+    virtual bool visit(ASTNodeClass*) { return true; } \
+    virtual bool afterVisit(ASTNodeClass*) { return true; }
 
 class ASTVisitor {
  public:
   virtual ~ASTVisitor() {}
+
+  VISIT_METHOD(ProgramNode)
+  VISIT_METHOD(PrintNode)
+  VISIT_METHOD(DeclareNode)
+
   virtual void doProgramNode(ProgramNode*) {};
-  virtual void doStmtListNode(StmtListNode*) {};
   virtual void doPrintNode(PrintNode*) {};
   virtual void doDeclareNode(DeclareNode*) {};
-  virtual void doOpNode(OpNode*) {};
   virtual void doUnaryExpNode(UnaryExpNode*) {};
   virtual void doBinaryExpNode(BinaryExpNode*) {};
   virtual void doVarNode(VarNode*) {};
-  virtual void doVarRefNode(VarRefNode*) {};
-  virtual void doAndNode(AndNode*) {};
-  virtual void doEqNode(EqNode*) {};
-  virtual void doLtNode(LtNode*) {};
-  virtual void doAddNode(AddNode*) {};
-  virtual void doSubNode(SubNode*) {};
-  virtual void doMulNode(MulNode*) {};
-  virtual void doDivNode(DivNode*) {};
   virtual void doAssignNode(AssignNode*) {};
   virtual void doIfNode(IfNode*) {};
   virtual void doWhileNode(WhileNode*) {};
   virtual void doBreakNode(BreakNode*) {};
-  // virtual void doGlobalFuncNode(GlobalFuncNode*) {};
-  // virtual void doClassFuncNode(ClassFuncNode*) {};
   virtual void doFuncNode(FuncNode*);
   virtual void doReturnNode(ReturnNode*) {};
   virtual void doCallNode(CallNode*) {};

@@ -47,19 +47,36 @@ class VoidTypeNode : public DataTypeNode {
   ~VoidTypeNode() override {}
 };
 
-
-class ClassTypeNode : public DataTypeNode {
+class SimpleTypeNode : public DataTypeNode {
  public:
-  ClassTypeNode(const std::string& name);
-  ~ClassTypeNode() override {}
+  SimpleTypeNode(const std::string& name);
+  ~SimpleTypeNode() override {}
+
+  const std::string& getName() { return name_; }
+  void setName(const std::string& name) { name_ = name; }
+
+  void accept(ASTVisitor* visitor);
+
+ private:
+  std::string name_;
+};
+
+// DataType . SimpleName
+class QualifiedTypeNode : public DataTypeNode {
+ public:
+  QualifiedTypeNode(DataTypeNode* data_type_node, const std::string& name);
+  ~QualifiedTypeNode() override {}
 
   std::string& name() { return name_; }
   void setName(std::string& name) { name_ = name; }
+
+  DataTypeNode* getDataTypeNode() { return data_type_node_.get(); }
 
   void accept(ASTVisitor* visitor) override;
 
  private:
   std::string name_;
+  std::unique_ptr<DataTypeNode> data_type_node_;
 };
 
 class ArrayTypeNode : public DataTypeNode {

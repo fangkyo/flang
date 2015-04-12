@@ -12,6 +12,19 @@
 
 namespace flang {
 
+
+class VariableDeclarationFragmentNode {
+ public:
+  VariableDeclarationFragmentNode();
+  ~VariableDeclarationFragmentNode() override {}
+
+  void setNameNode(SimpleNameNode* name_node) { name_node_.reset(name_node); }
+  void 
+
+ private:
+  std::unique_ptr<SimpleNameNode> name_;
+};
+
 class DeclareNode : public StmtNode {
  public:
   DeclareNode(ASTNode* parent);
@@ -33,6 +46,7 @@ class DeclareNode : public StmtNode {
   boost::ptr_vector<ASTNode> decl_var_list_;
 
 };
+
 
 }  // namespace flang
 
