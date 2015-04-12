@@ -61,7 +61,18 @@ class SimpleTypeNode : public DataTypeNode {
   std::string name_;
 };
 
-// DataType . SimpleName
+class SimpleTypeNode : public DataTypeNode {
+ public:
+  SimpleTypeNode() {}
+
+  std::string& name() { return name_; }
+  void setName(std::string& name) { name_ = name; }
+
+ private:
+  std::string name_;
+};
+
+// DataTypeNode.SimpleName
 class QualifiedTypeNode : public DataTypeNode {
  public:
   QualifiedTypeNode(DataTypeNode* data_type_node, const std::string& name);
@@ -70,13 +81,14 @@ class QualifiedTypeNode : public DataTypeNode {
   std::string& name() { return name_; }
   void setName(std::string& name) { name_ = name; }
 
-  DataTypeNode* getDataTypeNode() { return data_type_node_.get(); }
+  DataTypeNode* getQualifier() { return qualifier_.get(); }
+  void setQualifier(DataTypeNode* qualifier) { qualifier_.reset(qualifier); }
 
   void accept(ASTVisitor* visitor) override;
 
  private:
   std::string name_;
-  std::unique_ptr<DataTypeNode> data_type_node_;
+  std::unique_ptr<DataTypeNode> qualifier_;
 };
 
 class ArrayTypeNode : public DataTypeNode {
