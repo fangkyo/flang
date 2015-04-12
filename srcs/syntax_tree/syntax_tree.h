@@ -6,7 +6,7 @@
 #include "syntax_tree/ctrl_node.h"
 #include "syntax_tree/func_node.h"
 #include "syntax_tree/class_node.h"
-#include "syntax_tree/declare_node.h"
+#include "syntax_tree/var_declaration_node.h"
 #include "syntax_tree/program_node.h"
 
 namespace flang {
