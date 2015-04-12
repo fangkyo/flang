@@ -1,8 +1,10 @@
 #include <unordered_map>
 
+
 #include "class_node.h"
 #include "visitor.h"
 #include "error.h"
+
 
 using namespace std;
 
@@ -101,8 +103,4 @@ VarNode* ClassNode::findMemberVar(const string& varName) {
     return m_parent->findMemberVar(varName);
   else
     return NULL;
-}
-
-MemberVarRefNode::MemberVarRefNode(const std::string& var_name) {
-  var_name_ = var_name;
 }

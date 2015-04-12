@@ -2,9 +2,10 @@
 #define CLASS_NODE_H
 
 #include <cassert>
-#include <string>
 #include <vector>
 #include <string>
+
+#include <boost/ptr_container/ptr_vector.hpp>
 
 #include "exp_node.h"
 #include "func_node.h"
@@ -13,22 +14,14 @@
 
 using namespace std;
 
-class ErrorEngine;
+namespace flang {
 
-class ClassNode : public SyntaxNode {
+class ClassNode : public StmtNode {
 
-private:
-  string m_name;       // class name
-  string m_parentName; // parent class name
-  vector<DeclareNode *> m_varList; // 注意 : 一个declare可能声明多个成员变量，
-  // 因此这个varList不能简单的看作成员变量列表
-  vector<ClassFuncNode *> m_funcList; // function members list
-
-  ClassNode *m_parent;
 
 public:
-  ClassNode() : m_parent(NULL) {}
-  ~ClassNode();
+  ClassNode() : StmtNode(ASTNODE::CLASS_NODE) {}
+  ~ClassNode() override;
 
   void setName(const string &name) { m_name = name; }
   const string &getName() { return m_name; }
@@ -67,20 +60,15 @@ public:
   VarNode *findMemberVar(const string &varName);
 
   ClassNode *getClassNode() { return this; }
+
+
+ private:
+  std::string name_;       // class name
+  std::string derived_class_; // parent class name
+  // Member variable declaration list
+  boost::ptr_vector<DeclareNode> member_var_list_;
 };
 
-/*!
- * \brief MemberVarRefNode is the reference of a class member.
- */
-class MemberVarRefNode : public ExpNode {
-public:
-  MemberVarRefNode(const std::string &var_name);
-  virtual ~MemberVarRefNode() {}
-  void setOwner(ClassNode *owner) { owner_ = owner; }
-
-private:
-  ClassNode *owner_; //< The owner class of this member variable.
-  std::string var_name_;
-};
+}  // namespace flang
 
 #endif
