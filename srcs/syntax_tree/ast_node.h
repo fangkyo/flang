@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-#include "ast_visitor/ast_visitor.h"
+#include "syntax_tree/ast_visitor.h"
 
 namespace flang {
 
@@ -29,7 +29,6 @@ class ASTNode {
     BINARY_EXP_NODE, // Binary expression node
     ASSIGN_EXP_NODE, // Assignment node
     NEW_EXP_NODE, // New expression node
-    PARENTHESIZED_EXP_NODE, // Parenthesized expression node
     PRIMITIVE_NODE, // Primitive node
     INT_VAL_NODE, // Int value node
     STRING_VAL_NODE, // String value node
@@ -39,7 +38,6 @@ class ASTNode {
     NAME_NODE, // Name node
     NULL_NODE, // Null node
     SIMPLE_NAME_NODE, // Simple name node
-    FUNC_INVOCATION_NODE, // Function invocation node
     QUALIFIED_NAME_NODE, // Qualified name node
     PRINT_NODE, // Print node
     VAR_NODE, // Variable node
@@ -60,16 +58,15 @@ class ASTNode {
   virtual ~ASTNode() {}
   virtual void accept(ASTVisitor*) = 0;
 
-  // NodeType's getter
-  ASTNodeType nodeType() { return node_type_; }
+  ASTNodeType getNodeType() { return node_type_; }
 
   // Parent's accessor
   void setParent(ASTNode* parent) { parent_ = parent; }
-  ASTNode* parent() { return parent_; }
+  ASTNode* getParent() { return parent_; }
 
   // Lineno's accessor
   void setLineNum(int32_t line_num) { line_num_ = line_num; }
-  int32_t lineNum() { return line_num_; }
+  int32_t getLineNum() { return line_num_; }
 
  protected:
   ASTNodeType node_type_;
