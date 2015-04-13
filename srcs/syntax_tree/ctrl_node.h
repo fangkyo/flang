@@ -14,13 +14,13 @@ class IfNode : public StmtNode {
   ~IfNode() override {}
 
   void setTestNode(ExpNode* test_node) { test_node_.reset(test_node); }
-  ExpNode* testNode() { return test_node_.get(); }
+  ExpNode* getTestNode() { return test_node_.get(); }
 
   void setIfNode(ASTNode* if_node) { if_node_.reset(if_node); }
   ASTNode* getIfNode() { return if_node_.get(); }
 
   void setElseNode(ASTNode* else_node) { else_node_.reset(else_node); }
-  ASTNode* elseNode() { return else_node_.get(); }
+  ASTNode* getElseNode() { return else_node_.get(); }
 
   void accept(ASTVisitor* visitor) override;
 
