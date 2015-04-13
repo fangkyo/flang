@@ -1,64 +1,66 @@
 #ifndef CLASS_NODE_H
 #define CLASS_NODE_H
 
-#include <cassert>
-#include <vector>
+#include <memory>
 #include <string>
 
 #include <boost/ptr_container/ptr_vector.hpp>
 
-#include "exp_node.h"
-#include "func_node.h"
-#include "declare_node.h"
-#include "scope.h"
-
-using namespace std;
+#include "syntax_tree/exp_node.h"
+#include "syntax_tree/func_node.h"
+#include "syntax_tree/name_node.h"
+#include "syntax_tree/var_declaration_node.h"
 
 namespace flang {
 
 class ClassNode : public StmtNode {
 public:
-  ClassNode() : StmtNode(ASTNODE::CLASS_NODE) {}
+  ClassNode() : StmtNode(ASTNode::CLASS_NODE) {}
   ~ClassNode() override;
 
-  void setName(const string &name) { m_name = name; }
-  const string &getName() { return m_name; }
+  void setName(const std::string &name) { name_ = name; }
+  const std::string &getName() { return name_; }
 
-  void setParentName(const string &name) { m_parentName = name; }
-  const string &getParentName() { return m_parentName; }
+  void setBaseClass(NameNode* base_class) { base_class_.reset(base_class); }
+  NameNode* getBaseClass() { return base_class_.get(); }
 
-  void setParent(ClassNode *parent);
-  ClassNode *getParent() { return m_parent; }
-  int getVarsNum() { return m_varList.size(); }
-  int getFuncsNum() { return m_funcList.size(); }
+  void AddMemberVar(VarDeclarationNode* member_var) {
+    member_var->setParent(this);
+    member_var_list_.push_back(member_var);
+  }
+  const boost::ptr_vector<VarDeclarationNode>& getMemberVarList() {
+    return member_var_list_;
+  }
 
-  bool hasParent() { return m_parentName.length() > 0; }
+  void AddMemberFunction(FuncNode* member_func) {
+    member_func->setParent(this);
+    member_func_list_.push_back(member_func);
+  }
+  const boost::ptr_vector<FuncNode>& getMemberFuncList() {
+    return member_func_list_;
+  }
 
-  void addVarDeclare(DeclareNode *declare);
+  bool hasBaseClass() { return base_class_ == nullptr; }
 
-  void addFuncion(ClassFuncNode *func);
-  void accept(Visitor &visitor);
+  void accept(ASTVisitor* visitor);
 
-  void acceptVars(Visitor &visitor);
+  // void acceptVars(Visitor &visitor);
 
-  void acceptFuncs(Visitor &visitor, ScopeManager &scopeManager,
-                   ErrorEngine &errorEngine);
+  // void acceptFuncs(Visitor &visitor, ScopeManager &scopeManager,
+                   // ErrorEngine &errorEngine);
 
-  ClassFuncNode *findMemberFunc(const string &funcName,
-                                vector<DataTypeNode *> &paramsType);
+  // ClassFuncNode *findMemberFunc(const std::string &funcName,
+                                // vector<DataTypeNode *> &paramsType);
 
-  ClassFuncNode *findMemberFunc(const string &funcName);
+  // ClassFuncNode *findMemberFunc(const std::string &funcName);
 
-  VarNode *findMemberVar(const string &varName);
-
-  ClassNode *getClassNode() { return this; }
-
+  // VarNode *findMemberVar(const std::string &varName);
 
  private:
-  std::string name_;       // class name
-  std::string derived_class_; // parent class name
-  // Member variable declaration list
-  boost::ptr_vector<DeclareNode> member_var_list_;
+  std::string name_;
+  std::unique_ptr<NameNode> base_class_;
+  boost::ptr_vector<VarDeclarationNode> member_var_list_;
+  boost::ptr_vector<FuncNode> member_func_list_;
 };
 
 }  // namespace flang

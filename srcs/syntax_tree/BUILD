@@ -1,19 +1,23 @@
-#cc_library(
-#  name = 'syntax_tree',
-#  srcs = [
-#    'syntax_tree.cpp',
-#       'class_node.cpp',
-#       'data_type.cpp',
-#       'print_node.cpp',
-#       'ctrl_node.cpp',
-#       'declare_node.cpp',
-#       'func_node.cpp',
-#       'exp_node.cpp',
-#   ],
-#  deps = [
-#    ':program_node',
-#  ]
-#)
+cc_library(
+ name = 'syntax_tree',
+ srcs = [
+   'syntax_tree.cpp',
+  ],
+ deps = [
+   ':program_node',
+   ':print_node',
+   ':unary_exp_node',
+   ':binary_exp_node',
+   ':assign_node',
+   ':name_node',
+   ':var_declaration_node',
+   ':func_node',
+   ':class_node',
+   ':data_type_node',
+   ':new_node',
+   ':ctrl_node',
+ ]
+)
 
 cc_library(
   name = 'program_node',
@@ -75,9 +79,9 @@ cc_library(
 )
 
 cc_library(
-  name = 'declare_node',
+  name = 'var_declaration_node',
   srcs = [
-    'declare_node.cpp',
+    'var_declaration_node.cpp',
   ],
   deps = [
     '#boost_system',
@@ -99,6 +103,19 @@ cc_library(
   ],
   deps = [
     '#boost_system',
-    ':declare_node',
+    ':var_declaration_node',
+  ]
+)
+
+cc_library(
+  name = 'class_node',
+  srcs = [
+    'class_node.cpp',
+  ],
+  deps = [
+    '#boost_system',
+    ':func_node',
+    ':name_node',
+    ':var_declaration_node',
   ]
 )

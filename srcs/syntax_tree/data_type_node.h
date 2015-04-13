@@ -55,24 +55,11 @@ class SimpleTypeNode : public DataTypeNode {
   const std::string& getName() { return name_; }
   void setName(const std::string& name) { name_ = name; }
 
-  void accept(ASTVisitor* visitor);
-
  private:
   std::string name_;
 };
 
-class SimpleTypeNode : public DataTypeNode {
- public:
-  SimpleTypeNode() {}
-
-  std::string& name() { return name_; }
-  void setName(std::string& name) { name_ = name; }
-
- private:
-  std::string name_;
-};
-
-// DataTypeNode.SimpleName
+// DataType.SimpleName
 class QualifiedTypeNode : public DataTypeNode {
  public:
   QualifiedTypeNode(DataTypeNode* data_type_node, const std::string& name);

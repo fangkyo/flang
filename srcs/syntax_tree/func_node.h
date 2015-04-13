@@ -24,14 +24,14 @@ class FuncNode : public StmtNode {
   ASTNode* getBody() { return body_.get(); }
   void setBody(ASTNode* body) { body_.reset(body); }
 
-  boost::ptr_vector<DeclareNode>& getParamList() { return param_list_; }
-  void addParameter(DeclareNode* param) { param_list_.push_back(param); }
+  boost::ptr_vector<VarDeclarationNode>& getParamList() { return param_list_; }
+  void addParameter(VarDeclarationNode* param) { param_list_.push_back(param); }
 
   void accept(ASTVisitor* visitor) override;
 
  private:
   std::string name_;
-  boost::ptr_vector<DeclareNode> param_list_;
+  boost::ptr_vector<VarDeclarationNode> param_list_;
   std::unique_ptr<DataTypeNode> return_type_;
   std::unique_ptr<ASTNode> body_;
 };

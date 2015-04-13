@@ -1,5 +1,4 @@
-#include "base/stl_utils.h"
-#include "declare_node.h"
+#include "syntax_tree/var_declaration_node.h"
 
 namespace flang {
 
