@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include <boost/ptr_container/ptr_vector.hpp>
+
 #include "syntax_tree/ast_node.h"
 
 namespace flang {
@@ -14,13 +16,14 @@ class StmtNode;
 class ProgramNode : public ASTNode {
  public:
   ProgramNode();
-  ~ProgramNode() override;
+  ~ProgramNode() override {}
   void accept(ASTVisitor* visitor) override;
-  const std::vector<StmtNode*>& stmtList() { return stmt_list_; };
+  const boost::ptr_vector<StmtNode>& getStmtList() { return stmt_list_; };
+
   void addStmt(StmtNode* stmt_node);
 
  private:
-  std::vector<StmtNode*> stmt_list_;
+  boost::ptr_vector<StmtNode> stmt_list_;
 };
 
 } // namespace flang

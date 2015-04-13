@@ -20,6 +20,9 @@ cc_library(
   srcs = [
     'program_node.cpp',
   ],
+  deps = [
+    '#boost_system'
+  ]
 )
 
 cc_library(
