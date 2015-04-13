@@ -4,10 +4,11 @@
 namespace flang {
 
 class ProgramNode;
-class StmtListNode;
 class PrintNode;
-class DeclareNode;
-class VarNode;
+class VarDeclarationNode;
+class VarDeclarationFragmentNode;
+class SimpleNodeNode;
+class QualifiedNodeNode;
 class AssignNode;
 class IfNode;
 class WhileNode;
@@ -16,9 +17,7 @@ class FuncNode;
 class ClassNode;
 class ReturnNode;
 class CallNode;
-class ClassNode;
 class NewNode;
-class ClassTypeNode;
 class UnaryExpNode;
 class BinaryExpNode;
 
@@ -33,14 +32,26 @@ class ASTVisitor {
 
   VISIT_METHOD(ProgramNode)
   VISIT_METHOD(PrintNode)
-  VISIT_METHOD(DeclareNode)
+  VISIT_METHOD(VarDeclarationNode)
+  VISIT_METHOD(SimpleNodeNode)
+  VISIT_METHOD(QualifiedNodeNode)
+  VISIT_METHOD(AssignNode)
+  VISIT_METHOD(IfNode)
+  VISIT_METHOD(WhileNode)
+  VISIT_METHOD(BreakNode)
+  VISIT_METHOD(FuncNode)
+  VISIT_METHOD(ClassNode)
+  VISIT_METHOD(ReturnNode)
+  VISIT_METHOD(CallNode)
+  VISIT_METHOD(NewNode)
+  VISIT_METHOD(BinaryExpNode)
+  VISIT_METHOD(UnaryExpNode)
 
   virtual void doProgramNode(ProgramNode*) {};
   virtual void doPrintNode(PrintNode*) {};
-  virtual void doDeclareNode(DeclareNode*) {};
+  virtual void doDeclareNode(VarDeclarationNode*) {};
   virtual void doUnaryExpNode(UnaryExpNode*) {};
   virtual void doBinaryExpNode(BinaryExpNode*) {};
-  virtual void doVarNode(VarNode*) {};
   virtual void doAssignNode(AssignNode*) {};
   virtual void doIfNode(IfNode*) {};
   virtual void doWhileNode(WhileNode*) {};
@@ -50,7 +61,6 @@ class ASTVisitor {
   virtual void doCallNode(CallNode*) {};
   virtual void doClassNode(ClassNode*) {};
   virtual void doNewNode(NewNode*) {};
-  virtual void doClassTypeNode(ClassTypeNode*) {};
 };
 
 }  // namespace flang
