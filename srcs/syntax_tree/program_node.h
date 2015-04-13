@@ -17,10 +17,11 @@ class ProgramNode : public ASTNode {
  public:
   ProgramNode();
   ~ProgramNode() override {}
-  void accept(ASTVisitor* visitor) override;
-  const boost::ptr_vector<StmtNode>& getStmtList() { return stmt_list_; };
 
-  void addStmt(StmtNode* stmt_node);
+  void accept(ASTVisitor* visitor) override;
+
+  const boost::ptr_vector<StmtNode>& getStmtList() { return stmt_list_; };
+  void addStatement(StmtNode* stmt_node);
 
  private:
   boost::ptr_vector<StmtNode> stmt_list_;

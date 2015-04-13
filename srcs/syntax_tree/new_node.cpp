@@ -2,7 +2,7 @@
 
 namespace flang {
 
-NewNode::NewNode(const std::string& class_name) :
+NewNode::NewNode(NameNode* class_name) :
     ExpNode(ASTNode::NEW_EXP_NODE),
     class_name_(class_name) {
 }

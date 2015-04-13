@@ -12,7 +12,7 @@ void ProgramNode::accept(ASTVisitor* visitor) {
   visitor->doProgramNode(this);
 }
 
-void ProgramNode::addStmt(StmtNode* stmt_node) {
+void ProgramNode::addStatement(StmtNode* stmt_node) {
   CHECK_NOTNULL(stmt_node);
   stmt_list_.push_back(stmt_node);
 }
