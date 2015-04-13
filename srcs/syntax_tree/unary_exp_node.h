@@ -25,15 +25,16 @@ class UnaryExpNode : public ASTNode {
   void accept(ASTVisitor* visitor) override;
 
   // Accessor of operator
-  UnaryOpType op() { return op_; }
+  UnaryOpType getOperator() { return operator_; }
+  void setOperator(UnaryOpType op) { operator_ = op; }
 
-  // Accessor of expression node
-  void setExpNode(ExpNode* exp_node) { exp_node_.reset(exp_node); }
-  ExpNode* expNode() { return exp_node_.get(); }
+  // Accessor of operand
+  void setOperand(ExpNode* operand) { operand_.reset(operand); }
+  ExpNode* getOperand() { return operand_.get(); }
 
  protected:
-  UnaryOpType op_; // operator
-  std::unique_ptr<ExpNode> exp_node_;
+  UnaryOpType operator_;
+  std::unique_ptr<ExpNode> operand_;
 };
 
 }  // namespace flang

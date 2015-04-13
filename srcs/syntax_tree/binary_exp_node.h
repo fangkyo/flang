@@ -30,16 +30,19 @@ class BinaryExpNode : public ExpNode {
 
   void accept(ASTVisitor* visitor) override;
 
-  BinaryOpType op() { return op_; }
-  ExpNode* leftExp() { return left_exp_.get(); }
-  void setLeftExp(ExpNode* exp_node) { left_exp_.reset(exp_node); }
-  ExpNode* rightExp() { return right_exp_.get(); }
-  void setRightExp(ExpNode* exp_node) { right_exp_.reset(exp_node); }
+  BinaryOpType getOperator() { return operator_; }
+  void setOperator(BinaryOpType op) { operator_ = op; }
+
+  ExpNode* leftSide() { return left_side_.get(); }
+  void setLeftSide(ExpNode* exp_node) { left_side_.reset(exp_node); }
+
+  ExpNode* rightSide() { return right_side_.get(); }
+  void setRightSide(ExpNode* exp_node) { right_side_.reset(exp_node); }
 
  protected:
-  BinaryOpType op_;
-  std::unique_ptr<ExpNode> left_exp_;
-  std::unique_ptr<ExpNode> right_exp_;
+  BinaryOpType operator_;
+  std::unique_ptr<ExpNode> left_side_;
+  std::unique_ptr<ExpNode> right_side_;
 };
 
 /* class AddNode : public OpNode { */

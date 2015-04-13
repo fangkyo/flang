@@ -2,9 +2,9 @@
 
 namespace flang {
 
-UnaryExpNode::UnaryExpNode(UnaryOpType op, ExpNode* exp_node) :
+UnaryExpNode::UnaryExpNode(UnaryOpType op, ExpNode* operand) :
     ASTNode(ASTNode::UNARY_EXP_NODE),
-    op_(op), exp_node_(exp_node) {
+    operator_(op), operand_(operand) {
 }
 
 void UnaryExpNode::accept(ASTVisitor* visitor) {

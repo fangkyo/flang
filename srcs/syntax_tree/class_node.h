@@ -17,8 +17,6 @@ using namespace std;
 namespace flang {
 
 class ClassNode : public StmtNode {
-
-
 public:
   ClassNode() : StmtNode(ASTNODE::CLASS_NODE) {}
   ~ClassNode() override;
@@ -45,12 +43,6 @@ public:
 
   void acceptFuncs(Visitor &visitor, ScopeManager &scopeManager,
                    ErrorEngine &errorEngine);
-
-  string toString() {
-    string str("class ");
-    str.append(m_name);
-    return str;
-  }
 
   ClassFuncNode *findMemberFunc(const string &funcName,
                                 vector<DataTypeNode *> &paramsType);

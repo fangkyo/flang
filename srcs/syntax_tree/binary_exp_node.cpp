@@ -5,10 +5,12 @@ namespace flang {
 BinaryExpNode::BinaryExpNode(
     BinaryOpType op, ExpNode* left_exp, ExpNode* right_exp) :
     ExpNode(ASTNodeType::BINARY_EXP_NODE),
-    op_(op), left_exp_(left_exp), right_exp_(right_exp) {
+    operator_(op), left_side_(left_exp), right_side_(right_exp) {
 }
 
 void BinaryExpNode::accept(ASTVisitor* visitor) {
+  left_side_->accept(visitor);
+  right_side_->accept(visitor);
   visitor->doBinaryExpNode(this);
 }
 
