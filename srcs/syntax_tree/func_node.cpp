@@ -1,4 +1,3 @@
-#include "ast_visitor/ast_visitor.h"
 #include "syntax_tree/func_node.h"
 
 namespace flang {
@@ -10,12 +9,12 @@ void FuncNode::accept(ASTVisitor* visitor) {
   visitor->doFuncNode(this);
 }
 
-ReturnNode::ReturnNode(ExpNode* exp_returned)
-    : StmtNode(ASTNode::RETURN_NODE), exp_returned_(exp_returned) {}
+ReturnNode::ReturnNode(ExpNode* exp_node)
+    : StmtNode(ASTNode::RETURN_NODE), expression_(exp_node) {}
 
 void ReturnNode::accept(ASTVisitor* visitor) {
-  if (exp_returned_) {
-    exp_returned_->accept(visitor);
+  if (expression_) {
+    expression_->accept(visitor);
   }
   visitor->doReturnNode(this);
 }

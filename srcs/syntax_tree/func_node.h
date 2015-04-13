@@ -1,5 +1,5 @@
-#ifndef FUNCTION_H
-#define FUNCTION_H
+#ifndef FUNC_NODE_H
+#define FUNC_NODE_H
 
 #include <string>
 #include <vector>
@@ -7,9 +7,9 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 
 #include "syntax_tree/data_type_node.h"
-#include "syntax_tree/declare_node.h"
 #include "syntax_tree/exp_node.h"
 #include "syntax_tree/stmt_node.h"
+#include "syntax_tree/var_declaration_node.h"
 
 namespace flang {
 
@@ -18,15 +18,14 @@ class FuncNode : public StmtNode {
   FuncNode() : StmtNode(ASTNode::FUNC_NODE) {}
   ~FuncNode() override {}
 
-  const std::string& name() { return name_; }
+  const std::string& getName() { return name_; }
   void setName(const std::string& name) { name_ = name; }
 
-  ASTNode* body() { return body_.get(); }
+  ASTNode* getBody() { return body_.get(); }
   void setBody(ASTNode* body) { body_.reset(body); }
 
-  boost::ptr_vector<DeclareNode>& paramList() { return param_list_; }
-  // Add parameter for the function node
-  void addParam(DeclareNode* param) { param_list_.push_back(param); }
+  boost::ptr_vector<DeclareNode>& getParamList() { return param_list_; }
+  void addParameter(DeclareNode* param) { param_list_.push_back(param); }
 
   void accept(ASTVisitor* visitor) override;
 
@@ -39,17 +38,17 @@ class FuncNode : public StmtNode {
 
 class ReturnNode : public StmtNode {
  public:
-  ReturnNode(ExpNode* exp_returned);
+  ReturnNode(ExpNode* exp_node);
   ~ReturnNode() override {}
 
-  ExpNode* expReturned() { return exp_returned_.get(); }
-  void setExpReturned(ExpNode* exp_returned) {
-    exp_returned_.reset(exp_returned);
+  ExpNode* getExpression() { return expression_.get(); }
+  void setExpression(ExpNode* exp_node) {
+    expression_.reset(exp_node);
   }
   void accept(ASTVisitor* visitor) override;
 
  private:
-  std::unique_ptr<ExpNode> exp_returned_;
+  std::unique_ptr<ExpNode> expression_;
 };
 
 class CallNode : public ExpNode {
@@ -60,10 +59,10 @@ class CallNode : public ExpNode {
   void accept(ASTVisitor* visitor) override;
 
   void setName(const std::string& name) { name_ = name; }
-  const std::string& name() { return name_; }
+  const std::string& getName() { return name_; }
 
-  void addParam(ExpNode* param) { param_list_.push_back(param); }
-  boost::ptr_vector<ExpNode>& paramList() { return param_list_; }
+  void addParameter(ExpNode* param) { param_list_.push_back(param); }
+  boost::ptr_vector<ExpNode>& getParamList() { return param_list_; }
 
  private:
   boost::ptr_vector<ExpNode> param_list_;
