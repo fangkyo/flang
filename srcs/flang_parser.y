@@ -8,7 +8,6 @@
 %code requires{
 
 #include "syntax_tree/syntax_tree.h"
-#include "scope.h"
 
 namespace flang {
   class FlangScanner;
@@ -32,8 +31,6 @@ namespace flang {
 using namespace std;
 using namespace log4cxx;
 
-LoggerPtr g_logger(Logger::getLogger("flang.scanner_parser"));
-
 static int yylex(flang::FlangParser::semantic_type *yylval,
                  flang::FlangScanner &scanner) {
    return scanner.yylex(yylval);
@@ -47,10 +44,11 @@ static int yylex(flang::FlangParser::semantic_type *yylval,
   std::string*   str_val; // string value
   int   lineno; // line number
 
-  ASTNode*         ast_node;
-  DeclareNode*     declare_node;
-  StmtListNode*    stmt_list_node;
-  ExpNode*         exp_node;
+  ASTNode* ast_node;
+  VarDeclarationNode* var_decl_node;
+  VarDeclarationFragmentNode* var_decl_fragment_node;
+  ProgramNode* program_node;
+  ExpNode* exp_node;
   DataTypeNode*    data_type_node;
   IfNode*          if_node;
   WhileNode*       while_node;
@@ -88,8 +86,9 @@ static int yylex(flang::FlangParser::semantic_type *yylval,
 %nonassoc UMINUS
 %type <ast_node> program simple_program stmt simple_stmt complex_stmt
 %type <exp_node> expr
-%type <declare_node> declare var_list
-%type <stmt_list_node> stmt_list simple_stmt_list
+%type <var_decl_node> var_declaration var_list
+%type <var_decl_fragment_node> var_decl_fragment
+%type <program_node> stmt_list simple_stmt_list
 %type <data_type_node> type ret_type
 %type <if_node> if_stmt
 %type <while_node> while_stmt
@@ -161,7 +160,7 @@ simple_stmt : ';' {
 } | BREAK ';' {
   $$ = new BreakNode();
   $$->setLineNum( $1 );
-} | declare ';' {
+} | var_declaration ';' {
   $$ = $1;
 } | if_stmt {
   $$ = $1;
@@ -223,7 +222,20 @@ expr : NUMBER {
   $$ = new MemberVarRefNode(*($3));
 };
 
-declare : var_list declare_var {
+var_declaration : var_declaration ',' var_decl_fragment {
+  $$ = $1;
+  $$->addVarDeclFragment($3);
+  $$->setLineNum( scanner.lineno() );
+} | type {
+  $$ = new VarDeclarationNode();
+  $$->setDataTypeNode($1);
+};
+
+var_decl_fragment : ID {
+  $$ = new VarDeclarationFragmentNode(*$1);
+};
+
+var_declaration : var_list declare_var {
   $$ = $1;
   $2->setVarDataTypeNode( $1->getDataTypeNode() );
   $$->addDeclare( $2 );
