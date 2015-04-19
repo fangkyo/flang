@@ -13,13 +13,3 @@ gen_rule(
       'stack.hh',
   ],
 )
-
-cc_library(
-  name = 'visitor',
-  srcs = ['syntax_checker.cpp'],
-  deps = [
-      '//syntax_tree:syntax_tree',
-  ]
-)
-
-
