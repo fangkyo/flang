@@ -1,8 +1,6 @@
 #ifndef SYNTAX_TREE_PROGRAM_NODE_H_
 #define SYNTAX_TREE_PROGRAM_NODE_H_
 
-#include <vector>
-
 #include <boost/ptr_container/ptr_vector.hpp>
 
 #include "syntax_tree/ast_node.h"
@@ -20,7 +18,9 @@ class ProgramNode : public ASTNode {
 
   void accept(ASTVisitor* visitor) override;
 
-  const boost::ptr_vector<StmtNode>& getStmtList() { return stmt_list_; };
+  const boost::ptr_vector<StmtNode>& getStatementList() {
+    return stmt_list_;
+  };
   void addStatement(StmtNode* stmt_node);
 
  private:

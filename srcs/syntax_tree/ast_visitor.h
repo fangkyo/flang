@@ -20,6 +20,7 @@ class CallNode;
 class NewNode;
 class UnaryExpNode;
 class BinaryExpNode;
+class BlockNode;
 
 #define VISIT_METHOD(ASTNodeClass) \
     virtual bool beforeVisit(ASTNodeClass*) { return true; } \
@@ -46,6 +47,7 @@ class ASTVisitor {
   VISIT_METHOD(NewNode)
   VISIT_METHOD(BinaryExpNode)
   VISIT_METHOD(UnaryExpNode)
+  VISIT_METHOD(BlockNode)
 
   virtual void doProgramNode(ProgramNode*) {};
   virtual void doPrintNode(PrintNode*) {};

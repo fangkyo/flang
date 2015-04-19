@@ -30,6 +30,17 @@ cc_library(
 )
 
 cc_library(
+  name = 'block_node',
+  srcs = [
+    'block_node.cpp',
+  ],
+  deps = [
+    '#boost_system'
+  ]
+)
+
+
+cc_library(
   name = 'print_node',
   srcs = [
     'print_node.cpp',
@@ -119,3 +130,4 @@ cc_library(
     ':var_declaration_node',
   ]
 )
+
