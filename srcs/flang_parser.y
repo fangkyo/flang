@@ -58,13 +58,13 @@ static int yylex(flang::FlangParser::semantic_type *yylval,
   AssignNode*      assign_node;
 }
 
-%token <int_val> NUMBER
-%token <char_val> CHARVAL
-%token <bool_val> BOOLVAL
-%token <str_val> STR ID
+%token <int_val> INT_VAL
+%token <char_val> CHAR_VAL
+%token <bool_val> BOOL_VAL
+%token <str_val> STR_VAL ID
 
 %token <lineno> WHILE IF PRINT BREAK DEF CLASS RETURN THIS NEW
-%token <lineno> BOOL CHAR INT TRUE FALSE STRING
+%token <lineno> BOOL_TYPE CHAR_TYPE STR_TYPE INT_TYPE TRUE FALSE 
 
 %destructor { if ($$)  {delete ($$); ($$) = nullptr; } }  <str_val>
 
@@ -112,9 +112,9 @@ program : stmt_list {
 stmt_list : stmt {
   $$ = new ProgramNode();
   $$->setLineNum(scanner.lineno());
-  $$->addStmt($1);
+  $$->addStatement($1);
 } | stmt_list stmt {
-  $1->addStmt($2);
+  $1->addStatement($2);
   $$ = $1;
 };
 
@@ -168,7 +168,7 @@ simple_stmt : ';' {
   $$ = $1;
 };
 
-expr : NUMBER {
+expr : INT_VAL {
   $$ = new IntNode($1);
   $$->setLineNum(scanner.lineno());
 } | TRUE {
@@ -177,10 +177,10 @@ expr : NUMBER {
 } | FALSE {
   $$ = new BoolNode(false);
   $$->setLineNum( scanner.lineno() );
-} | STR {
+} | STR_VAL {
   $$ = new StringNode( *($1) );
   $$->setLineNum( scanner.lineno() );
-} | CHARVAL {
+} | CHAR_VAL {
   $$ = new CharNode($1);
   $$->setLineNum( scanner.lineno() );
 } | ID {
@@ -265,13 +265,13 @@ declare_var : ID {
   $$->setLineNum( scanner.lineno() );
 };
 
-type : INT {
+type : INT_TYPE {
   $$ = INT_TYPE_NODE;
-} | BOOL {
+} | BOOL_TYPE {
   $$ = BOOL_TYPE_NODE;
-} | CHAR {
+} | CHAR_TYPE {
   $$ = CHAR_TYPE_NODE;
-} | STRING {
+} | STR_TYPE {
   $$ = STRING_TYPE_NODE;
 } | ID {
   $$ = new ClassTypeNode( *($1) );

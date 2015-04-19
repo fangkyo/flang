@@ -5,18 +5,10 @@
 #include <cstdio>
 #include <cstdlib>
 #include <string>
-#include <vector>
-
-#include "syntax_tree/syntax_tree.h"
-#include "syntax_tree/data_type.h"
-#include "syntax_tree/exp_node.h"
-#include "syntax_tree/print_node.h"
-#include "syntax_tree/ctrl_node.h"
-#include "syntax_tree/func_node.h"
-#include "syntax_tree/class_node.h"
 
 #include "flang_parser.h"
 #include "flang_scanner.h"
+#include "syntax_tree/syntax_tree.h"
 
 /* typedef to make the returns for the tokens shorter */
 typedef flang::FlangParser::token Token;
@@ -29,9 +21,10 @@ typedef flang::FlangParser::token Token;
 %option c++
 %option yyclass="FlangScanner"
 
-number [0-9]+
+integer [0-9]+
+float [0-9]*.[0-9]+
 op [-+*/%(){}<>.;=!,:]
-identifier [a-zA-Z][a-zA-Z0-9_]*
+identifier [a-zA-Z_][a-zA-Z0-9_]*
 string \"[^"]*\"
 char '.'
 
@@ -89,22 +82,22 @@ new {
 
 int {
   yylval->lineno = lineno();
-  return Token::INT;
+  return Token::INT_TYPE;
 }
 
 bool {
   yylval->lineno = lineno();
-  return Token::BOOL;
+  return Token::BOOL_TYPE;
 }
 
 char {
   yylval->lineno = lineno();
-  return Token::CHAR;
+  return Token::CHAR_TYPE;
 }
 
 string {
   yylval->lineno = lineno();
-  return Token::STRING;
+  return Token::STRING_TYPE;
 }
 
 true {
@@ -129,10 +122,11 @@ and {
 
 [ \n\r\t] ;
 
-{number} {
+{integer} {
   yylval->int_val = atoi(yytext);
-  return Token::NUMBER;
+  return Token::INT_VAL;
 }
+
 
 {op} {
   yylval->lineno = lineno();
@@ -141,12 +135,12 @@ and {
 
 {string} {
   yylval->str_val = new std::string(yytext + 1, yyleng - 2);
-  return Token::STR;
+  return Token::STR_VAL;
 }
 
 {char} {
   yylval->char_val = *yytext;
-  return Token::CHARVAL;
+  return Token::CHAR_VAL;
 }
 
 {identifier} {
