@@ -13,6 +13,7 @@ class ASTNode {
   // The type of ast nodes, which are the subclasses of ASTNode.
   enum ASTNodeType {
     PROGRAM_NODE, // Program node
+    EMPTY_NODE, // Empty node
     VAR_DECL_NODE, // variable declaration node
     VAR_DECL_FRAGMENT_NODE, // variable declaration fragment node.
     STMT_NODE, // Statement node

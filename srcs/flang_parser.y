@@ -56,6 +56,7 @@ static int yylex(flang::FlangParser::semantic_type *yylval,
   CallNode*        call_node;
   ClassNode*       class_node;
   AssignNode*      assign_node;
+  SimpleNameNode*  simple_name_node;
 }
 
 %token <int_val> INT_VAL
@@ -85,9 +86,9 @@ static int yylex(flang::FlangParser::semantic_type *yylval,
 
 %nonassoc UMINUS
 %type <ast_node> program simple_program stmt simple_stmt complex_stmt
-%type <exp_node> expr
-%type <var_decl_node> var_declaration var_list
-%type <var_decl_fragment_node> var_decl_fragment
+%type <exp_node> expression
+%type <var_decl_node> var_declaration
+%type <var_decl_fragment_node> var_declaration_fragment
 %type <program_node> stmt_list simple_stmt_list
 %type <data_type_node> type ret_type
 %type <if_node> if_stmt
@@ -95,7 +96,8 @@ static int yylex(flang::FlangParser::semantic_type *yylval,
 %type <func_node>  function func_param_list
 %type <call_node>  call_param_list call param_list
 %type <class_node> class  class_stmt_list
-%type <assign_node> declare_var
+%type <assign_node> assignment
+%type <simple_name_node> simple_name
 
 %start program
 
@@ -146,12 +148,12 @@ complex_stmt : function {
 
 simple_stmt : ';' {
   $$ = NULL;
-} | expr ';' {
+} | expression ';' {
   $$ = $1;
-} | PRINT expr ';' {
+} | PRINT expression ';' {
   $$ = new PrintNode( $2 );
   $$->setLineNum( $1 );
-} | RETURN expr ';' {
+} | RETURN expression ';' {
   $$ = new ReturnNode( $2 );
   $$->setLineNum( $1 );
 } | RETURN ';' {
@@ -166,9 +168,11 @@ simple_stmt : ';' {
   $$ = $1;
 } | while_stmt {
   $$ = $1;
+} | assignment {
+  $$ = $1;
 };
 
-expr : INT_VAL {
+expression : INT_VAL {
   $$ = new IntNode($1);
   $$->setLineNum(scanner.lineno());
 } | TRUE {
@@ -183,87 +187,59 @@ expr : INT_VAL {
 } | CHAR_VAL {
   $$ = new CharNode($1);
   $$->setLineNum( scanner.lineno() );
-} | ID {
-  $$ = new VarRefNode(*($1));
-  $$->setLineNum( scanner.lineno() );
-} | ID '=' expr {
-  VarRefNode* var = new VarRefNode(*($1));
-  var->setLineNum(scanner.lineno());
-  $$ = new AssignNode(var, $3);
-  $$->setLineNum( scanner.lineno() );
-} | expr '+' expr {
+}| expression '+' expression {
   $$ = new AddNode($1, $3);
   $$->setLineNum( scanner.lineno() );
-} | expr '-' expr {
+} | expression '-' expression {
   $$ = new SubNode($1, $3);
   $$->setLineNum( scanner.lineno() );
-} | expr '*' expr {
+} | expression '*' expression {
   $$ = new MulNode($1, $3);
   $$->setLineNum( scanner.lineno() );
-} | expr '/' expr {
+} | expression '/' expression {
   $$ = new DivNode($1, $3);
   $$->setLineNum( scanner.lineno() );
-} | expr '<' expr {
+} | expression '<' expression {
   $$ = new LtNode($1, $3);
   $$->setLineNum( scanner.lineno() );
-} | expr AND  expr {
+} | expression AND  expression {
   $$ = new AndNode($1, $3);
   $$->setLineNum( scanner.lineno() );
-} | expr EQ  expr {
+} | expression EQ  expression {
   $$ = new EqNode($1, $3);
   $$->setLineNum( scanner.lineno() );
-} | '(' expr ')' {
+} | '(' expression ')' {
   $$ = $2;
 } | call {
   $$ = $1;
 } | NEW ID {
   $$ = new NewNode(*($2));
-} | THIS '.' ID {
-  $$ = new MemberVarRefNode(*($3));
+} | simple_name {
+  $$ = $1
 };
 
-var_declaration : var_declaration ',' var_decl_fragment {
+simple_name : ID {
+  $$ = new SimpleNameNode(*$1);
+};
+
+var_declaration : var_declaration ',' var_declaration_fragment {
   $$ = $1;
   $$->addVarDeclFragment($3);
-  $$->setLineNum( scanner.lineno() );
-} | type {
+  $$->setLineNum(scanner.lineno());
+} | type var_declaration_fragment {
   $$ = new VarDeclarationNode();
   $$->setDataTypeNode($1);
 };
 
-var_decl_fragment : ID {
-  $$ = new VarDeclarationFragmentNode(*$1);
+var_declaration_fragment : ID '=' expression {
+  $$ = new VarDeclarationFragmentNode(*$1, $3);
+} | ID {
+  $$ = new VarDeclarationFragmentNode(*$1, nullptr);
 };
 
-var_declaration : var_list declare_var {
-  $$ = $1;
-  $2->setVarDataTypeNode( $1->getDataTypeNode() );
-  $$->addDeclare( $2 );
-  $$->setLineNum( scanner.lineno() );
-};
-
-var_list : var_list declare_var ',' {
-  $$ = $1;
-  $2->setVarDataTypeNode( $1->getDataTypeNode() );
-  $$->addDeclare( $2 );
-  $$->setLineNum( scanner.lineno() );
-} | type {
-  $$ = new DeclareNode();
-  $$->setDataTypeNode($1);
-  $$->setLineNum( scanner.lineno() );
-};
-
-declare_var : ID {
-  VarNode* var = new VarDeclareNode( *($1) );
-  var->setLineNum( scanner.lineno() );
-  $$ = new AssignNode( var );
-  $$->setLineNum( scanner.lineno() );
-} | ID '=' expr {
-  VarNode* var = new VarDeclareNode(*($1));
-  var->setLineNum( scanner.lineno() );
-  $$ = new AssignNode( var, $3 );
-  $$->setLineNum( scanner.lineno() );
-};
+assignment : ID '=' expression {
+  $$ = new AssignNode(*$1, $3);
+}
 
 type : INT_TYPE {
   $$ = INT_TYPE_NODE;
@@ -274,39 +250,39 @@ type : INT_TYPE {
 } | STR_TYPE {
   $$ = STRING_TYPE_NODE;
 } | ID {
-  $$ = new ClassTypeNode( *($1) );
-  $$->setLineNum( scanner.lineno());
+  $$ = new ClassTypeNode(*($1));
+  $$->setLineNum(scanner.lineno());
 };
 
-if_stmt : IF '(' expr ')' '{'
+if_stmt : IF '(' expression ')' '{'
             simple_program
           '}' ELSE '{'
             simple_program
           '}' {
   $$ = new IfNode( $3, $6, $10 );
   $$->setLineNum( $1 );
-} | IF '(' expr ')' '{' simple_program '}' ELSE  stmt {
+} | IF '(' expression ')' '{' simple_program '}' ELSE  stmt {
   $$ = new IfNode( $3, $6, $9 );
   $$->setLineNum( $1 );
-} | IF '(' expr ')'  stmt ELSE '{' simple_program '}' {
+} | IF '(' expression ')'  stmt ELSE '{' simple_program '}' {
   $$ = new IfNode( $3, $5, $8 );
   $$->setLineNum( $1 );
-} | IF '(' expr ')'  stmt  ELSE stmt {
+} | IF '(' expression ')'  stmt  ELSE stmt {
   $$ = new IfNode( $3, $5, $7 );
   $$->setLineNum( $1 );
-} | IF '(' expr ')' '{' simple_program '}' %prec IFX {
+} | IF '(' expression ')' '{' simple_program '}' %prec IFX {
   $$ = new IfNode( $3, $6 );
   $$->setLineNum( $1 );
-} | IF '(' expr ')'  stmt  %prec IFX {
+} | IF '(' expression ')'  stmt  %prec IFX {
   $$ = new IfNode( $3, $5 );
   $$->setLineNum( $1 );
 };
 
-while_stmt : WHILE '(' expr ')' '{' simple_program '}' {
+while_stmt : WHILE '(' expression ')' '{' simple_program '}' {
   $$ = new WhileNode( $3, $6 );
   $$->setLineNum( $1 );
   g_collector.insert( $$ );
-} | WHILE '(' expr ')' stmt {
+} | WHILE '(' expression ')' stmt {
   $$ = new WhileNode( $3, $5 );
   $$->setLineNum( $1 );
 };
@@ -336,20 +312,9 @@ func_param_list : func_param_list ',' type ID {
   $$->addParam(VarNode(*($2), $1));
 };
 
-call : ID '(' call_param_list ')' {
+call : simple_name '(' call_param_list ')' {
   $$ = $3;
   $$->setFuncName(*($1));
-} | ID '.' ID '(' call_param_list ')' {
-  $$ = $5;
-  $$->setLineNum($<lineno>2);
-  $$->setFuncName(*($3));
-  $$->setMemberFuncHint(true);
-  $$->setCallerName(*($1));
-} | THIS '.' ID '(' call_param_list ')' {
-  $$ = $5;
-  $$->setLineNum($<lineno>2);
-  $$->setFuncName(*($3));
-  $$->setMemberFuncHint(true);
 };
 
 call_param_list : param_list {
@@ -358,10 +323,10 @@ call_param_list : param_list {
   $$ = new CallNode();
 };
 
-param_list : param_list ',' expr {
+param_list : param_list ',' expression {
   $$ = $1;
   $$->addParam($3);
-} | expr {
+} | expression {
   $$ = new CallNode();
   $$->addParam($1);
   $$->setLineNum(scanner.lineno());
@@ -378,9 +343,9 @@ class : CLASS ID '{' class_stmt_list  '}' {
   $$->setLineNum($1);
 };
 
-class_stmt_list : class_stmt_list declare ';' {
+class_stmt_list : class_stmt_list var_declaration ';' {
   $$ = $1;
-  $$->addVarDeclare($2);
+  $$->addVarDeclaration($2);
 } | class_stmt_list function {
   $$ = $1;
   // create a new class function to wrap a global function

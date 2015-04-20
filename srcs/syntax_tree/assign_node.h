@@ -4,7 +4,6 @@
 #include <memory>
 
 #include "syntax_tree/exp_node.h"
-#include "syntax_tree/name_node.h"
 
 namespace flang {
 

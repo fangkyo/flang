@@ -24,19 +24,20 @@ public:
   void setBaseClass(NameNode* base_class) { base_class_.reset(base_class); }
   NameNode* getBaseClass() { return base_class_.get(); }
 
-  void AddMemberVar(VarDeclarationNode* member_var) {
+  // Add member variable declaration
+  void AddVarDeclaration(VarDeclarationNode* member_var) {
     member_var->setParent(this);
     member_var_list_.push_back(member_var);
   }
-  const boost::ptr_vector<VarDeclarationNode>& getMemberVarList() {
+  const boost::ptr_vector<VarDeclarationNode>& getVarDeclarationList() {
     return member_var_list_;
   }
 
-  void AddMemberFunction(FuncNode* member_func) {
+  void AddFunction(FuncNode* member_func) {
     member_func->setParent(this);
     member_func_list_.push_back(member_func);
   }
-  const boost::ptr_vector<FuncNode>& getMemberFuncList() {
+  const boost::ptr_vector<FuncNode>& getFunctionList() {
     return member_func_list_;
   }
 
