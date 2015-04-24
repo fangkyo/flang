@@ -15,12 +15,6 @@ class StmtNode : public ASTNode {
     ASTNode(node_type) {}
 };
 
-class EmptyNode : public StmtNode {
- public:
-  EmptyNode() : StmtNode(ASTNode::EMPTY_NODE) {}
-  ~EmptyNode() override {}
-};
-
 } // namespace flang
 
 #endif

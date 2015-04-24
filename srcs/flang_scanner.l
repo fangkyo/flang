@@ -97,7 +97,7 @@ char {
 
 string {
   yylval->lineno = lineno();
-  return Token::STRING_TYPE;
+  return Token::STR_TYPE;
 }
 
 true {

@@ -13,3 +13,19 @@ gen_rule(
       'stack.hh',
   ],
 )
+
+cc_binary(
+  name = 'flang',
+  srcs = [
+      'main.cpp',
+      'flang_parser.cpp',
+      'flang_scanner.cpp',
+  ],
+  deps = [
+      '#boost_system',
+      '#log4cxx',
+      ':flang_parser',
+      ':flang_scanner',
+      '//syntax_tree:syntax_tree',
+  ]
+)

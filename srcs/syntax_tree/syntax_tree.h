@@ -15,6 +15,7 @@
 #include "syntax_tree/data_type_node.h"
 #include "syntax_tree/program_node.h"
 #include "syntax_tree/primitive_node.h"
+#include "syntax_tree/new_node.h"
 
 namespace flang {
 
@@ -27,9 +28,11 @@ class SyntaxTree {
  public:
   SyntaxTree() {}
   void accept(ASTVisitor*);
+  void setRoot(ASTNode* root) { root_.reset(root); }
+  ASTNode* getRoot() { return root_.get(); }
 
  private:
-  std::unique_ptr<ProgramNode> root_;
+  std::unique_ptr<ASTNode> root_;
 };
 
 }  // namespace flang

@@ -33,7 +33,7 @@ class QualifiedNameNode : public NameNode {
   QualifiedNameNode(NameNode* qualifier, SimpleNameNode* name);
   ~QualifiedNameNode() override {}
 
-  void accept(ASTVisitor* visitor) override;
+  void accept(ASTVisitor* visitor) override {}
 
   void setName(SimpleNameNode* name) { name_.reset(name); }
   SimpleNameNode* getName() { return name_.get(); }

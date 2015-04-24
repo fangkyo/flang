@@ -24,7 +24,6 @@ class ASTNode {
     IF_NODE, // If statement node
     WHILE_NODE, // While statement node
     BREAK_NODE, // break statement node
-    EMPTY_NODE, // Empty statement node
     RETURN_NODE, // Return statement node
     UNARY_EXP_NODE, // Unary expression node
     BINARY_EXP_NODE, // Binary expression node
@@ -57,7 +56,7 @@ class ASTNode {
       node_type_(node_type), parent_(nullptr) {}
 
   virtual ~ASTNode() {}
-  virtual void accept(ASTVisitor*) = 0;
+  virtual void accept(ASTVisitor*) {}
 
   ASTNodeType getNodeType() { return node_type_; }
 
@@ -74,6 +73,15 @@ class ASTNode {
   ASTNode* parent_;
   int32_t line_num_;
 };
+
+class EmptyNode : public ASTNode {
+ public:
+  EmptyNode() : ASTNode(ASTNode::EMPTY_NODE) {}
+  ~EmptyNode() override {}
+  void accept(ASTVisitor*) override {}
+};
+
+
 
 }  // namespace flang
 

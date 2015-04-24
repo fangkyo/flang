@@ -7,7 +7,7 @@
 
 #include "flang_parser.h"
 #include "flang_scanner.h"
-#include "syntax_checker.h"
+#include "syntax_tree/syntax_tree.h"
 
 int main(int argc, char* argv[]){
   TCLAP::CmdLine cmd("Command description message", ' ', "0.9");
@@ -20,16 +20,11 @@ int main(int argc, char* argv[]){
   log4cxx::PropertyConfigurator::configure("log4cxx.properties");
   log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger("flang");
   LOG4CXX_INFO(logger, "start to parse program and build abstract syntax tree");
-  SyntaxTree* program = NULL;
+  flang::SyntaxTree syntax_tree;
   std::ifstream file_stream(filename);
   flang::FlangScanner scanner(&file_stream);
-  flang::FlangParser parser(scanner, program);
+  flang::FlangParser parser(scanner, &syntax_tree);
   parser.parse();
-
-  if( NULL == program ) {
-    LOG4CXX_INFO(logger, "program is null" );
-    return 0;
-  }
 
   LOG4CXX_INFO(logger, "abstract syntax tree built completed");
   LOG4CXX_INFO(logger, "start to do type check");
@@ -39,8 +34,6 @@ int main(int argc, char* argv[]){
   // typeCheckVisitor.printError();
 
   LOG4CXX_INFO(logger, "type check completed");
-  program = NULL;
 
-  flang::AssignNode
-  return 0;
+  return EXIT_SUCCESS;
 }

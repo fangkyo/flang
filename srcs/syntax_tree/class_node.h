@@ -16,7 +16,7 @@ namespace flang {
 class ClassNode : public StmtNode {
 public:
   ClassNode() : StmtNode(ASTNode::CLASS_NODE) {}
-  ~ClassNode() override;
+  ~ClassNode() override {}
 
   void setName(const std::string &name) { name_ = name; }
   const std::string &getName() { return name_; }
@@ -25,7 +25,7 @@ public:
   NameNode* getBaseClass() { return base_class_.get(); }
 
   // Add member variable declaration
-  void AddVarDeclaration(VarDeclarationNode* member_var) {
+  void addVarDeclaration(VarDeclarationNode* member_var) {
     member_var->setParent(this);
     member_var_list_.push_back(member_var);
   }
@@ -33,7 +33,7 @@ public:
     return member_var_list_;
   }
 
-  void AddFunction(FuncNode* member_func) {
+  void addFunction(FuncNode* member_func) {
     member_func->setParent(this);
     member_func_list_.push_back(member_func);
   }
@@ -43,7 +43,7 @@ public:
 
   bool hasBaseClass() { return base_class_ == nullptr; }
 
-  void accept(ASTVisitor* visitor);
+  void accept(ASTVisitor* visitor) override;
 
   // void acceptVars(Visitor &visitor);
 

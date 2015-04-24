@@ -27,6 +27,9 @@ class FuncNode : public StmtNode {
   boost::ptr_vector<VarDeclarationNode>& getParamList() { return param_list_; }
   void addParameter(VarDeclarationNode* param) { param_list_.push_back(param); }
 
+  DataTypeNode* getReturnType() { return return_type_.get(); }
+  void setReturnType(DataTypeNode* type) { return_type_.reset(type); }
+
   void accept(ASTVisitor* visitor) override;
 
  private:
@@ -38,7 +41,7 @@ class FuncNode : public StmtNode {
 
 class ReturnNode : public StmtNode {
  public:
-  ReturnNode(ExpNode* exp_node);
+  ReturnNode(ExpNode* exp_node = nullptr);
   ~ReturnNode() override {}
 
   ExpNode* getExpression() { return expression_.get(); }
@@ -53,8 +56,8 @@ class ReturnNode : public StmtNode {
 
 class CallNode : public ExpNode {
  public:
-  CallNode(const std::string& name);
-  ~CallNode() override;
+  CallNode(const std::string& name = "");
+  ~CallNode() override {}
 
   void accept(ASTVisitor* visitor) override;
 
