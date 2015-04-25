@@ -4,7 +4,6 @@
 
 void fmtMisTypeError(char* msg, int lineNum, DataTypeNode* dtype1,
                      DataTypeNode* dtype2) {
-
   sprintf(msg,
           "error at line %d : left type \"%s\" can't match right type \"%s\"",
           lineNum, dataTypeStr(dtype1->getDataType()),
@@ -12,18 +11,15 @@ void fmtMisTypeError(char* msg, int lineNum, DataTypeNode* dtype1,
 }
 
 void fmtNonPrintError(char* msg, int lineNum, DataTypeNode* dtype) {
-
   sprintf(msg, "error at line %d : type \"%s\" can't be printed.", lineNum,
           dataTypeStr(dtype->getDataType()));
 }
 
 void fmtVarRedecError(char* msg, int lineNum, const char* var) {
-
   sprintf(msg, "error at line %d : \"%s\" has been declared.", lineNum, var);
 }
 
 void fmtVarNotDecError(char* msg, int lineNum, const char* var) {
-
   sprintf(msg, "error at line %d : \"%s\" is not declared.", lineNum, var);
 }
 
@@ -34,18 +30,15 @@ void fmtNotBoolError(char* msg, int lineNum, DataTypeNode* dtype) {
 
 void fmtNotIntError(char* msg, int lineNum, const char* exp,
                     DataTypeNode* dtype) {
-
   sprintf(msg, "error at line %d : \"%s\" type is \"%s\", int type expected.",
           lineNum, exp, dataTypeStr(dtype->getDataType()));
 }
 
 void ErrorEngine::emitError(Error* error) {
-
   if (error) m_errorList.push_back(error->toString());
 }
 
 void ErrorEngine::printError() {
-
   for (list<string>::iterator iter = m_errorList.begin();
        iter != m_errorList.end(); ++iter) {
     cout << *iter << endl;
@@ -53,7 +46,6 @@ void ErrorEngine::printError() {
 }
 
 string TypeNotMatchError::toString() {
-
   char msg[ERROR_STR_LEN];
   sprintf(msg, "error at line %d : \"%s\" type is \"%s\", \"%s\" expected.",
           m_expNode->getLineNum(), m_expNode->toString().c_str(),
@@ -92,7 +84,6 @@ string TypeNotEqualError::toString() {
 }
 
 string BreakWithNoWhileError::toString() {
-
   char msg[ERROR_STR_LEN];
   assert(m_breakNode);
   sprintf(msg, "error at line %d : break stmt should in a while scope ",
@@ -118,7 +109,6 @@ string FuncNotDefineError::toString() {
 }
 
 string ReturnTypeError::toString() {
-
   char msg[ERROR_STR_LEN];
   assert(m_func);
   assert(m_ret);
@@ -140,7 +130,6 @@ string SingleReturnError::toString() {
 }
 
 string LackReturnError::toString() {
-
   char msg[ERROR_STR_LEN];
   assert(m_func);
 
@@ -149,7 +138,6 @@ string LackReturnError::toString() {
   return string(msg);
 }
 string InheritSelfError::toString() {
-
   char msg[ERROR_STR_LEN];
   assert(m_class);
 
@@ -160,7 +148,6 @@ string InheritSelfError::toString() {
 }
 
 string ClassRedefinedError::toString() {
-
   char msg[ERROR_STR_LEN];
   assert(m_orgClass);
   assert(m_newClass);
