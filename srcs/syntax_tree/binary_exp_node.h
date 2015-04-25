@@ -33,10 +33,10 @@ class BinaryExpNode : public ExpNode {
   BinaryOpType getOperator() { return operator_; }
   void setOperator(BinaryOpType op) { operator_ = op; }
 
-  ExpNode* leftSide() { return left_side_.get(); }
+  ExpNode* getLeftSide() { return left_side_.get(); }
   void setLeftSide(ExpNode* exp_node) { left_side_.reset(exp_node); }
 
-  ExpNode* rightSide() { return right_side_.get(); }
+  ExpNode* getRightSide() { return right_side_.get(); }
   void setRightSide(ExpNode* exp_node) { right_side_.reset(exp_node); }
 
  protected:

@@ -60,6 +60,7 @@ static int yylex(flang::FlangParser::semantic_type *yylval,
   QualifiedNameNode* qualified_name_node;
   SimpleNameNode* simple_name_node;
   StmtNode* stmt_node;
+  BlockNode* block_node;
 }
 
 %token <int_val> INT_VAL
@@ -88,12 +89,12 @@ static int yylex(flang::FlangParser::semantic_type *yylval,
 %right '!'
 
 %nonassoc UMINUS
-%type <ast_node> program block
+%type <program_node> program
+%type <block_node> block
 %type <stmt_node> stmt simple_stmt complex_stmt
 %type <exp_node> expression
 %type <var_decl_node> var_declaration
 %type <var_decl_fragment_node> var_declaration_fragment
-%type <program_node> stmt_list simple_stmt_list
 %type <data_type_node> type ret_type
 %type <if_node> if_stmt
 %type <while_node> while_stmt
@@ -109,21 +110,12 @@ static int yylex(flang::FlangParser::semantic_type *yylval,
 
 %%
 
-program : stmt_list {
+program : program stmt {
   $$ = $1;
-  syntax_tree->setRoot($1);
+  $$->addStatement($2);
 } | {
-  syntax_tree->setRoot(new EmptyNode());
+  syntax_tree->setRoot(new ProgramNode());
   $$ = syntax_tree->getRoot();
-};
-
-stmt_list : stmt {
-  $$ = new ProgramNode();
-  $$->setLineNum(scanner.lineno());
-  $$->addStatement($1);
-} | stmt_list stmt {
-  $1->addStatement($2);
-  $$ = $1;
 };
 
 stmt : simple_stmt {
@@ -132,18 +124,13 @@ stmt : simple_stmt {
   $$ = $1;
 };
 
-block : simple_stmt_list {
-  $$ = $1;
-} | {
-  $$ = NULL;
-};
-
-simple_stmt_list : simple_stmt {
-  $$ = new ProgramNode();
+block : simple_stmt {
+  $$ = new BlockNode();
   $$->setLineNum(scanner.lineno());
   $$->addStatement($1);
-} | simple_stmt_list simple_stmt {
-  $1->addStatement($2);
+} | block simple_stmt {
+  $$ = $1;
+  $$->addStatement($2);
 };
 
 complex_stmt : function {

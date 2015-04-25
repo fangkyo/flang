@@ -27,6 +27,12 @@ class BlockNode;
     virtual bool visit(ASTNodeClass*) { return true; } \
     virtual bool afterVisit(ASTNodeClass*) { return true; }
 
+#define OVERRIDE_VISIT_METHOD(ASTNodeClass) \
+    bool beforeVisit(ASTNodeClass*) override; \
+    bool visit(ASTNodeClass*) override; \
+    bool afterVisit(ASTNodeClass*) override;
+
+
 class ASTVisitor {
  public:
   virtual ~ASTVisitor() {}
@@ -49,7 +55,6 @@ class ASTVisitor {
   VISIT_METHOD(UnaryExpNode)
   VISIT_METHOD(BlockNode)
 
-  virtual void doProgramNode(ProgramNode*) {};
   virtual void doPrintNode(PrintNode*) {};
   virtual void doDeclareNode(VarDeclarationNode*) {};
   virtual void doUnaryExpNode(UnaryExpNode*) {};

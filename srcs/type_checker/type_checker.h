@@ -10,13 +10,10 @@ namespace flang {
 
 class TypeChecker : public ASTVisitor {
  public:
+
+  bool visit(BinaryExpNode*) override;
+
   void doPrintNode(PrintNode* node) override;
-
-  void doOpNode(OpNode* node) override;
-
-  void doVarNode(VarNode* node) override;
-
-  void doVarRefNode(VarRefNode* node) override;
 
   void doAssignNode(AssignNode* node) override;
 

@@ -4,6 +4,8 @@
 #include <cassert>
 #include <cstring>
 
+#include <boost/assert.hpp>
+
 #define CHECK(val) assert(val)
 
 #define CHECK_NULL(val) assert(NULL == val)

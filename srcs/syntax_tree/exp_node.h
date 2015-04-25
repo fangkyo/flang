@@ -12,6 +12,8 @@ class ExpNode : public StmtNode {
  public:
   ~ExpNode() override {}
   virtual bool isConst() { return false; }
+  void getType() {}
+  void setType() {}
 
  protected:
   ExpNode(ASTNode::ASTNodeType node_type) : StmtNode(node_type) {}

@@ -1,3 +1,10 @@
 cc_config(
     cxxflags = ['-std=c++11', '-w']
 )
+
+proto_library_config(
+    protoc='/usr/bin/protoc',
+    protobuf_libs=['#protobuf'],
+    protobuf_path='/usr/local/lib',
+    protobuf_include_path = '/usr/local/include/google',
+)

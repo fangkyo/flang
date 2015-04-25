@@ -16,6 +16,7 @@ cc_library(
    ':data_type_node',
    ':new_node',
    ':ctrl_node',
+   ':block_node',
  ]
 )
 

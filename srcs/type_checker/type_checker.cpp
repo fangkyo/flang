@@ -1,31 +1,23 @@
-#include <iostream>
 
-#include "ast_visitor/type_checker.h"
-#include "syntax_tree/syntax_tree.h"
-
-using namespace std;
+#include "type_checker/type_checker.h"
+#include "base/check.h"
 
 namespace flang {
 
-LoggerPtr TypeChecker::logger_(Logger::getLogger("flang.TypeChecker"));
+log4cxx::LoggerPtr TypeChecker::logger_(
+    log4cxx::Logger::getLogger("flang.TypeChecker"));
 
-void TypeChecker::doStmtListNode(StmtListNode* node) {}
 
-void TypeChecker::doDeclareNode(DeclareNode* node) {
-  //LOG4CXX_TRACE(logger_, "doDeclareNode() called");
-  //if (NULL == node) return;
-
-  //node->getDataTypeNode()->accept(*this);
-
-  //vector<AssignNode*>& declareList = node->getDeclareList();
-
-  //for (size_t i = 0; i < declareList.size(); ++i) {
-    //declareList[i]->setVarDataTypeNode(node->getDataTypeNode()->clone());
-    //declareList[i]->accept(*this);
-  //}
-
-  //LOG4CXX_TRACE(logger_, "doDeclareNode() return");
+bool TypeChecker::visit(BinaryExpNode* node) {
+  ExpNode* left = node->getLeftSide();
+  ExpNode* right = node->getRightSide();
+  if (left->getNodeType() == right->getNodeType()) {
+    return true;
+  } else {
+    return false;
+  }
 }
+
 
 void TypeChecker::doPrintNode(PrintNode* node) {
   //LOG4CXX_TRACE(logger_, "doPrintNode() called");
@@ -48,172 +40,7 @@ void TypeChecker::doPrintNode(PrintNode* node) {
   //LOG4CXX_TRACE(logger_, "doPrintNode() return");
 }
 
-void TypeChecker::doOpNode(OpNode* node) {
-  //if (NULL == node) return;
 
-  //if (node->hasLeftOpnd() && node->hasRightOpnd()) {
-    //DataTypeNode* leftType = node->getLeftDataTypeNode();
-    //DataTypeNode* rightType = node->getRightDataTypeNode();
-
-    //if (!leftType->isEqual(rightType)) {
-      //TypeNotEqualError error(node->m_leftOpnd, node->m_rightOpnd);
-      //emitError(&error);
-    //}
-  //}
-
-  //if (node->hasLeftOpnd())
-    //node->setDataTypeNode(node->getLeftDataTypeNode());
-  //else
-    //node->setDataTypeNode(node->getRightDataTypeNode());
-}
-
-void TypeChecker::doVarNode(VarNode* node) {
-  //LOG4CXX_TRACE(logger_, "doVarNode() called");
-  //if (NULL == node) return;
-
-  //VarNode* var = testVarConflict(node->m_name);
-  //if (var) {
-    //VarRedeclareError error(var);
-    //emitError(&error);
-
-  //} else {
-    //addVar(node);
-  //}
-
-  //LOG4CXX_TRACE(logger_, "doVarNode() return");
-}
-
-void TypeChecker::doVarRefNode(VarRefNode* node) {
-  //LOG4CXX_TRACE(logger_, "doVarRefNode() called");
-  //if (NULL == node) return;
-
-  //VarNode* var = findVar(node->m_name);
-  //if (NULL == var) {
-    //VarNotDeclareError error(node->getLineNum(), node->getName());
-    //emitError(&error);
-
-    //node->setVarNode(NULL);
-
-  //} else {
-    //node->setVarNode(var);
-  //}
-
-  //LOG4CXX_TRACE(logger_, "doVarRefNode() return");
-}
-
-void TypeChecker::doAndNode(AndNode* node) {
-  //LOG4CXX_TRACE(logger_, "doAndNode() called");
-
-  //if (NULL == node) return;
-
-  //doBoolOpNode(node);
-
-  //LOG4CXX_TRACE(logger_, "doAndNode() return");
-}
-
-void TypeChecker::doEqNode(EqNode* node) {
-  //LOG4CXX_TRACE(logger_, "doEqNode() called");
-
-  //doOpNode(node);
-  //node->setDataTypeNode(BOOL_TYPE_NODE);
-  //LOG4CXX_TRACE(logger_, "doEqNode() return");
-}
-
-void TypeChecker::doLtNode(LtNode* node) {
-  //LOG4CXX_TRACE(logger_, "doLtNode() called");
-
-  //doOpNode(node);
-  //node->setDataTypeNode(BOOL_TYPE_NODE);
-
-  //LOG4CXX_TRACE(logger_, "doLtNode() return");
-}
-
-void TypeChecker::doAddNode(AddNode* node) {
-  //LOG4CXX_TRACE(logger_, "doAddNode() called");
-
-  //doIntOpNode(node);
-
-  //LOG4CXX_TRACE(logger_, "doAddNode() return");
-}
-
-void TypeChecker::doSubNode(SubNode* node) {
-  //LOG4CXX_TRACE(logger_, "doSubNode() called");
-
-  //doIntOpNode(node);
-
-  //LOG4CXX_TRACE(logger_, "doSubNode() return");
-}
-
-void TypeChecker::doMulNode(MulNode* node) {
-  //LOG4CXX_TRACE(logger_, "doMulNode() called");
-
-  //doIntOpNode(node);
-
-  //LOG4CXX_TRACE(logger_, "doMulNode() return");
-}
-
-void TypeChecker::doDivNode(DivNode* node) {
-  //LOG4CXX_TRACE(logger_, "doDivNode() called");
-
-  //doIntOpNode(node);
-
-  //LOG4CXX_TRACE(logger_, "doDivNode() return");
-}
-
-void TypeChecker::doBoolOpNode(OpNode* node) {
-  //LOG4CXX_TRACE(logger_, "doBoolOpNode() called");
-  //assert(node);
-
-  //char error[ERROR_STR_LEN];
-
-  //if (node->m_leftOpnd) {
-    //DataTypeNode* leftType = node->m_leftOpnd->getDataTypeNode();
-    //assert(leftType);
-
-    //if (!leftType->isEqual(BOOL_TYPE_NODE)) {
-      //TypeNotMatchError error(node->m_leftOpnd, BOOL_TYPE_NODE);
-      //emitError(&error);
-    //}
-  //}
-
-  //if (node->m_rightOpnd) {
-    //DataTypeNode* rightType = node->m_rightOpnd->getDataTypeNode();
-    //assert(rightType);
-    //if (!rightType->isEqual(BOOL_TYPE_NODE)) {
-      //TypeNotMatchError error(node->m_rightOpnd, BOOL_TYPE_NODE);
-      //emitError(&error);
-    //}
-  //}
-
-  //node->setDataTypeNode(BOOL_TYPE_NODE);
-
-  //LOG4CXX_TRACE(logger_, "doBoolOpNode() return");
-}
-
-void TypeChecker::doIntOpNode(OpNode* node) {
-  //LOG4CXX_TRACE(logger_, "doIntOpNode() called");
-
-  //assert(node->hasLeftOpnd());
-  //DataTypeNode* leftType = node->getLeftDataTypeNode();
-  //assert(leftType);
-
-  //if (!leftType->isEqual(INT_TYPE_NODE)) {
-    //TypeNotMatchError error(node->m_leftOpnd, INT_TYPE_NODE);
-    //emitError(&error);
-  //}
-
-  //assert(node->hasRightOpnd());
-  //DataTypeNode* rightType = node->getRightDataTypeNode();
-  //assert(rightType);
-
-  //if (!rightType->isEqual(INT_TYPE_NODE)) {
-    //TypeNotMatchError error(node->m_rightOpnd, INT_TYPE_NODE);
-    //emitError(&error);
-  //}
-  //node->setDataTypeNode(INT_TYPE_NODE);
-
-  //LOG4CXX_TRACE(logger_, "doIntOpNode() return");
-}
 
 void TypeChecker::doAssignNode(AssignNode* node) {
   //LOG4CXX_TRACE(logger_, "doAssignNode() called");
@@ -329,7 +156,7 @@ void TypeChecker::doBreakNode(BreakNode* node) {
   //LOG4CXX_TRACE(logger_, "doBreakNode() return");
 }
 
-void TypeChecker::doGlobalFuncNode(GlobalFuncNode* funcNode) {
+// void TypeChecker::doGlobalFuncNode(GlobalFuncNode* funcNode) {
   //LOG4CXX_TRACE(logger_, "doGlobalFuncNode() called");
 
   //if (NULL == funcNode) return;
@@ -353,66 +180,7 @@ void TypeChecker::doGlobalFuncNode(GlobalFuncNode* funcNode) {
   //doFuncNodePart(funcNode);
 
   //LOG4CXX_TRACE(logger_, "doGlobalFuncNode() return");
-}
-
-void TypeChecker::doClassFuncNode(ClassFuncNode* node) {
-  /*
-  LOG4CXX_TRACE( logger_, "doClassFuncNode() called" );
-  if( NULL == node )
-      return;
-  FuncNode* funcTmp = NULL;
-  if( funcTmp = testFuncConflict( node ) ){
-
-      FuncRedefinedError error( funcTmp, node );
-      emit( &error );
-
-  }else{
-      addFunc( funcNode );
-  }
-
-  // doFuncNodePart( node );
-
-  LOG4CXX_TRACE( logger_, "doClassFuncNode() return" );
-  */
-}
-
-void TypeChecker::doFuncNodePart(FuncNode* node) {
-  LOG4CXX_TRACE(logger_, "doFuncNodePart() called");
-
-  if (NULL == node) return;
-
-  /*
-      // check return type
-      assert( node->getRetType() );
-      node->getRetType()->accept( *this );
-
-      // check body node
-      pushFuncLevel( node );
-
-      vector<VarNode>& paramList = node->getParamList();
-      LOG4CXX_DEBUG( logger_,"add function \"" <<
-                                node->getName()
-                                << "\" parameters" );
-      for( int i=0; i< paramList.size(); ++i ) {
-
-          paramList[i].getDataTypeNode()->accept( *this );
-          addVar( &paramList[i] );
-      }
-
-      if( NULL != node->getBody() )
-          node->getBody()->accept( *this );
-
-      popLevel();
-
-      // check the return stmt exists
-      if( ! node->getRetType()->isEqual( VOID_TYPE_NODE )
-          && ! node->hasReturn() ) {
-          LackReturnError error( node );
-          emitError( &error );
-      }*/
-
-  LOG4CXX_TRACE(logger_, "doFuncNodePart() return");
-}
+// }
 
 void TypeChecker::doReturnNode(ReturnNode* node) {
   //LOG4CXX_TRACE(logger_, "doReturnNode() called");
@@ -446,7 +214,6 @@ void TypeChecker::doCallNode(CallNode* node) {
 
   //FuncNode* func = NULL;
 
-  //// 由语法分析显示指出该调用是成员函数调用
   //if (node->getMemberFuncHint()) {
     //LOG4CXX_DEBUG(logger_, "hint function \"" << node->getFuncName()
                                                 //<< "\" is a member function");
@@ -555,21 +322,4 @@ void TypeChecker::doNewNode(NewNode* node) {
   //LOG4CXX_TRACE(logger_, "doNewNode() return");
 }
 
-void TypeChecker::doClassTypeNode(ClassTypeNode* node) {
-  //LOG4CXX_TRACE(logger_, "doClassTypeNode() called");
-
-  //if (NULL == node) return;
-
-  //ClassNode* classNode = findClass(node->getClassName());
-  //if (NULL == classNode) {
-    //ClassNotDefineError error(node->getClassName(), node->getLineNum());
-    //emitError(&error);
-
-  //} else {
-    //node->setClassNode(classNode);
-  //}
-
-  //LOG4CXX_TRACE(logger_, "doClassTypeNode() return");
-}
-
-}  // namespace flang 
+}  // namespace flang

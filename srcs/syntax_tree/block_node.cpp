@@ -13,6 +13,7 @@ void BlockNode::accept(ASTVisitor* visitor) {
 
 void BlockNode::addStatement(StmtNode* stmt_node) {
   CHECK_NOTNULL(stmt_node);
+  stmt_node->setParent(this);
   stmt_list_.push_back(stmt_node);
 }
 
