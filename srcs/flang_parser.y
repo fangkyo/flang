@@ -49,15 +49,17 @@ static int yylex(flang::FlangParser::semantic_type *yylval,
   VarDeclarationFragmentNode* var_decl_fragment_node;
   ProgramNode* program_node;
   ExpNode* exp_node;
-  DataTypeNode*    data_type_node;
-  IfNode*          if_node;
-  WhileNode*       while_node;
-  FuncNode*        func_node;
-  CallNode*        call_node;
-  ClassNode*       class_node;
-  AssignNode*      assign_node;
-  SimpleNameNode*  simple_name_node;
-  StmtNode*        stmt_node;
+  DataTypeNode* data_type_node;
+  IfNode* if_node;
+  WhileNode* while_node;
+  FuncNode* func_node;
+  CallNode* call_node;
+  ClassNode* class_node;
+  AssignNode* assign_node;
+  NameNode* name_node;
+  QualifiedNameNode* qualified_name_node;
+  SimpleNameNode* simple_name_node;
+  StmtNode* stmt_node;
 }
 
 %token <int_val> INT_VAL
@@ -86,7 +88,7 @@ static int yylex(flang::FlangParser::semantic_type *yylval,
 %right '!'
 
 %nonassoc UMINUS
-%type <ast_node> program simple_program
+%type <ast_node> program block
 %type <stmt_node> stmt simple_stmt complex_stmt
 %type <exp_node> expression
 %type <var_decl_node> var_declaration
@@ -100,6 +102,8 @@ static int yylex(flang::FlangParser::semantic_type *yylval,
 %type <class_node> class  class_stmt_list
 %type <assign_node> assignment
 %type <simple_name_node> simple_name
+%type <qualified_name_node> qualified_name
+%type <name_node> name
 
 %start program
 
@@ -128,7 +132,7 @@ stmt : simple_stmt {
   $$ = $1;
 };
 
-simple_program : simple_stmt_list {
+block : simple_stmt_list {
   $$ = $1;
 } | {
   $$ = NULL;
@@ -216,9 +220,22 @@ expression : INT_VAL {
   $$ = $1;
 } | NEW simple_name {
   $$ = new NewNode($2);
-} | simple_name {
+} | name {
   $$ = $1;
 };
+
+name : simple_name {
+ $$ = $1;
+
+} | qualified_name {
+  $$ = $1;
+};
+
+qualified_name : qualified_name '.' simple_name {
+  $$ = new QualifiedNameNode($1, $3);
+} | simple_name '.' simple_name {
+  $$ = new QualifiedNameNode($1, $3);
+}
 
 simple_name : ID {
   $$ = new SimpleNameNode(*$1);
@@ -254,22 +271,22 @@ type : INT_TYPE {
 };
 
 if_stmt : IF '(' expression ')' '{'
-            simple_program
+            block
           '}' ELSE '{'
-            simple_program
+            block
           '}' {
   $$ = new IfNode($3, $6, $10);
   $$->setLineNum($1);
-} | IF '(' expression ')' '{' simple_program '}' ELSE  stmt {
+} | IF '(' expression ')' '{' block '}' ELSE  stmt {
   $$ = new IfNode($3, $6, $9);
   $$->setLineNum($1);
-} | IF '(' expression ')'  stmt ELSE '{' simple_program '}' {
+} | IF '(' expression ')'  stmt ELSE '{' block '}' {
   $$ = new IfNode($3, $5, $8);
   $$->setLineNum($1);
 } | IF '(' expression ')'  stmt  ELSE stmt {
   $$ = new IfNode($3, $5, $7);
   $$->setLineNum($1);
-} | IF '(' expression ')' '{' simple_program '}' %prec IFX {
+} | IF '(' expression ')' '{' block '}' %prec IFX {
   $$ = new IfNode($3, $6, nullptr);
   $$->setLineNum($1);
 } | IF '(' expression ')'  stmt  %prec IFX {
@@ -277,7 +294,7 @@ if_stmt : IF '(' expression ')' '{'
   $$->setLineNum($1);
 };
 
-while_stmt : WHILE '(' expression ')' '{' simple_program '}' {
+while_stmt : WHILE '(' expression ')' '{' block '}' {
   $$ = new WhileNode($3, $6);
   $$->setLineNum($1);
 } | WHILE '(' expression ')' stmt {
@@ -285,13 +302,13 @@ while_stmt : WHILE '(' expression ')' '{' simple_program '}' {
   $$->setLineNum( $1 );
 };
 
-function : DEF ID '(' func_param_list ')' ret_type '{' simple_program '}' {
+function : DEF ID '(' func_param_list ')' ret_type '{' block '}' {
   $$ = $4;
   $$->setName(*($2));
   $$->setReturnType($6);
   $$->setBody($8);
   $$->setLineNum($1);
-} | DEF ID '(' ')' ret_type '{'simple_program '}' {
+} | DEF ID '(' ')' ret_type '{'block '}' {
   $$ = new FuncNode();
   $$->setBody($7);
   $$->setName(*$2);

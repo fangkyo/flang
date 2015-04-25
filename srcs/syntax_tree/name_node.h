@@ -45,20 +45,6 @@ class QualifiedNameNode : public NameNode {
   std::unique_ptr<SimpleNameNode> name_;
 };
 
-class VarNode : public ExpNode {
- public:
-  VarNode(const std::string& name);
-  ~VarNode() override {}
-
-  void accept(ASTVisitor* visitor) override;
-
-  const std::string& name() { return name_; }
-  void setName(const std::string& name) { name_= name; }
-
- private:
-  std::string name_;
-};
-
 }  // namespace flang
 
 #endif

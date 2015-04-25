@@ -1,16 +1,17 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <tclap/CmdLine.h>
+
 #include <log4cxx/logger.h>
 #include <log4cxx/propertyconfigurator.h>
+#include <tclap/CmdLine.h>
 
 #include "flang_parser.h"
 #include "flang_scanner.h"
 #include "syntax_tree/syntax_tree.h"
 
 int main(int argc, char* argv[]){
-  TCLAP::CmdLine cmd("Command description message", ' ', "0.9");
+  TCLAP::CmdLine cmd("Flang compiler.", ' ', "1.0");
   TCLAP::ValueArg<std::string> file_arg(
       "f","src_file","Source file.",true,"","string");
   TCLAP::ValueArg<std::string> log_config_arg(
@@ -34,11 +35,6 @@ int main(int argc, char* argv[]){
 
   LOG4CXX_INFO(logger, "abstract syntax tree built completed");
   LOG4CXX_INFO(logger, "start to do type check");
-
-  // TypeCheckVisitor typeCsfheckVisitor;
-  // program->accept(typeCheckVisitor);
-  // typeCheckVisitor.printError();
-
   LOG4CXX_INFO(logger, "type check completed");
   return EXIT_SUCCESS;
 }
