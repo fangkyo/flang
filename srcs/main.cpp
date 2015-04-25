@@ -12,12 +12,18 @@
 int main(int argc, char* argv[]){
   TCLAP::CmdLine cmd("Command description message", ' ', "0.9");
   TCLAP::ValueArg<std::string> file_arg(
-      "f","file","Source file to compile.",true,"homer","string");
+      "f","src_file","Source file.",true,"","string");
+  TCLAP::ValueArg<std::string> log_config_arg(
+      "l", "log_config", "Log4cxx configuration file.",
+      false, "log4cxx.properties", "string");
   cmd.add(file_arg);
+  cmd.add(log_config_arg);
   cmd.parse(argc, argv);
   std::string filename = file_arg.getValue();
 
-  log4cxx::PropertyConfigurator::configure("log4cxx.properties");
+  // Configure log4cxx
+  log4cxx::PropertyConfigurator::configure(log_config_arg.getValue());
+
   log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger("flang");
   LOG4CXX_INFO(logger, "start to parse program and build abstract syntax tree");
   flang::SyntaxTree syntax_tree;
@@ -34,6 +40,5 @@ int main(int argc, char* argv[]){
   // typeCheckVisitor.printError();
 
   LOG4CXX_INFO(logger, "type check completed");
-
   return EXIT_SUCCESS;
 }
