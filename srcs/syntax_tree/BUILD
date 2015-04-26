@@ -73,6 +73,9 @@ cc_library(
   name = 'name_node',
   srcs = [
     'name_node.cpp'
+  ],
+  deps = [
+    '#boost_system',
   ]
 )
 
