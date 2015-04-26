@@ -1,7 +1,7 @@
 proto_library(
-  name = 'symbol_table_proto',
-  srcs = ['symbol_table.proto'],
+  name = 'data_type_proto',
+  srcs = ['data_type.proto'],
   deps = [
-    '//thirdparty/protobuf',
+    '#protobuf',
   ]
 )

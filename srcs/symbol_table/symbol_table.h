@@ -1,18 +1,18 @@
 #ifndef SYMBOL_TABLE_H_
 #define SYMBOL_TABLE_H_
 
+#include <list>
 #include <memory>
 #include <unordered_map>
 #include <vector>
-#include <list>
 
 namespace flang {
+
 
 class AbstractScope {
 
  protected:
-  std::unordered_map<std::string, std::string> map_;
-
+  std::unordered_map<std::string, DataType*> map_;
 };
 
 class SymbolTable {
@@ -24,7 +24,6 @@ class SymbolTable {
   };
 
   SymbolTable();
-  virtual ~SymbolTable();
 
   // Push a scope to the scope stack
   void pushScope(ScopeType scope_type);
