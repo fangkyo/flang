@@ -1,8 +1,19 @@
-#include "scope.h"
-#include "exp_node.h"
-#include "func_node.h"
-#include "ctrl_node.h"
-#include "class_node.h"
+#include <boost/assign/ptr_map_inserter.hpp>
+
+#include "symbol_table/scope.h"
+
+using boost::assign::ptr_map_insert;
+
+
+namespace flang {
+
+AbstractScope::AbstractScope() {
+  // Insert primitive type entries to data_type_map_
+  ptr_map_insert<Int32TypeEntry>(data_type_map_)("int32");
+  ptr_map_insert<CharTypeEntry>(data_type_map_)("char");
+  ptr_map_insert<StringTypeEntry>(data_type_map_)("string");
+  ptr_map_insert<BoolTypeEntry>(data_type_map_)("bool");
+}
 
 /*********************************************
  *                   Scope
@@ -498,3 +509,5 @@ void ScopeManager::restoreVarFloor() {
   m_varFloor = m_varFloorStack.back();
   m_varFloorStack.pop_back();
 }
+
+}  // namespace flang

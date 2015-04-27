@@ -14,14 +14,14 @@ class FunctionEntry;
 class DataTypeEntry {
  public:
   virtual ~DataTypeEntry() {}
-  void setType(Type type) { type_ = type; }
-  Type getType() const { return type_; }
+  void setType(data_type::DataType type) { type_ = type; }
+  data_type::DataType getType() const { return type_; }
   virtual bool operator == (const DataTypeEntry& data_type) const {
     return data_type.getType() == this->type_;
   }
 
  protected:
-  DataTypeEntry(Type type) : type_(type) {}
+  DataTypeEntry(data_type::DataType type) : type_(type) {}
 
  private:
   data_type::DataType type_;
@@ -41,7 +41,7 @@ class CharTypeEntry : public DataTypeEntry {
 
 class BoolTypeEntry : public DataTypeEntry {
  public:
-  BoolTypeEntry() : DataTypeEntry(data_type::Bool) {}
+  BoolTypeEntry() : DataTypeEntry(data_type::BOOL) {}
   ~BoolTypeEntry() override {}
 };
 
@@ -51,7 +51,7 @@ class StringTypeEntry : public DataTypeEntry {
   ~StringTypeEntry() override {}
 };
 
-class ClassTypeEntry : public ClassTypeEntry {
+class ClassTypeEntry : public DataTypeEntry {
  public:
   ClassTypeEntry() : DataTypeEntry(data_type::CLASS) {}
   ~ClassTypeEntry() override {}
@@ -65,7 +65,7 @@ class ClassTypeEntry : public ClassTypeEntry {
   }
 
  private:
-  std::vector<FunctionEntry*> function_entries_; 
+  std::vector<FunctionEntry*> function_entries_;
 };
 
 }  // namespace flang

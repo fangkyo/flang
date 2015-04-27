@@ -1,5 +1,5 @@
-#ifndef SCOPE_H
-#define SCOPE_H
+#ifndef SCOPE_H_
+#define SCOPE_H_
 
 #include <cstdint>
 #include <cassert>
@@ -8,10 +8,16 @@
 #include <unordered_map>
 #include <vector>
 
+#include <boost/ptr_container/ptr_map.hpp>
 #include <log4cxx/logger.h>
+
+#include "symbol_table/data_type_entry.h"
+#include "symbol_table/function_entry.h"
 
 using namespace std;
 using namespace log4cxx;
+
+namespace flang {
 
 enum ScopeType {
   SCOPE_DEFAULT,
@@ -29,7 +35,19 @@ class ClassNode;
 class ClassFuncNode;
 class DataTypeNode;
 
-class Scope {
+class AbstractScope {
+ public:
+  AbstractScope();
+  virtual ~AbstractScope() {}
+
+ protected:
+  // Map variable name to data type
+  std::unordered_map<std::string, DataTypeEntry*> var_type_map_;
+  // Map data type name to data type entry
+  boost::ptr_map<std::string, DataTypeEntry> data_type_map_;
+};
+
+class Scope : public AbstractScope {
  private:
   ScopeType m_type;
 
@@ -86,7 +104,7 @@ class ScopeManager {
  protected:
   static LoggerPtr ms_logger;
 
-  // 变量搜索的下限层数，用于控制嵌套的函数和类定义中变量的类型检查
+  // 变量搜索的下限层数, 用于控制嵌套的函数和类定义中变量的类型检查
   int m_varFloor;
 
   list<Scope> m_scopeStack;
@@ -111,7 +129,6 @@ class ScopeManager {
   VarNode* findVarInCurScope(const string&);  // used by var declaration
 
   VarNode* testVarConflict(const string& varName);
-  // FuncNode* testFuncConflict( const string& funcName );
 
   /**
    * 测试当前符号表内函数是否重复定义(允许函数重载)
@@ -147,5 +164,7 @@ class ScopeManager {
   void updateVarFloor(int varFloor);
   void restoreVarFloor();
 };
+
+}  // namespace flang
 
 #endif

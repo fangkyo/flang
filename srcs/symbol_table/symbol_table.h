@@ -9,12 +9,6 @@
 namespace flang {
 
 
-class AbstractScope {
-
- protected:
-  std::unordered_map<std::string, DataType*> map_;
-};
-
 class SymbolTable {
  public:
   enum ScopeType{

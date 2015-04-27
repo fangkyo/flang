@@ -13,10 +13,20 @@ class FunctionEntry {
   FunctionEntry() {}
   std::string toString() { return ""; }
 
+  void setReturnType(DataTypeEntry* return_type) {
+    return_type_ = return_type;
+  }
+  DataTypeEntry* getReturnType() { return return_type_; }
+
+  void addParameter(DataTypeEntry* param) { parameters_.push_back(param); }
+  const std::vector<DataTypeEntry*>& getParameters() const {
+    return parameters_;
+  }
+
  private:
   std::string name_;
   std::string qualifier_;
-  DataTypeEntry return_type_;
+  DataTypeEntry* return_type_;
   std::vector<DataTypeEntry*> parameters_;
 };
 

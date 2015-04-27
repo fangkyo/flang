@@ -1,6 +1,7 @@
+package flang;
 
-enum OneofNameCase {
- kFooInt = 4,
- kFooString = 9,
- ONEOF_NAME_NOT_SET = 0
+enum ScopeType {
+  BLOCK = 1;
+  CLASS = 2;
+  FUNCTION = 3;
 }
