@@ -15,6 +15,15 @@ proto_library(
 )
 
 cc_library(
+  name = 'symbol_info',
+  srcs = ['symbol_info.cpp'],
+  deps = [
+    '#boost_system',
+    ':symbol_info_proto',
+  ]
+)
+
+cc_library(
   name = 'data_type_entry',
   srcs = ['data_type_entry.cpp'],
   deps = [
