@@ -6,6 +6,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include "symbol_table/scope.h"
+
 namespace flang {
 
 
@@ -23,6 +25,10 @@ class SymbolTable {
   void pushScope(ScopeType scope_type);
   // Pop a scope from the scope stack
   void popScope();
+
+  // Look up the symbol specification for the given symbol name.
+  // Return nullptr if can't find anything.
+  void* lookup(const std::string& name);
 
   // Add a function
   void addFunction(const std::string& pkgName);

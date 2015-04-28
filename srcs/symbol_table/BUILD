@@ -6,6 +6,14 @@ proto_library(
   ]
 )
 
+proto_library(
+  name = 'symbol_info_proto',
+  srcs = ['symbol_info.proto'],
+  deps = [
+      '#protobuf',
+  ]
+)
+
 cc_library(
   name = 'data_type_entry',
   srcs = ['data_type_entry.cpp'],

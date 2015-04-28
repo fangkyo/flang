@@ -13,6 +13,7 @@
 
 #include "symbol_table/data_type_entry.h"
 #include "symbol_table/function_entry.h"
+#include "symbol_table/symbol_info.h"
 
 using namespace std;
 using namespace log4cxx;
@@ -40,11 +41,13 @@ class AbstractScope {
   AbstractScope();
   virtual ~AbstractScope() {}
 
+  virtual void insert(const string& name, SymbolInfo* symbol_info) = 0;
+  virtual SymbolInfo* lookup(const string& name) = 0;
+  virtual bool exists(const string& name) = 0;
+
  protected:
-  // Map variable name to data type
-  std::unordered_map<std::string, DataTypeEntry*> var_type_map_;
-  // Map data type name to data type entry
-  boost::ptr_map<std::string, DataTypeEntry> data_type_map_;
+  // Map from symbol name to symbol info
+  boost::ptr_map<std::string, SymbolInfo> data_type_map_;
 };
 
 class Scope : public AbstractScope {

@@ -1,0 +1,39 @@
+syntax = "proto2";
+
+package flang.symbol_info;
+
+enum SymbolType {
+  VARIABLE = 1
+  FUNCTION = 2;
+  CLASS = 3;
+}
+
+message BasicSymbolInfo {
+  // The full name is qualifier.name or name if qualifer equals empty.
+  required string name = 1;
+  required string qualifier = 2;
+  required SymbolType type = 3;
+}
+
+message FunctionInfo {
+  required BasicSymbolInfo basic_info = 1;
+}
+
+message ClassInfo {
+  required BasicSymbolInfo base_info = 1;
+}
+
+message VariableInfo {
+  required BasicSymbolInfo base_info = 1;
+  enum DataType {
+    INT32 = 1;
+    INT64 = 2;
+    FLOAT = 3;
+    CHAR = 4;
+    STRING = 5;
+    PRIMITIVE_TYPE = 100,
+    CLASS = 101,
+  }
+  required DataType data_type = 1;
+  optional ClassInfo class_info = 2;
+}
