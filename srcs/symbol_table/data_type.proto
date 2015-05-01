@@ -1,4 +1,4 @@
-package flang.data_type;
+package flang;
 option java_outer_classname = "DataTypeEnum";
 
 enum DataType {

@@ -38,3 +38,13 @@ cc_library(
       ':data_type_entry',
   ]
 )
+
+cc_library(
+  name = 'scope',
+  srcs = ['scope.cpp'],
+  deps = [
+      '#boost_system',
+      '#log4cxx',
+      ':symbol_info',
+  ]
+)

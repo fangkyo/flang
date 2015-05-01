@@ -7,9 +7,9 @@
 #include <vector>
 
 #include "symbol_table/scope.h"
+#include "symbol_table/symbol_info.h"
 
 namespace flang {
-
 
 class SymbolTable {
  public:
@@ -22,13 +22,19 @@ class SymbolTable {
   SymbolTable();
 
   // Push a scope to the scope stack
-  void pushScope(ScopeType scope_type);
+  void pushScope(AbstractScope* scope);
   // Pop a scope from the scope stack
   void popScope();
+
+  // Insert a symbol to symbol table. Insert to global scope also if global
+  // is set to true.
+  void insert(const std::string& name, SymbolInfo* symbol_info, bool global = false);
 
   // Look up the symbol specification for the given symbol name.
   // Return nullptr if can't find anything.
   void* lookup(const std::string& name);
+
+  std::string getNamespace();
 
   // Add a function
   void addFunction(const std::string& pkgName);
@@ -52,6 +58,9 @@ class SymbolTable {
   bool findClass(const std::string& name);
 
  private:
+  // global_scope_ stores global identifiers, like global functions, classes
+  // variables and those identifiers defined in the namespaces.
+  Scope global_scope_;
   std::list<AbstractScope*> scope_stack_;
 };
 
