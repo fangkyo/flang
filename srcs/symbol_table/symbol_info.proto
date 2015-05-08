@@ -9,40 +9,41 @@ enum SymbolType {
 }
 
 enum DataType {
-  INT32 = 1;
-  INT64 = 2;
-  CHAR = 3;
-  BOOL = 4;
-  STRING = 5;
-  FLOAT = 6;
-  ARRAY = 7;
-  CLASS = 8;
+  DATA_TYPE_INT32 = 1;
+  DATA_TYPE_INT64 = 2;
+  DATA_TYPE_CHAR = 3;
+  DATA_TYPE_BOOL = 4;
+  DATA_TYPE_STRING = 5;
+  DATA_TYPE_FLOAT = 6;
+  DATA_TYPE_ARRAY = 7;
+  DATA_TYPE_CLASS = 8;
 }
 
-// message BasicInfo {
-  // // The full name is qualifier.name or name if qualifer equals empty.
-  // required string name = 1;
-  // required string qualifier = 2;
-  // required SymbolType type = 3;
-// }
+message SymbolInfoProto {
+  // The full name is qualifier.name or name if qualifer equals empty.
+  required string name = 1;
+  required string qualifier = 2;
+  required SymbolType type = 3;
 
-// message FunctionInfoProto{
-  // repeated string parameters = 1;
-// }
+  oneof symbol_info {
+    FunctionInfoProto func_info = 4;
+    VariableInfoProto var_info = 5;
+    ClassInfoProto class_info = 6;
+  }
+}
 
-// message ClassInfo {
-// }
+message VariableInfoProto {
+  required DataType data_type = 1;
+  optional int64 address = 2;
+}
 
-// message VariableInfo {
-  // enum DataType {
-    // INT32 = 1;
-    // INT64 = 2;
-    // FLOAT = 3;
-    // CHAR = 4;
-    // STRING = 5;
-    // PRIMITIVE_TYPE = 100;
-    // CLASS = 101;
-  // }
-  // required DataType data_type = 1;
-  // optional ClassInfo class_info = 2;
-// }
+message FunctionInfoProto {
+  required DataType return_type = 1;
+  repeated VariableInfoProto parameters = 2;
+  optional int64 address = 3;
+}
+
+message ClassInfoProto {
+  repeated VariableInfoProto member_vars = 1;
+  repeated FunctionInfoProto member_funcs = 2;
+}

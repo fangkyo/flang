@@ -4,47 +4,56 @@
 
 namespace flang {
 
-SymbolInfo::SymbolInfo(SymbolType type) : type_(type) {
+SymbolInfo::SymbolInfo(SymbolInfoProto* symbol_info_proto, bool is_owner) :
+  symbol_info_proto_(symbol_info_proto),
+  is_owner_(is_owner) {
+
+}
+
+SymbolInfo::~SymbolInfo() {
+  if (!is_owner_) {
+    symbol_info_proto_.release();
+  }
 }
 
 const std::string SymbolInfo::toString() {
-  return SymbolType_Name(type_);
+  return SymbolType_Name(symbol_info_proto_->type());
 }
 
 std::string SymbolInfo::getFullName() {
-  if (qualifier_.empty()) {
-    return name_;
+  if (symbol_info_proto_->qualifier().empty()) {
+    return symbol_info_proto_->name();
   } else {
     boost::format fmt("%1%.%2%");
-    fmt % qualifier_ % name_;
+    fmt % symbol_info_proto_->qualifier() % symbol_info_proto_->name();
     return fmt.str();
   }
 }
 
-ClassInfo::ClassInfo() :
-  SymbolInfo(SymbolType::SYMBOL_CLASS) {
-}
+// ClassInfo::ClassInfo() :
+  // SymbolInfo(SymbolType::SYMBOL_CLASS) {
+// }
 
-void ClassInfo::execute(SymbolInfoHandler* handler) {
-  handler->handle(this);
-}
+// void ClassInfo::execute(SymbolInfoHandler* handler) {
+  // handler->handle(this);
+// }
 
-FunctionInfo::FunctionInfo() :
-  SymbolInfo(SymbolType::SYMBOL_FUNCTION) {
-}
+// FunctionInfo::FunctionInfo() :
+  // SymbolInfo(SymbolType::SYMBOL_FUNCTION) {
+// }
 
-void FunctionInfo::execute(SymbolInfoHandler* handler) {
-  handler->handle(this);
-}
+// void FunctionInfo::execute(SymbolInfoHandler* handler) {
+  // handler->handle(this);
+// }
 
-VariableInfo::VariableInfo() :
-  SymbolInfo(SymbolType::SYMBOL_VARIABLE),
-  class_info_(nullptr) {
-}
+// VariableInfo::VariableInfo() :
+  // SymbolInfo(SymbolType::SYMBOL_VARIABLE),
+  // class_info_(nullptr) {
+// }
 
-void VariableInfo::execute(SymbolInfoHandler* handler) {
-  handler->handle(this);
-}
+// void VariableInfo::execute(SymbolInfoHandler* handler) {
+  // handler->handle(this);
+// }
 
 }
 

@@ -1,7 +1,2 @@
 package flang;
 
-enum ScopeType {
-  BLOCK = 1;
-  CLASS = 2;
-  FUNCTION = 3;
-}

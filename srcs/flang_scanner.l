@@ -80,7 +80,7 @@ new {
   return Token::NEW;
 }
 
-int {
+int32 {
   yylval->lineno = lineno();
   return Token::INT_TYPE;
 }

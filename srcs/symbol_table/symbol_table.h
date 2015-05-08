@@ -13,12 +13,6 @@ namespace flang {
 
 class SymbolTable {
  public:
-  enum ScopeType{
-    CLASS_SCOPE,
-    FUNCTION_SCOPE,
-    BLOCK_SCOPE,
-  };
-
   SymbolTable();
 
   // Push a scope to the scope stack
@@ -62,6 +56,7 @@ class SymbolTable {
   // variables and those identifiers defined in the namespaces.
   Scope global_scope_;
   std::list<AbstractScope*> scope_stack_;
+  boost::ptr_list<AbstractScope> scope_list_;
 };
 
 }  // namespace flang
