@@ -4,22 +4,14 @@
 
 #include "symbol_table/scope.h"
 
-using boost::assign::ptr_map_insert;
-
-
 namespace flang {
 
-AbstractScope::AbstractScope() {
-  // Insert primitive type entries to data_type_map_
-/*   ptr_map_insert<Int32TypeEntry>(data_type_map_)("int32"); */
-  // ptr_map_insert<CharTypeEntry>(data_type_map_)("char");
-  // ptr_map_insert<StringTypeEntry>(data_type_map_)("string");
-  /* ptr_map_insert<BoolTypeEntry>(data_type_map_)("bool"); */
+AbstractScope::AbstractScope() : SymbolInfo(SYMBOL_SCOPE) {
 }
 
 void AbstractScope::insert(const std::string& name, SymbolInfo* symbol_info) {
-  std::auto_ptr<SymbolInfo> ptr(symbol_info);
-  symbol_map_.insert(name, ptr);
+  std::string& key = const_cast<std::string&>(name);
+  symbol_map_.insert(key, symbol_info);
 }
 
 SymbolInfo* AbstractScope::lookup(const std::string& name) {
@@ -31,8 +23,21 @@ SymbolInfo* AbstractScope::lookup(const std::string& name) {
   }
 }
 
+
 bool AbstractScope::exists(const std::string& name) {
   return symbol_map_.find(name) == symbol_map_.end();
+}
+
+GlobalScope::GlobalScope() {
+  this->setName(".");
+}
+
+FunctionScope::FunctionScope(FunctionInfo* func_info) :
+    func_info_(func_info) {
+}
+
+ClassScope::ClassScope(ClassInfo* class_info) :
+    class_info_(class_info) {
 }
 
 }  // namespace flang

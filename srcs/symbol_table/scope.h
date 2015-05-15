@@ -20,10 +20,10 @@ enum ScopeType {
   SCOPE_WHILE,
   SCOPE_FUNC,
   SCOPE_CLASS,
-  SCOPE_CLASS_FUNC
+  SCOPE_CLASS_FUNC,
 };
 
-class AbstractScope {
+class AbstractScope : public SymbolInfo {
  public:
   virtual ~AbstractScope() {}
 
@@ -37,20 +37,32 @@ class AbstractScope {
   boost::ptr_map<std::string, SymbolInfo> symbol_map_;
 };
 
-class BlockScope : public AbstractScope {
+class GlobalScope : public AbstractScope {
  public:
+  GlobalScope();
+};
+
+class BlockScope : public AbstractScope {
 };
 
 class FunctionScope : public AbstractScope {
  public:
-
+  FunctionScope(FunctionInfo* func_info);
+  void setFuncInfo(FunctionInfo* func_info);
+  const FunctionInfo* getFuncInfo() { return func_info_; }
+ private:
+  FunctionInfo* func_info_;
 };
 
 class ClassScope : public AbstractScope {
-
+ public:
+  ClassScope(ClassInfo* class_info);
+ private:
+  ClassInfo* class_info_;
 };
 
 class NamespaceScope : public AbstractScope {
+ public:
 
 };
 

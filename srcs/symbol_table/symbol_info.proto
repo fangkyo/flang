@@ -6,9 +6,10 @@ enum SymbolType {
   SYMBOL_VARIABLE = 1;
   SYMBOL_FUNCTION = 2;
   SYMBOL_CLASS = 3;
+  SYMBOL_SCOPE = 4;
 }
 
-enum DataType {
+enum DataTypeEnum {
   DATA_TYPE_INT32 = 1;
   DATA_TYPE_INT64 = 2;
   DATA_TYPE_CHAR = 3;
@@ -17,33 +18,5 @@ enum DataType {
   DATA_TYPE_FLOAT = 6;
   DATA_TYPE_ARRAY = 7;
   DATA_TYPE_CLASS = 8;
-}
-
-message SymbolInfoProto {
-  // The full name is qualifier.name or name if qualifer equals empty.
-  required string name = 1;
-  required string qualifier = 2;
-  required SymbolType type = 3;
-
-  oneof symbol_info {
-    FunctionInfoProto func_info = 4;
-    VariableInfoProto var_info = 5;
-    ClassInfoProto class_info = 6;
-  }
-}
-
-message VariableInfoProto {
-  required DataType data_type = 1;
-  optional int64 address = 2;
-}
-
-message FunctionInfoProto {
-  required DataType return_type = 1;
-  repeated VariableInfoProto parameters = 2;
-  optional int64 address = 3;
-}
-
-message ClassInfoProto {
-  repeated VariableInfoProto member_vars = 1;
-  repeated FunctionInfoProto member_funcs = 2;
+  DATA_TYPE_VOID = 9;
 }

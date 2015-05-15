@@ -18,8 +18,8 @@ cc_library(
   name = 'symbol_info',
   srcs = ['symbol_info.cpp'],
   deps = [
-    '#boost_system',
-    ':symbol_info_proto',
+      '#boost_system',
+      ':symbol_info_proto',
   ]
 )
 
@@ -30,5 +30,14 @@ cc_library(
       '#boost_system',
       '#log4cxx',
       ':symbol_info',
+  ]
+)
+
+cc_library(
+  name = 'symbol_table',
+  srcs = ['symbol_table.cpp'],
+  deps = [
+      ':symbol_info',
+      ':scope',
   ]
 )
