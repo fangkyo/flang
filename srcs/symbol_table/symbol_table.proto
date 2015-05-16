@@ -1,6 +1,0 @@
-
-enum OneofNameCase {
- kFooInt = 4,
- kFooString = 9,
- ONEOF_NAME_NOT_SET = 0
-}
