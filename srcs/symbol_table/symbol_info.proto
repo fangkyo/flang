@@ -1,0 +1,22 @@
+syntax = "proto2";
+
+package flang;
+
+enum SymbolType {
+  SYMBOL_VARIABLE = 1;
+  SYMBOL_FUNCTION = 2;
+  SYMBOL_CLASS = 3;
+  SYMBOL_SCOPE = 4;
+}
+
+enum DataTypeEnum {
+  DATA_TYPE_INT32 = 1;
+  DATA_TYPE_INT64 = 2;
+  DATA_TYPE_CHAR = 3;
+  DATA_TYPE_BOOL = 4;
+  DATA_TYPE_STRING = 5;
+  DATA_TYPE_FLOAT = 6;
+  DATA_TYPE_ARRAY = 7;
+  DATA_TYPE_CLASS = 8;
+  DATA_TYPE_VOID = 9;
+}

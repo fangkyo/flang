@@ -1,7 +1,43 @@
 proto_library(
-  name = 'data_type_proto',
-  srcs = ['data_type.proto'],
+  name = 'symbol_info_proto',
+  srcs = ['symbol_info.proto'],
   deps = [
-    '#protobuf',
+      '#protobuf',
+  ]
+)
+
+proto_library(
+  name = 'symbol_table_proto',
+  srcs = ['symbol_table.proto'],
+  deps = [
+      '#protobuf',
+  ]
+)
+
+cc_library(
+  name = 'symbol_info',
+  srcs = ['symbol_info.cpp'],
+  deps = [
+      '#boost_system',
+      ':symbol_info_proto',
+  ]
+)
+
+cc_library(
+  name = 'scope',
+  srcs = ['scope.cpp'],
+  deps = [
+      '#boost_system',
+      '#log4cxx',
+      ':symbol_info',
+  ]
+)
+
+cc_library(
+  name = 'symbol_table',
+  srcs = ['symbol_table.cpp'],
+  deps = [
+      ':symbol_info',
+      ':scope',
   ]
 )
