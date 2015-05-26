@@ -3,20 +3,23 @@
 namespace flang {
 
 void FuncNode::accept(ASTVisitor* visitor) {
-  for (auto& param : param_list_) {
+  visitor->start(this);
+  for (auto& param : parameters_) {
     param.accept(visitor);
   }
-  visitor->doFuncNode(this);
+  return_type_->accept(visitor);
+  visitor->finish(this);
 }
 
 ReturnNode::ReturnNode(ExpNode* exp_node)
     : StmtNode(ASTNode::RETURN_NODE), expression_(exp_node) {}
 
 void ReturnNode::accept(ASTVisitor* visitor) {
+  visitor->start(this);
   if (expression_) {
     expression_->accept(visitor);
   }
-  visitor->doReturnNode(this);
+  visitor->finish(this);
 }
 
 CallNode::CallNode(const std::string& name) :
@@ -24,10 +27,11 @@ CallNode::CallNode(const std::string& name) :
 }
 
 void CallNode::accept(ASTVisitor* visitor) {
-  for (ExpNode& param : param_list_) {
+  visitor->start(this);
+  for (auto& param : parameters_) {
     param.accept(visitor);
   }
-  visitor->doCallNode(this);
+  visitor->finish(this);
 }
 
 }  // namespace flang

@@ -21,10 +21,26 @@ class PrimitiveNode : public ExpNode {
 };
 
 // 32 bits integer value node
-class IntValNode : public PrimitiveNode<int32_t> {
+class Int32ValNode : public PrimitiveNode<int32_t> {
  public:
-  IntValNode(int32_t value) :
+  Int32ValNode(int32_t value) :
       PrimitiveNode(value, ASTNode::INT_VAL_NODE) {}
+  void accept(ASTVisitor* visitor) {
+    visitor->start(this);
+    visitor->finish(this);
+  }
+};
+
+// 64 bits integer value node
+class Int64ValNode : public PrimitiveNode<int64_t> {
+ public:
+  Int64ValNode(int64_t value) :
+      PrimitiveNode(value, ASTNode::INT_VAL_NODE) {}
+
+  void accept(ASTVisitor* visitor) {
+    visitor->start(this);
+    visitor->finish(this);
+  }
 };
 
 // String value node
@@ -32,6 +48,11 @@ class StringValNode : public PrimitiveNode<std::string> {
  public:
   StringValNode(const std::string& value) :
       PrimitiveNode(value, ASTNode::STRING_VAL_NODE) {}
+
+  void accept(ASTVisitor* visitor) {
+    visitor->start(this);
+    visitor->finish(this);
+  }
 };
 
 // Bool value node. The value can only be 'true' or 'false'.
@@ -39,6 +60,11 @@ class BoolValNode : public PrimitiveNode<bool> {
  public:
   BoolValNode(bool value) :
       PrimitiveNode(value, ASTNode::BOOL_VAL_NODE) {}
+
+  void accept(ASTVisitor* visitor) {
+    visitor->start(this);
+    visitor->finish(this);
+  }
 };
 
 // Char value node.
@@ -46,6 +72,11 @@ class CharValNode : public PrimitiveNode<char> {
  public:
   CharValNode(char value) :
       PrimitiveNode(value, ASTNode::CHAR_VAL_NODE) {}
+
+  void accept(ASTVisitor* visitor) {
+    visitor->start(this);
+    visitor->finish(this);
+  }
 };
 
 // Float value node
@@ -53,6 +84,11 @@ class FloatValNode : public PrimitiveNode<float> {
  public:
   FloatValNode(float value) :
       PrimitiveNode(value, ASTNode::FLOAT_VAL_NODE) {}
+
+  void accept(ASTVisitor* visitor) {
+    visitor->start(this);
+    visitor->finish(this);
+  }
 };
 
 }  // namespace flang

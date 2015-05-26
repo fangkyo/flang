@@ -8,7 +8,9 @@ UnaryExpNode::UnaryExpNode(UnaryOpType op, ExpNode* operand) :
 }
 
 void UnaryExpNode::accept(ASTVisitor* visitor) {
-  visitor->doUnaryExpNode(this);
+  visitor->start(this);
+  operand_->accept(visitor);
+  visitor->finish(this);
 }
 
 }  // namespace flang

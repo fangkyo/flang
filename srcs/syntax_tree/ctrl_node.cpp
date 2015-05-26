@@ -8,7 +8,11 @@ IfNode::IfNode(ExpNode* test_node, ASTNode* if_node, ASTNode* else_node) :
 }
 
 void IfNode::accept(ASTVisitor* visitor) {
-  visitor->doIfNode(this);
+  visitor->start(this);
+  test_node_->accept(visitor);
+  if_node_->accept(visitor);
+  else_node_->accept(visitor);
+  visitor->finish(this);
 }
 
 
@@ -18,13 +22,17 @@ WhileNode::WhileNode(ExpNode* test_node, ASTNode* body_node) :
 }
 
 void WhileNode::accept(ASTVisitor* visitor) {
-  visitor->doWhileNode(this);
+  visitor->start(this);
+  test_node_->accept(visitor);
+  body_node_->accept(visitor);
+  visitor->finish(this);
 }
 
 BreakNode::BreakNode() : StmtNode(ASTNode::BREAK_NODE) {}
 
 void BreakNode::accept(ASTVisitor* visitor) {
-  visitor->doBreakNode(this);
+  visitor->start(this);
+  visitor->finish(this);
 }
 
 }  // namespace flang

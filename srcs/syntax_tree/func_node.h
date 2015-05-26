@@ -9,7 +9,7 @@
 #include "syntax_tree/data_type_node.h"
 #include "syntax_tree/exp_node.h"
 #include "syntax_tree/stmt_node.h"
-#include "syntax_tree/var_declaration_node.h"
+#include "syntax_tree/var_decl_node.h"
 
 namespace flang {
 
@@ -24,8 +24,8 @@ class FuncNode : public StmtNode {
   ASTNode* getBody() { return body_.get(); }
   void setBody(ASTNode* body) { body_.reset(body); }
 
-  boost::ptr_vector<VarDeclarationNode>& getParamList() { return param_list_; }
-  void addParameter(VarDeclarationNode* param) { param_list_.push_back(param); }
+  boost::ptr_vector<VarDeclarationNode>& getParameters() { return parameters_; }
+  void addParameter(VarDeclarationNode* param) { parameters_.push_back(param); }
 
   DataTypeNode* getReturnType() { return return_type_.get(); }
   void setReturnType(DataTypeNode* type) { return_type_.reset(type); }
@@ -34,7 +34,7 @@ class FuncNode : public StmtNode {
 
  private:
   std::string name_;
-  boost::ptr_vector<VarDeclarationNode> param_list_;
+  boost::ptr_vector<VarDeclarationNode> parameters_;
   std::unique_ptr<DataTypeNode> return_type_;
   std::unique_ptr<ASTNode> body_;
 };
@@ -64,11 +64,11 @@ class CallNode : public ExpNode {
   void setName(const std::string& name) { name_ = name; }
   const std::string& getName() { return name_; }
 
-  void addParameter(ExpNode* param) { param_list_.push_back(param); }
-  boost::ptr_vector<ExpNode>& getParamList() { return param_list_; }
+  void addParameter(ExpNode* param) { parameters_.push_back(param); }
+  boost::ptr_vector<ExpNode>& getParameters() { return parameters_; }
 
  private:
-  boost::ptr_vector<ExpNode> param_list_;
+  boost::ptr_vector<ExpNode> parameters_;
   std::string name_;
 };
 

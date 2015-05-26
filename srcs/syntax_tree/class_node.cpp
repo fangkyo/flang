@@ -5,7 +5,17 @@ using namespace std;
 namespace flang {
 
 void ClassNode::accept(ASTVisitor* visitor) {
-  visitor->doClassNode(this);
+  visitor->start(this);
+  if (base_class_) {
+    base_class_->accept(visitor);
+  }
+  for (auto& member_var : member_var_list_) {
+    member_var.accept(visitor);
+  }
+  for (auto& member_func : member_func_list_) {
+    member_func.accept(visitor);
+  }
+  visitor->finish(this);
 }
 
 // void ClassNode::acceptVars(Visitor& visitor) {

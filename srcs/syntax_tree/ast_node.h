@@ -78,7 +78,6 @@ class EmptyNode : public ASTNode {
  public:
   EmptyNode() : ASTNode(ASTNode::EMPTY_NODE) {}
   ~EmptyNode() override {}
-  void accept(ASTVisitor*) override {}
 };
 
 

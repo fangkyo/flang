@@ -7,6 +7,9 @@
 
 namespace flang {
 
+// Assignment statement node
+// assignment:
+//   destination '=' source
 class AssignNode : public ExpNode {
  public:
   enum AssignOpType {

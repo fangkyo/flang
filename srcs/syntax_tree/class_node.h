@@ -9,7 +9,7 @@
 #include "syntax_tree/exp_node.h"
 #include "syntax_tree/func_node.h"
 #include "syntax_tree/name_node.h"
-#include "syntax_tree/var_declaration_node.h"
+#include "syntax_tree/var_decl_node.h"
 
 namespace flang {
 

@@ -21,6 +21,12 @@ std::string QualifiedNameNode::getFullyQualifiedName() {
   return fmt.str();
 }
 
+void QualifiedNameNode::accept(ASTVisitor* visitor) {
+  visitor->start(this);
+  qualifier_->accept(visitor);
+  name_->accept(visitor);
+  visitor->finish(this);
+}
 
 }  // namespace flang
 

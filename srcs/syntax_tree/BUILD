@@ -10,7 +10,7 @@ cc_library(
    ':binary_exp_node',
    ':assign_node',
    ':name_node',
-   ':var_declaration_node',
+   ':var_decl_node',
    ':func_node',
    ':class_node',
    ':data_type_node',
@@ -94,9 +94,9 @@ cc_library(
 )
 
 cc_library(
-  name = 'var_declaration_node',
+  name = 'var_decl_node',
   srcs = [
-    'var_declaration_node.cpp',
+    'var_decl_node.cpp',
   ],
   deps = [
     '#boost_system',
@@ -118,7 +118,7 @@ cc_library(
   ],
   deps = [
     '#boost_system',
-    ':var_declaration_node',
+    ':var_decl_node',
   ]
 )
 
@@ -131,7 +131,7 @@ cc_library(
     '#boost_system',
     ':func_node',
     ':name_node',
-    ':var_declaration_node',
+    ':var_decl_node',
   ]
 )
 

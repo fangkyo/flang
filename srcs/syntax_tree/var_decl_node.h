@@ -23,6 +23,8 @@ class VarDeclarationFragmentNode : public ASTNode {
   ExpNode* getInitializer() { return initializer_.get(); }
   void setInitializer(ExpNode* initializer) { initializer_.reset(initializer); }
 
+  void accept(ASTVisitor* visitor) override;
+
  private:
   std::string name_;
   std::unique_ptr<ExpNode> initializer_;
@@ -36,10 +38,10 @@ class VarDeclarationNode : public StmtNode {
   void accept(ASTVisitor* visitor) override;
 
   void addVarDeclFragment(VarDeclarationFragmentNode* var_decl_fragment) {
-    var_decl_list_.push_back(var_decl_fragment);
+    var_decl_fragments_.push_back(var_decl_fragment);
   }
   const boost::ptr_vector<VarDeclarationFragmentNode>& getVarDeclFragmentList() {
-    return var_decl_list_;
+    return var_decl_fragments_;
   }
 
   DataTypeNode* getDataType() { return data_type_.get(); }
@@ -47,7 +49,7 @@ class VarDeclarationNode : public StmtNode {
 
  private:
   std::unique_ptr<DataTypeNode> data_type_;
-  boost::ptr_vector<VarDeclarationFragmentNode> var_decl_list_;
+  boost::ptr_vector<VarDeclarationFragmentNode> var_decl_fragments_;
 };
 
 }  // namespace flang

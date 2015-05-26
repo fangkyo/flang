@@ -21,17 +21,23 @@ class NewNode;
 class UnaryExpNode;
 class BinaryExpNode;
 class BlockNode;
+class QualifiedNameNode;
+class SimpleNameNode;
+// Primitive value node
+class Int32ValNode;
+class Int64ValNode;
+class CharValNode;
+class StringValNode;
+class FloatValNode;
+class BoolValNode;
+
+// Data type node
+class QualifiedTypeNode;
+class ArrayTypeNode;
 
 #define VISIT_METHOD(ASTNodeClass) \
-    virtual bool beforeVisit(ASTNodeClass*) { return true; } \
-    virtual bool visit(ASTNodeClass*) { return true; } \
-    virtual bool afterVisit(ASTNodeClass*) { return true; }
-
-#define OVERRIDE_VISIT_METHOD(ASTNodeClass) \
-    bool beforeVisit(ASTNodeClass*) override; \
-    bool visit(ASTNodeClass*) override; \
-    bool afterVisit(ASTNodeClass*) override;
-
+    virtual bool start(ASTNodeClass*) { return true; } \
+    virtual bool finish(ASTNodeClass*) { return true; } \
 
 class ASTVisitor {
  public:
@@ -40,6 +46,7 @@ class ASTVisitor {
   VISIT_METHOD(ProgramNode)
   VISIT_METHOD(PrintNode)
   VISIT_METHOD(VarDeclarationNode)
+  VISIT_METHOD(VarDeclarationFragmentNode)
   VISIT_METHOD(SimpleNodeNode)
   VISIT_METHOD(QualifiedNodeNode)
   VISIT_METHOD(AssignNode)
@@ -54,20 +61,16 @@ class ASTVisitor {
   VISIT_METHOD(BinaryExpNode)
   VISIT_METHOD(UnaryExpNode)
   VISIT_METHOD(BlockNode)
-
-  virtual void doPrintNode(PrintNode*) {};
-  virtual void doDeclareNode(VarDeclarationNode*) {};
-  virtual void doUnaryExpNode(UnaryExpNode*) {};
-  virtual void doBinaryExpNode(BinaryExpNode*) {};
-  virtual void doAssignNode(AssignNode*) {};
-  virtual void doIfNode(IfNode*) {};
-  virtual void doWhileNode(WhileNode*) {};
-  virtual void doBreakNode(BreakNode*) {};
-  virtual void doFuncNode(FuncNode*);
-  virtual void doReturnNode(ReturnNode*) {};
-  virtual void doCallNode(CallNode*) {};
-  virtual void doClassNode(ClassNode*) {};
-  virtual void doNewNode(NewNode*) {};
+  VISIT_METHOD(SimpleNameNode)
+  VISIT_METHOD(QualifiedNameNode)
+  VISIT_METHOD(Int32ValNode)
+  VISIT_METHOD(Int64ValNode)
+  VISIT_METHOD(CharValNode)
+  VISIT_METHOD(StringValNode)
+  VISIT_METHOD(BoolValNode)
+  VISIT_METHOD(FloatValNode)
+  VISIT_METHOD(QualifiedTypeNode)
+  VISIT_METHOD(ArrayTypeNode)
 };
 
 }  // namespace flang
