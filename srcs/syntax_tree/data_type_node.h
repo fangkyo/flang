@@ -16,10 +16,16 @@ class DataTypeNode : public ASTNode {
   virtual bool isPrimitive() { return true; }
 };
 
-class IntTypeNode : public DataTypeNode {
+class Int32TypeNode : public DataTypeNode {
  public:
-  IntTypeNode() : DataTypeNode(ASTNode::INT_TYPE_NODE) {}
-  ~IntTypeNode() override {}
+  Int32TypeNode() : DataTypeNode(ASTNode::INT_TYPE_NODE) {}
+  ~Int32TypeNode() override {}
+};
+
+class Int64TypeNode : public DataTypeNode {
+ public:
+  Int64TypeNode() : DataTypeNode(ASTNode::INT_TYPE_NODE) {}
+  ~Int64TypeNode() override {}
 };
 
 class CharTypeNode : public DataTypeNode {

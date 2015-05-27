@@ -6,6 +6,8 @@
 #include <cstdlib>
 #include <string>
 
+#include <boost/lexical_cast.hpp>
+
 #include "flang_parser.h"
 #include "flang_scanner.h"
 #include "syntax_tree/syntax_tree.h"
@@ -82,7 +84,12 @@ new {
 
 int32 {
   yylval->lineno = lineno();
-  return Token::INT_TYPE;
+  return Token::INT32_TYPE;
+}
+
+int64 {
+  yylval->lineno = lineno();
+  return Token::INT64_TYPE;
 }
 
 bool {
@@ -123,8 +130,12 @@ and {
 [ \n\r\t] ;
 
 {integer} {
-  yylval->int_val = atoi(yytext);
-  return Token::INT_VAL;
+  try {
+    yylval->int64_val = boost::lexical_cast<int64_t>(yy_text);
+  } catch (const bad_lexical_cast &) {
+    
+  }
+  return Token::INT64_VAL;
 }
 
 

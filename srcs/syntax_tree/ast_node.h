@@ -41,7 +41,8 @@ class ASTNode {
     QUALIFIED_NAME_NODE, // Qualified name node
     PRINT_NODE, // Print node
     VAR_NODE, // Variable node
-    INT_TYPE_NODE,
+    INT32_TYPE_NODE,
+    INT64_TYPE_NODE,
     FLOAT_TYPE_NODE,
     CHAR_TYPE_NODE,
     STRING_TYPE_NODE,

@@ -1,5 +1,5 @@
-#ifndef VISITOR_H_
-#define VISITOR_H_
+#ifndef AST_VISITOR_H_
+#define AST_VISITOR_H_
 
 namespace flang {
 

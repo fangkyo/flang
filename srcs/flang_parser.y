@@ -38,7 +38,7 @@ static int yylex(flang::FlangParser::semantic_type *yylval,
 }
 
 %union {
-  int   int_val; // integer value
+  int64_t int64_val; // integer value
   char  char_val; // char value
   bool  bool_val; // bool value
   std::string*   str_val; // string value
@@ -63,13 +63,13 @@ static int yylex(flang::FlangParser::semantic_type *yylval,
   BlockNode* block_node;
 }
 
-%token <int_val> INT_VAL
+%token <int64_val> INT_VAL
 %token <char_val> CHAR_VAL
 %token <bool_val> BOOL_VAL
 %token <str_val> STR_VAL ID
 
 %token <lineno> WHILE IF PRINT BREAK DEF CLASS RETURN THIS NEW
-%token <lineno> BOOL_TYPE CHAR_TYPE STR_TYPE INT_TYPE TRUE FALSE
+%token <lineno> BOOL_TYPE CHAR_TYPE STR_TYPE INT32_TYPE INT64_TYPE TRUE FALSE
 
 %destructor { if ($$)  {delete ($$); ($$) = nullptr; } }  <str_val>
 
@@ -165,8 +165,11 @@ simple_stmt : ';' {
   $$ = $1;
 };
 
-expression : INT_VAL {
-  $$ = new IntValNode($1);
+expression : INT32_VAL {
+  $$ = new Int32ValNode($1);
+  $$->setLineNum(scanner.lineno());
+} | INT64_VAL {
+  $$ = new Int64ValNode($1);
   $$->setLineNum(scanner.lineno());
 } | TRUE {
   $$ = new BoolValNode(true);
@@ -199,7 +202,7 @@ expression : INT_VAL {
   $$ = new BinaryExpNode(BinaryExpNode::OP_AND, $1, $3);
   $$->setLineNum( scanner.lineno() );
 } | expression EQ  expression {
-  $$ = new BinaryExpNode(BinaryExpNode::OP_OR,$1, $3);
+  $$ = new BinaryExpNode(BinaryExpNode::OP_EQ,$1, $3);
   $$->setLineNum( scanner.lineno() );
 } | '(' expression ')' {
   $$ = $2;
@@ -247,7 +250,7 @@ assignment : simple_name '=' expression {
   $$ = new AssignNode($1, $3);
 }
 
-type : INT_TYPE {
+type : INT32_TYPE {
   $$ = new IntTypeNode();
 } | BOOL_TYPE {
   $$ = new BoolTypeNode();
