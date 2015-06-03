@@ -18,13 +18,13 @@ class DataTypeNode : public ASTNode {
 
 class Int32TypeNode : public DataTypeNode {
  public:
-  Int32TypeNode() : DataTypeNode(ASTNode::INT_TYPE_NODE) {}
+  Int32TypeNode() : DataTypeNode(ASTNode::INT32_TYPE_NODE) {}
   ~Int32TypeNode() override {}
 };
 
 class Int64TypeNode : public DataTypeNode {
  public:
-  Int64TypeNode() : DataTypeNode(ASTNode::INT_TYPE_NODE) {}
+  Int64TypeNode() : DataTypeNode(ASTNode::INT64_TYPE_NODE) {}
   ~Int64TypeNode() override {}
 };
 

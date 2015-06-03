@@ -165,10 +165,7 @@ simple_stmt : ';' {
   $$ = $1;
 };
 
-expression : INT32_VAL {
-  $$ = new Int32ValNode($1);
-  $$->setLineNum(scanner.lineno());
-} | INT64_VAL {
+expression : INT_VAL {
   $$ = new Int64ValNode($1);
   $$->setLineNum(scanner.lineno());
 } | TRUE {
@@ -238,6 +235,7 @@ var_declaration : var_declaration ',' var_declaration_fragment {
 } | type var_declaration_fragment {
   $$ = new VarDeclarationNode();
   $$->setDataType($1);
+  $$->addVarDeclFragment($2);
 };
 
 var_declaration_fragment : ID '=' expression {
@@ -251,7 +249,9 @@ assignment : simple_name '=' expression {
 }
 
 type : INT32_TYPE {
-  $$ = new IntTypeNode();
+  $$ = new Int32TypeNode();
+} | INT64_TYPE {
+  $$ = new Int64TypeNode();
 } | BOOL_TYPE {
   $$ = new BoolTypeNode();
 } | CHAR_TYPE {

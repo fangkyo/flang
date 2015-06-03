@@ -108,6 +108,7 @@ class ClassType : public DataType {
 };
 
 class SymbolInfoHandler;
+class AbstractScope;
 
 // SymbolInfo is the information of a symbol in the symbol table.
 class SymbolInfo {
@@ -117,69 +118,21 @@ class SymbolInfo {
   const std::string& getName() { return name_; }
   void setName(const std::string& name) { name_ = name; }
 
-  const std::string& getQualifier() { return qualifier_; }
-  void setQualifier(const std::string& qualifier) { qualifier_ = qualifier; }
-
   SymbolType getSymbolType() const { return symbol_type_; }
-
-  std::string getFullName() const;
 
   virtual void execute(SymbolInfoHandler*) = 0;
 
   virtual bool equals(const SymbolInfo& symbol_info) const;
 
+  virtual const AbstractScope* getScope() { return nullptr; }
+
  protected:
   SymbolInfo(SymbolType symbol_type);
 
   std::string name_;
-  std::string qualifier_;
   SymbolType symbol_type_;
 };
 
-
-class FunctionInfo : public SymbolInfo {
- public:
-  FunctionInfo();
-  void execute(SymbolInfoHandler* handler);
-
-  std::vector<VariableInfo*> getParameters() { return parameters_; }
-  void addParameter(VariableInfo* parameter) {
-    parameters_.push_back(parameter);
-  }
-
-  const DataType* getReturnType() {
-    return return_type_.get();
-  }
-  void setReturnType(DataType* dtype) {
-    return_type_.reset(dtype);
-  }
-
- private:
-  std::unique_ptr<DataType> return_type_;
-  std::vector<VariableInfo*> parameters_;
-};
-
-class ClassInfo : public SymbolInfo {
- public:
-  ClassInfo();
-  void execute(SymbolInfoHandler* handler) override;
-
-  const std::vector<FunctionInfo*>& getMemberFuncs() { return member_funcs_; }
-  void addMemberFunc(FunctionInfo* func_info) {
-      member_funcs_.push_back(func_info);
-  }
-
-  const std::vector<VariableInfo*>& getMemberVars() { return member_vars_; }
-  void addMemberVar(VariableInfo* var_info) {
-      member_vars_.push_back(var_info);
-  }
-
-  bool equals(const SymbolInfo& symbol_info) const override;
-
- private:
-  std::vector<FunctionInfo*> member_funcs_;
-  std::vector<VariableInfo*> member_vars_;
-};
 
 class VariableInfo : public SymbolInfo {
  public:
@@ -188,6 +141,14 @@ class VariableInfo : public SymbolInfo {
 
   void setDataType(DataType* data_type) { data_type_.reset(data_type); }
   const DataType* getDataType() { return data_type_.get(); }
+
+  const AbstractScope* getScope() override {
+    if (data_type_->getType() == DATA_TYPE_CLASS) {
+      return dynamic_cast<ClassType*>(data_type_.get())->getClassInfo();
+    } else {
+      return SymbolInfo::getScope();
+    }
+  }
 
  private:
   std::unique_ptr<DataType> data_type_;

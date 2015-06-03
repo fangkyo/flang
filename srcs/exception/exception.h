@@ -10,6 +10,7 @@ class Exception : public std::exception {
  public:
   Exception(const std::string& msg, int lineno = INVALID_LINENO) :
     message_(msg), lineno_(lineno) {}
+  Exception() {}
   ~Exception() override {}
 
   const char* what() const noexcept override { return message_.c_str(); }
@@ -32,7 +33,7 @@ class Warning : public Exception {
 
 class Error : public Exception {
  public:
-  Error(const std::string& msg) : Exception(msg) {}
+  Error() {}
   ~Error() override {}
 };
 

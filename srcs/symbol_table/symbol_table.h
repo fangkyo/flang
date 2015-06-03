@@ -8,6 +8,7 @@
 
 #include <boost/ptr_container/ptr_vector.hpp>
 
+#include "symbol_table/abstract_scope.h"
 #include "symbol_table/scope.h"
 #include "symbol_table/symbol_info.h"
 
@@ -19,17 +20,18 @@ class SymbolTable {
 
   // Push a scope to the scope stack
   void pushScope(AbstractScope* scope);
+  void popScope();
 
   // Insert a symbol to symbol table. Insert to global scope also if global
   // is set to true.
-  void insert(
-      const std::string& name, SymbolInfo* symbol_info, bool global = false);
+  void insert(const std::string& name, SymbolInfo* symbol_info);
 
   // Look up the symbol specification for the given symbol name.
-  // Return nullptr if can't find anything.
+  // Return nullptr if it can't find anything.
   SymbolInfo* lookup(const std::string& name);
 
-  std::string getNamespace();
+  SymbolInfo* lookup(const std::vector<std::string*>& qualifiers,
+                     const std::string& name);
 
 /*   // Add a function */
   // void addFunction(const std::string& pkgName);
@@ -53,10 +55,7 @@ class SymbolTable {
   /* bool findClass(const std::string& name); */
 
  private:
-  // global_scope_ stores global identifiers, like global functions, classes
-  // variables and those identifiers defined in the namespaces.
-  // std::list<AbstractScope*> scope_stack_;
-  boost::ptr_vector<AbstractScope> scope_stack_;
+  std::list<AbstractScope*> scope_stack_;
 };
 
 }  // namespace flang

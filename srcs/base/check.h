@@ -17,7 +17,9 @@
 #define CHECK_NE_MSG(val1, val2, msg) BOOST_ASSERT_MSG(val1 != val2, msg)
 
 #define CHECK_GT(val1, val2) BOOST_ASSERT(val1 > val2)
+#define CHECK_GT_MSG(val1, val2, msg) BOOST_ASSERT_MSG(val1 > val2, msg)
 #define CHECK_LT(val1, val2) BOOST_ASSERT(val1 < val2)
+#define CHECK_LT_MSG(val1, val2, msg) BOOST_ASSERT_MSG(val1 < val2, msg)
 
 #define CHECK_GE(val1, val2) BOOST_ASSERT(val1 >= val2)
 #define CHECK_LE(val1, val2) BOOST_ASSERT(val1 <= val2)

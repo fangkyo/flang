@@ -2,10 +2,12 @@
  * of flang.
  */
 %{
+#include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 #include <string>
 
+#include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include "flang_parser.h"
@@ -131,11 +133,14 @@ and {
 
 {integer} {
   try {
-    yylval->int64_val = boost::lexical_cast<int64_t>(yy_text);
-  } catch (const bad_lexical_cast &) {
-    
+    yylval->int64_val = boost::lexical_cast<int64_t>(yytext);
+  } catch (const boost::bad_lexical_cast&) {
+    std::string msg = boost::str(boost::format(
+        "Can't parse %1% to integer. It's out of range [%2%, %3%].")
+        % yytext % INT64_MAX % INT64_MAX);
+    throw msg;
   }
-  return Token::INT64_VAL;
+  return Token::INT_VAL;
 }
 
 
