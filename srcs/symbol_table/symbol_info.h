@@ -10,10 +10,10 @@
 
 namespace flang {
 
-class VariableInfo;
 class ClassInfo;
 class FunctionInfo;
 class Scope;
+class SymbolInfoHandler;
 
 class DataType {
  public:
@@ -101,14 +101,12 @@ class ClassType : public DataType {
   uint32_t size() const override { return 4; }
   bool isPrimitive() const override { return false; }
 
-  bool equals (const DataType& dtype) const override;
+  bool equals(const DataType& dtype) const override;
 
  protected:
   ClassInfo* class_info_;
 };
 
-class SymbolInfoHandler;
-class Scope;
 
 // SymbolInfo is the information of a symbol in the symbol table.
 class SymbolInfo {
@@ -132,7 +130,6 @@ class SymbolInfo {
   std::string name_;
   SymbolType symbol_type_;
 };
-
 
 class VariableInfo : public SymbolInfo {
  public:

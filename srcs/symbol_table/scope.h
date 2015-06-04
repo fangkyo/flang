@@ -13,20 +13,8 @@
 
 namespace flang {
 
-/* enum ScopeType { */
-  // SCOPE_BLOCK,
-  // SCOPE_GLOBAL,
-  // SCOPE_WHILE,
-  // SCOPE_FUNC,
-  // SCOPE_CLASS,
-  // SCOPE_CLASS_FUNC,
-/* }; */
-
-class SymbolInfo;
-
 class Scope {
  public:
-  Scope();
   virtual ~Scope() {}
 
   virtual void insert(const std::string& name, SymbolInfo* symbol_info);

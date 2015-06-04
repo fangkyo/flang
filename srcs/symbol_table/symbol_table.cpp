@@ -1,11 +1,11 @@
 #include <algorithm>
 
-#include "symbol_table/scope.h"
 #include "symbol_table/symbol_table.h"
 
 namespace flang {
 
 SymbolTable::SymbolTable(){
+  scope_stack_.emplace_back(new Scope());
 }
 
 void SymbolTable::pushScope(const std::shared_ptr<Scope>& scope) {

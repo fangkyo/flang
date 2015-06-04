@@ -8,11 +8,10 @@
 
 #include <boost/ptr_container/ptr_vector.hpp>
 
+#include "symbol_table/scope.h"
 #include "symbol_table/symbol_info.h"
 
 namespace flang {
-
-class Scope;
 
 class SymbolTable {
  public:

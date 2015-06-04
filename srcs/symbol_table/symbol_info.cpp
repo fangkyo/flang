@@ -61,18 +61,6 @@ bool SymbolInfo::equals(const SymbolInfo& symbol_info) const {
           symbol_type_ == symbol_info.symbol_type_);
 }
 
-/* std::string SymbolInfo::getFullName() { */
-  // if (qualifier_.empty()) {
-    // return name_;
-  // } else {
-    // boost::format fmt("%1%.%2%");
-    // fmt % qualifier_ % name_;
-    // return fmt.str();
-  // }
-// }
-
-
-
 VariableInfo::VariableInfo() :
     SymbolInfo(SymbolType::SYMBOL_VARIABLE) {
 }

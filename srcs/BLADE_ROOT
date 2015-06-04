@@ -15,6 +15,6 @@ cc_test_config(
     heap_check='',
     gperftools_libs=['#tcmalloc_minimal'],
     gperftools_debug_libs=['#tcmalloc_minimal_debug'],
-    gtest_libs=['#gtest', ],
-    gtest_main_libs=['#gtest_main', '#pthread',]
+    gtest_libs=['#gtest'],
+    gtest_main_libs=['#gtest_main', '#pthread']
 )
