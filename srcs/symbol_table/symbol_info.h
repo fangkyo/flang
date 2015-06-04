@@ -10,10 +10,10 @@
 
 namespace flang {
 
-
 class VariableInfo;
 class ClassInfo;
 class FunctionInfo;
+class Scope;
 
 class DataType {
  public:
@@ -96,7 +96,7 @@ class ClassType : public DataType {
   ClassType(ClassInfo* class_info = nullptr) :
       DataType(DATA_TYPE_CLASS), class_info_(class_info) {}
 
-  const ClassInfo* getClassInfo() { return class_info_; }
+  ClassInfo* getClassInfo() { return class_info_; }
   void setClassInfo(ClassInfo* class_info) { class_info_ = class_info; }
   uint32_t size() const override { return 4; }
   bool isPrimitive() const override { return false; }
@@ -108,7 +108,7 @@ class ClassType : public DataType {
 };
 
 class SymbolInfoHandler;
-class AbstractScope;
+class Scope;
 
 // SymbolInfo is the information of a symbol in the symbol table.
 class SymbolInfo {
@@ -124,7 +124,7 @@ class SymbolInfo {
 
   virtual bool equals(const SymbolInfo& symbol_info) const;
 
-  virtual const AbstractScope* getScope() { return nullptr; }
+  virtual Scope* getScope() { return nullptr; }
 
  protected:
   SymbolInfo(SymbolType symbol_type);
@@ -137,21 +137,61 @@ class SymbolInfo {
 class VariableInfo : public SymbolInfo {
  public:
   VariableInfo();
-  void execute(SymbolInfoHandler* handler);
+  void execute(SymbolInfoHandler* handler) override;
 
   void setDataType(DataType* data_type) { data_type_.reset(data_type); }
   const DataType* getDataType() { return data_type_.get(); }
 
-  const AbstractScope* getScope() override {
-    if (data_type_->getType() == DATA_TYPE_CLASS) {
-      return dynamic_cast<ClassType*>(data_type_.get())->getClassInfo();
-    } else {
-      return SymbolInfo::getScope();
-    }
-  }
+  Scope* getScope() override;
 
  private:
   std::unique_ptr<DataType> data_type_;
+};
+
+class FunctionInfo : public SymbolInfo {
+ public:
+  FunctionInfo();
+  void execute(SymbolInfoHandler* handler);
+
+  std::vector<VariableInfo*> getParameters() { return parameters_; }
+  void addParameter(VariableInfo* parameter);
+
+  const DataType* getReturnType() {
+    return return_type_.get();
+  }
+  void setReturnType(DataType* dtype) {
+    return_type_.reset(dtype);
+  }
+
+  Scope* getScope() override { return scope_.get(); }
+  void setScope(std::shared_ptr<Scope>& scope) { scope_ = scope; }
+
+ private:
+  std::shared_ptr<Scope> scope_;
+  std::unique_ptr<DataType> return_type_;
+  std::vector<VariableInfo*> parameters_;
+};
+
+class ClassInfo : public SymbolInfo {
+ public:
+  ClassInfo();
+  void execute(SymbolInfoHandler* handler) override;
+
+  const std::vector<FunctionInfo*>& getMemberFuncs() { return member_funcs_; }
+  void addMemberFunc(FunctionInfo* func_info);
+
+  const std::vector<VariableInfo*>& getMemberVars() { return member_vars_; }
+  void addMemberVar(VariableInfo* var_info);
+
+  bool equals(const SymbolInfo& symbol_info) const override;
+
+  Scope* getScope() override { return scope_.get(); }
+  void setScope(std::shared_ptr<Scope>& scope) { scope_ = scope; }
+
+ private:
+  std::shared_ptr<Scope> scope_;
+  std::vector<FunctionInfo*> member_funcs_;
+  std::vector<VariableInfo*> member_vars_;
 };
 
 class SymbolInfoHandler {

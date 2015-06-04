@@ -15,10 +15,11 @@ proto_library(
 )
 
 cc_library(
-  name = 'symbol_info',
+  name = 'symbol_table',
   srcs = [
+    'scope.cpp',
     'symbol_info.cpp',
-    'scope.cpp'
+    'symbol_table.cpp'
   ],
   deps = [
       '#boost_system',
@@ -26,22 +27,12 @@ cc_library(
   ]
 )
 
-# cc_library(
-  # name = 'scope',
-  # srcs = [
-      # 'abstract_scope.cpp',
-  # ],
-  # deps = [
-      # '#boost_system',
-      # '#log4cxx',
-      # ':symbol_info',
-  # ]
-# )
-
-cc_library(
-  name = 'symbol_table',
-  srcs = ['symbol_table.cpp'],
+cc_test(
+  name = 'symbol_table_test',
+  srcs = ['symbol_table_test.cpp'],
   deps = [
-      ':symbol_info',
+      '#gtest_main',
+      '#gtest',
+      ':symbol_table',
   ]
 )
