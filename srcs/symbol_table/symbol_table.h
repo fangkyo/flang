@@ -19,6 +19,7 @@ class SymbolTable {
 
   // Push a scope to the scope stack
   void pushScope(const std::shared_ptr<Scope>& scope);
+  void pushScope(Scope* scope);
   void popScope();
 
   // Insert a symbol to symbol table. Insert to global scope also if global

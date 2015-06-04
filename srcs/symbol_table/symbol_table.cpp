@@ -12,6 +12,10 @@ void SymbolTable::pushScope(const std::shared_ptr<Scope>& scope) {
   scope_stack_.emplace_front(scope);
 }
 
+void SymbolTable::pushScope(Scope* scope) {
+  scope_stack_.emplace_front(scope);
+}
+
 void SymbolTable::popScope() {
   CHECK_GT_MSG(scope_stack_.size(), 1, "Can't pop global scope.");
   scope_stack_.pop_front();
