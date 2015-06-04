@@ -3,7 +3,7 @@ cc_config(
 )
 
 proto_library_config(
-    protoc='/usr/local/bin/protoc',
+    protoc='/usr/bin/protoc',
     protobuf_libs=['#protobuf'],
     protobuf_path='/usr/local/lib',
     protobuf_include_path = '/usr/local/include/google',

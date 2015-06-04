@@ -9,7 +9,7 @@ namespace flang {
 class SymbolTableTest : public ::testing::Test {
  public:
   void SetUp() override {
-  } 
+  }
 
  protected:
   SymbolTable symbol_table_;
@@ -22,7 +22,7 @@ TEST_F(SymbolTableTest, TestInsert) {
   symbol_table_.insert("abc", var_info);
   SymbolInfo* symbol_info = symbol_table_.lookup("abc");
   ASSERT_EQ(var_info, symbol_info);
-} 
+}
 
 TEST_F(SymbolTableTest, TestLookUp) {
   VariableInfo* var_info = new VariableInfo();
