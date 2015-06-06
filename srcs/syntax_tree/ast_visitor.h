@@ -36,11 +36,24 @@ class QualifiedTypeNode;
 class ArrayTypeNode;
 
 #define VISIT_METHOD(ASTNodeClass) \
-    virtual bool start(ASTNodeClass*) { return true; } \
-    virtual bool finish(ASTNodeClass*) { return true; } \
+    virtual void start(ASTNodeClass* ast_node) { \
+      startBase(ast_node); \
+      if (next_) { \
+        next_->start(ast_node); \
+      } \
+    } \
+    virtual void startBase(ASTNodeClass*) {} \
+    virtual void finish(ASTNodeClass* ast_node) { \
+      finishBase(ast_node); \
+      if (next_) { \
+        next_->finish(ast_node); \
+      } \
+    } \
+    virtual void finishBase(ASTNodeClass*) {} \
 
 class ASTVisitor {
  public:
+  ASTVisitor() : next_(nullptr), previous_(nullptr) {}
   virtual ~ASTVisitor() {}
 
   VISIT_METHOD(ProgramNode)
@@ -71,6 +84,21 @@ class ASTVisitor {
   VISIT_METHOD(FloatValNode)
   VISIT_METHOD(QualifiedTypeNode)
   VISIT_METHOD(ArrayTypeNode)
+
+  ASTVisitor* getNext() { return next_; }
+
+  void setNext(ASTVisitor* next) {
+    next_ = next;
+    next_->setPrevious(this);
+  }
+
+  ASTVisitor* getPrevious() { return previous_; }
+
+ protected:
+  void setPrevious(ASTVisitor* previous) { previous_ = previous; }
+
+  ASTVisitor* next_;
+  ASTVisitor* previous_;
 };
 
 }  // namespace flang

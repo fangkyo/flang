@@ -17,24 +17,43 @@ class SymbolTable {
  public:
   SymbolTable();
 
-  // Push a scope to the scope stack
+  /** Push a scope to the symbol table's scope stack.
+   *
+   *  @param[in] scope The scope to push. Symbol table has a refenence of the scope.
+   */
   void pushScope(const std::shared_ptr<Scope>& scope);
+
+  /** Push a scope to the symbol table's scope stack.
+   *
+   *  @param[in] scope The scope to push. Symbol table takes its ownership.
+   */
   void pushScope(Scope* scope);
+
+  /** Pop the top scope of symbol table's scope stack. */
   void popScope();
 
   /** Insert a symbol to symbol table. Insert to global scope also if global
    *  is set to true. It takes the ownership of passed in <symbol_info>.
    *
    *  @param[in] name The name of the symbol, which is the key to look up.
-   *  @param[in] symbol_info The symbol to insert. SymbolTable takes the
-   *                         ownership.
+   *  @param[in] symbol_info The symbol to insert. Symbol table takes its ownership.
    */
   void insert(const std::string& name, SymbolInfo* symbol_info);
 
-  // Look up the symbol specification for the given symbol name.
-  // Return nullptr if it can't find anything.
+  /** Look up the symbol specification for the given symbol name.
+   *
+   *  @param[in] name The symbol's name.
+   *  @return The symbol if found or nullptr if not.
+   */
   SymbolInfo* lookup(const std::string& name);
 
+
+  /** Look up the symbol specification for the given symbol name.
+   *
+   *  @param[in] qualifers The symbol's qualifier list.
+   *  @param[in] name The symbol's name.
+   *  @return The symbol if found or nullptr if not.
+   */
   SymbolInfo* lookup(const std::vector<std::string*>& qualifiers,
                      const std::string& name);
 
