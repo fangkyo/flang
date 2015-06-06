@@ -22,8 +22,13 @@ class SymbolTable {
   void pushScope(Scope* scope);
   void popScope();
 
-  // Insert a symbol to symbol table. Insert to global scope also if global
-  // is set to true.
+  /** Insert a symbol to symbol table. Insert to global scope also if global
+   *  is set to true. It takes the ownership of passed in <symbol_info>.
+   *
+   *  @param[in] name The name of the symbol, which is the key to look up.
+   *  @param[in] symbol_info The symbol to insert. SymbolTable takes the
+   *                         ownership.
+   */
   void insert(const std::string& name, SymbolInfo* symbol_info);
 
   // Look up the symbol specification for the given symbol name.

@@ -2,6 +2,7 @@
 
 #include <boost/format.hpp>
 
+#include "base/check.h"
 #include "symbol_table/symbol_info.h"
 #include "symbol_table/scope.h"
 
@@ -35,12 +36,14 @@ bool ClassType::equals(const DataType& dtype) const {
 
 
 void ClassInfo::addMemberFunc(FunctionInfo* func_info) {
+  CHECK(scope_);
   member_funcs_.push_back(func_info);
   scope_->insert(func_info->getName(), func_info);
 }
 
 
 void ClassInfo::addMemberVar(VariableInfo* var_info) {
+  CHECK(scope_);
   member_vars_.push_back(var_info);
   scope_->insert(var_info->getName(), var_info);
 }
