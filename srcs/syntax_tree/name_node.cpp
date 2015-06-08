@@ -21,6 +21,18 @@ std::string QualifiedNameNode::getFullyQualifiedName() {
   return fmt.str();
 }
 
+void QualifiedNameNode::getQualifiers(
+    std::vector<const std::string*>* qualifiers) {
+  CHECK(qualifiers);
+  qualifier_->getNames(qualifiers);
+}
+
+void QualifiedNameNode::getNames(std::vector<const std::string*>* names) {
+  CHECK(names);
+  qualifier_->getNames(names);
+  names->push_back(&(name_->getName()));
+}
+
 void QualifiedNameNode::accept(ASTVisitor* visitor) {
   visitor->start(this);
   qualifier_->accept(visitor);

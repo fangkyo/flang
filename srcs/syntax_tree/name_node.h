@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "syntax_tree/exp_node.h"
 
@@ -12,24 +13,31 @@ class NameNode : public ExpNode {
  public:
   ~NameNode() override {}
   virtual std::string getFullyQualifiedName() = 0;
+  virtual void getNames(std::vector<const std::string*>*) = 0;
+  virtual void getQualifiers(std::vector<const std::string*>* qualifiers) = 0;
 
  protected:
   NameNode(ASTNode::ASTNodeType node_type) : ExpNode(node_type) {}
 };
 
 class SimpleNameNode : public NameNode {
-  public:
-   SimpleNameNode(const std::string name);
-   ~SimpleNameNode() override {}
+ public:
+  SimpleNameNode(const std::string name);
+  ~SimpleNameNode() override {}
 
-   void setName(const std::string& name) { name_ = name; }
-   const std::string& getName() { return name_; }
+  void setName(const std::string& name) { name_ = name; }
+  const std::string& getName() { return name_; }
 
 
-   std::string getFullyQualifiedName() override { return name_; }
+  std::string getFullyQualifiedName() override { return name_; }
 
-  private:
-   std::string name_;
+  void getNames(std::vector<const std::string*>* names) override {
+    names->push_back(&name_);
+  }
+  void getQualifiers(std::vector<const std::string*>* qualifiers) override {}
+
+ private:
+  std::string name_;
 };
 
 // QualifiedName.SimpleName
@@ -47,6 +55,9 @@ class QualifiedNameNode : public NameNode {
   NameNode* getQualifier() { return qualifier_.get(); }
 
   std::string getFullyQualifiedName() override;
+
+  void getQualifiers(std::vector<const std::string*>* qualifiers) override;
+  void getNames(std::vector<const std::string*>* names) override;
 
  private:
   std::unique_ptr<NameNode> qualifier_;

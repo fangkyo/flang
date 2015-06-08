@@ -1,6 +1,9 @@
 #ifndef AST_VISITOR_H_
 #define AST_VISITOR_H_
 
+#include "base/check.h"
+#include "symbol_table/symbol_table.h"
+
 namespace flang {
 
 class ProgramNode;
@@ -23,6 +26,7 @@ class BinaryExpNode;
 class BlockNode;
 class QualifiedNameNode;
 class SimpleNameNode;
+
 // Primitive value node
 class Int32ValNode;
 class Int64ValNode;
@@ -53,7 +57,7 @@ class ArrayTypeNode;
 
 class ASTVisitor {
  public:
-  ASTVisitor() : next_(nullptr), previous_(nullptr) {}
+  ASTVisitor() : next_(nullptr), previous_(nullptr), symbol_table_(nullptr) {}
   virtual ~ASTVisitor() {}
 
   VISIT_METHOD(ProgramNode)
@@ -88,17 +92,28 @@ class ASTVisitor {
   ASTVisitor* getNext() { return next_; }
 
   void setNext(ASTVisitor* next) {
+    CHECK(next);
     next_ = next;
     next_->setPrevious(this);
   }
 
   ASTVisitor* getPrevious() { return previous_; }
 
+  void setSymbolTable(SymbolTable* symbol_table) {
+    symbol_table_ = symbol_table;
+  }
+
+  SymbolTable* getSymbolTable() {
+    return symbol_table_;
+  }
+
  protected:
   void setPrevious(ASTVisitor* previous) { previous_ = previous; }
 
   ASTVisitor* next_;
   ASTVisitor* previous_;
+
+  SymbolTable* symbol_table_;
 };
 
 }  // namespace flang
