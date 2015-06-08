@@ -10,26 +10,7 @@ namespace flang {
 
 class TypeChecker : public ASTVisitor {
  public:
-
-  bool visit(BinaryExpNode*) override;
-
-  void doPrintNode(PrintNode* node) override;
-
-  void doAssignNode(AssignNode* node) override;
-
-  void doIfNode(IfNode* node) override;
-
-  void doWhileNode(WhileNode* node) override;
-
-  void doBreakNode(BreakNode* node) override;
-
-  void doReturnNode(ReturnNode* node) override;
-
-  void doCallNode(CallNode* node) override;
-
-  void doClassNode(ClassNode* node) override;
-
-  void doNewNode(NewNode* node) override;
+  void startBase()
 
  private:
   static log4cxx::LoggerPtr logger_;

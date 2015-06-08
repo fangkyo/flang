@@ -7,20 +7,12 @@ namespace flang {
 log4cxx::LoggerPtr TypeChecker::logger_(
     log4cxx::Logger::getLogger("flang.TypeChecker"));
 
-
-bool TypeChecker::visit(BinaryExpNode* node) {
+void TypeChecker::finishBase(BinaryExpNode* node) {
   ExpNode* left = node->getLeftSide();
   ExpNode* right = node->getRightSide();
-  if (left->getNodeType() == right->getNodeType()) {
-    return true;
-  } else {
-    return false;
-  }
 }
 
-
 void TypeChecker::doPrintNode(PrintNode* node) {
-  //LOG4CXX_TRACE(logger_, "doPrintNode() called");
   //if (NULL == node) {
     //LOG4CXX_ERROR(logger_, "print node is null!");
     //return;
@@ -36,11 +28,7 @@ void TypeChecker::doPrintNode(PrintNode* node) {
     //NotPrintableError error(node->m_exp);
     //emitError(&error);
   //}
-
-  //LOG4CXX_TRACE(logger_, "doPrintNode() return");
 }
-
-
 
 void TypeChecker::doAssignNode(AssignNode* node) {
   //LOG4CXX_TRACE(logger_, "doAssignNode() called");
