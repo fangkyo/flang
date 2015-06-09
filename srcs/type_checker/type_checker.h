@@ -10,7 +10,8 @@ namespace flang {
 
 class TypeChecker : public ASTVisitor {
  public:
-  void startBase()
+  void finishBase(BinaryExpNode* node);
+  void finishBase(PrintNode* node);
 
  private:
   static log4cxx::LoggerPtr logger_;

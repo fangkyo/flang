@@ -1,5 +1,6 @@
 
 #include "type_checker/type_checker.h"
+#include "exception/error.h"
 #include "base/check.h"
 
 namespace flang {
@@ -10,13 +11,16 @@ log4cxx::LoggerPtr TypeChecker::logger_(
 void TypeChecker::finishBase(BinaryExpNode* node) {
   ExpNode* left = node->getLeftSide();
   ExpNode* right = node->getRightSide();
+  if (!left->getType()->equals(*(right->getType()))) {
+    Error* error = new DataTypeNotEqualError(
+        left->getType()->getName(), right->getType()->getName());
+    error->setLineNum(node->getLineNum());
+    addException(error);
+  }
 }
 
-void TypeChecker::doPrintNode(PrintNode* node) {
-  //if (NULL == node) {
-    //LOG4CXX_ERROR(logger_, "print node is null!");
-    //return;
-  //}
+void TypeChecker::finishBase(PrintNode* node) {
+  CHECK(node);
 
   //DataTypeNode* dtypeNode = node->m_exp->getDataTypeNode();
 
