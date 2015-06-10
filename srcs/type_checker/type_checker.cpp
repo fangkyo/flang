@@ -1,7 +1,7 @@
 
 #include "symbol_table/symbol_info.h"
 #include "type_checker/type_checker.h"
-#include "exception/error.h"
+#include "type_checker/error.h"
 #include "base/check.h"
 
 namespace flang {
@@ -14,8 +14,8 @@ void TypeChecker::finishBase(BinaryExpNode* node) {
   ExpNode* right = node->getRightSide();
   if (!left->getType()->equals(*(right->getType()))) {
     Error* error = new DataTypeNotEqualError(
-        left->getType()->getName(),
-        right->getType()->getName(),
+        *left->getType(),
+        *right->getType(),
         node->getLineNum());
     addException(error);
   }
@@ -39,113 +39,41 @@ void TypeChecker::finishBase(AssignNode* node) {
   CHECK(left->getType());
   CHECK(right->getType());
   if (!left->getType()->equals(*(right->getType()))) {
-    addException(new NotAssig);
-
+    addException(new NotAssignableError(
+        *left, *right, node->getLineNum()));
   }
-
-  //DataTypeNode* varType = node->getVarDataTypeNode();
-  //DataTypeNode* expType = node->getExpDataTypeNode();
-
-  //if (!varType->isEqual(expType)) {
-    //TypeNotEqualError error(node->m_var, node->m_exp);
-    //emitError(&error);
-  //}
-
-  //node->setDataTypeNode(varType);
-
-  //LOG4CXX_TRACE(logger_, "doAssignNode() return");
 }
 
 void TypeChecker::finishBase(IfNode* node) {
-  //LOG4CXX_TRACE(logger_, "doIfNode() called");
-
-  //if (NULL == node) return;
-
-  //assert(node->getTest());
-
-  //if (node->getTest() == NULL) {
-    //LOG4CXX_FATAL(logger_, "if_stmt's \"test\" is null!");
-    //return;
-  //}
-
-  //node->getTest()->accept(*this);
-  //DataTypeNode* testType = node->m_test->getDataTypeNode();
-
-  //assert(testType);
-
-  //// test part need bool type expression
-  //if (!testType->isEqual(BOOL_TYPE_NODE)) {
-    //TypeNotMatchError error(node->m_test, BOOL_TYPE_NODE);
-    //emitError(&error);
-  //}
-
-  //if (node->m_if) {
-    //pushDefaultLevel();
-    //node->m_if->accept(*this);
-    //popLevel();
-
-  //} else {
-    //LOG4CXX_DEBUG(logger_, "if_stmt's \"if\" part is null");
-  //}
-
-  //if (node->m_else) {
-    //pushDefaultLevel();
-    //node->m_else->accept(*this);
-    //popLevel();
-
-  //} else {
-    //LOG4CXX_DEBUG(logger_, "if_stmt's \"else\" part is null");
-  //}
-
-  //LOG4CXX_TRACE(logger_, "doIfNode() return");
+  auto* test_node = node->getTestNode();
+  CHECK_MSG(test_node, "If node's test node is null.");
+  if (test_node->getType()->getType() != DATA_TYPE_BOOL) {
+    addException(new IncorrectTypeError(
+        BoolType(), *test_node->getType(), node->getLineNum()));
+  }
 }
 
 void TypeChecker::finishBase(WhileNode* node) {
-  //if (NULL == node) return;
-
-  //ExpNode* test = node->getTest();
-  //assert(test);
-  //if (NULL == test) {
-    //LOG4CXX_FATAL(logger_, "while_stmt's \"test\" part is null!");
-    //return;
-  //}
-
-  //// accept test part
-  //test->accept(*this);
-  //assert(test->getDataTypeNode());
-
-  //DataTypeNode* testType = test->getDataTypeNode();
-  //assert(testType);
-
-  //// test part need bool type expression
-  //if (!testType->isEqual(BOOL_TYPE_NODE)) {
-    //TypeNotMatchError error(node->m_test, BOOL_TYPE_NODE);
-    //emitError(&error);
-  //}
-
-  //if (node->getBody()) {
-    //pushWhileLevel(node);
-    //node->getBody()->accept(*this);
-    //popLevel();
-  //} else {
-    //LOG4CXX_DEBUG(logger_, "while_stmt's \"body\" part is null");
-  //}
+  auto* test_node = node->getTestNode();
+  CHECK_MSG(test_node, "While node's test node is null.");
+  if (test_node->getType()->getType() != DATA_TYPE_BOOL) {
+    addException(new IncorrectTypeError(
+        BoolType(), *test_node->getType(), node->getLineNum()));
+  }
 }
 
 void TypeChecker::finishBase(BreakNode* node) {
-  //LOG4CXX_TRACE(logger_, "doBreakNode() called");
-  //if (NULL == node) return;
-
-  //WhileNode* whileNode = NULL;
-  //int level = findWhileScope(whileNode);
-  //if (NULL == whileNode) {
-    //BreakWithNoWhileError error(node);
-    //emitError(&error);
-  //} else {
-    //node->setWhileNode(whileNode);
-  //}
-
-  //LOG4CXX_TRACE(logger_, "doBreakNode() return");
+  for (auto* parent = node->getParent();
+       parent != nullptr;
+       parent = parent->getParent()) {
+    if (parent->getNodeType() == ASTNode::WHILE_NODE) {
+      return;
+    }
+    if (parent->getNodeType() == ASTNode::FUNC_NODE) {
+      break;
+    }
+  }
+  addException(new BreakError(*node));
 }
 
 // void TypeChecker::doGlobalFuncNode(GlobalFuncNode* funcNode) {

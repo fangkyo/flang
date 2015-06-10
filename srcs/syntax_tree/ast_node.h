@@ -59,15 +59,15 @@ class ASTNode {
   virtual ~ASTNode() {}
   virtual void accept(ASTVisitor*) {}
 
-  ASTNodeType getNodeType() { return node_type_; }
+  ASTNodeType getNodeType() const { return node_type_; }
 
   // Parent's accessor
   void setParent(ASTNode* parent) { parent_ = parent; }
-  ASTNode* getParent() { return parent_; }
+  ASTNode* getParent() const { return parent_; }
 
   // Lineno's accessor
   void setLineNum(int32_t line_num) { line_num_ = line_num; }
-  int32_t getLineNum() { return line_num_; }
+  int32_t getLineNum() const { return line_num_; }
 
  protected:
   ASTNodeType node_type_;

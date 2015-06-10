@@ -2,7 +2,8 @@
 #define ERROR_H
 
 #include "exception/exception.h"
-#include "syntax_tree/exp_node.h"
+#include "syntax_tree/syntax_tree.h"
+#include "symbol_table/symbol_info.h"
 
 namespace flang {
 
@@ -22,7 +23,7 @@ class RedefineSymbolError : public Error {
 class DataTypeNotEqualError : public Error {
  public:
   DataTypeNotEqualError(
-      const std::string& type1, const std::string& type2, int lineno);
+      const DataType& type1, const DataType& type2, int lineno);
 };
 
 class DataTypeNotPrintableError : public Error {
@@ -33,6 +34,17 @@ class DataTypeNotPrintableError : public Error {
 class NotAssignableError : public Error {
  public:
   NotAssignableError(const ExpNode& left, const ExpNode& right, int lineno);
+};
+
+class IncorrectTypeError : public Error {
+ public:
+  IncorrectTypeError(
+      const DataType& correct, const DataType& incorrect, int lineno);
+};
+
+class BreakError : public Error {
+ public:
+  BreakError(const BreakNode& node);
 };
 
 }  // namespace flang

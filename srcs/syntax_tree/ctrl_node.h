@@ -36,10 +36,10 @@ class WhileNode : public StmtNode {
   ~WhileNode() override {}
 
   void setTestNode(ExpNode* test_node) { test_node_.reset(test_node); }
-  ExpNode* testNode() { return test_node_.get(); }
+  ExpNode* getTestNode() { return test_node_.get(); }
 
   void setBodyNode(ASTNode* body_node) { body_node_.reset(body_node); }
-  ASTNode* bodyNode() { return body_node_.get(); }
+  ASTNode* getBodyNode() { return body_node_.get(); }
 
   void accept(ASTVisitor* visitor) override;
 

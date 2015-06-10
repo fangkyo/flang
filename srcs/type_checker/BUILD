@@ -6,6 +6,7 @@ cc_library (
     deps = [
       '#boost_system',
       '#log4cxx',
+      ':error',
       '//symbol_table:symbol_table',
       '//syntax_tree:syntax_tree',
     ]
@@ -16,4 +17,10 @@ cc_library(
     srcs = [
         'error.cpp',
     ],
+    deps = [
+        '#boost_system',
+        '//exception:exception',
+        '//symbol_table:symbol_table',
+        '//syntax_tree:syntax_tree',
+    ]
 )
