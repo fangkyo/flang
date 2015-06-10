@@ -9,7 +9,6 @@ CodeGenEngine::CodeGenEngine(int regNum) {
 }
 
 void CodeGenEngine::newTmp(Addr& addr, int size) {
-
   for (int i = 0; i < m_regs.size(); ++i) {
     if (NULL == m_regs[i]) {
       m_regs[i] = &addr;

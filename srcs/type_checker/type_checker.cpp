@@ -1,4 +1,5 @@
 
+#include "symbol_table/symbol_info.h"
 #include "type_checker/type_checker.h"
 #include "exception/error.h"
 #include "base/check.h"
@@ -13,35 +14,34 @@ void TypeChecker::finishBase(BinaryExpNode* node) {
   ExpNode* right = node->getRightSide();
   if (!left->getType()->equals(*(right->getType()))) {
     Error* error = new DataTypeNotEqualError(
-        left->getType()->getName(), right->getType()->getName());
-    error->setLineNum(node->getLineNum());
+        left->getType()->getName(),
+        right->getType()->getName(),
+        node->getLineNum());
     addException(error);
   }
 }
 
 void TypeChecker::finishBase(PrintNode* node) {
-  CHECK(node);
-
-  //DataTypeNode* dtypeNode = node->m_exp->getDataTypeNode();
-
-  //if (!node->canPrint(dtypeNode)) {
-    //LOG4CXX_DEBUG(logger_, "expression \""
-                                 //<< node->m_exp->toString() << "\" with type \""
-                                 //<< node->m_exp->getDataTypeNode()->toString()
-                                 //<< "\" can't be printed");
-    //NotPrintableError error(node->m_exp);
-    //emitError(&error);
-  //}
+  ExpNode* exp_node = node->getExpNode();
+  CHECK_MSG(exp_node, "PrintNode doesn't have expression node to print.");
+  CHECK(exp_node->getType());
+  if (exp_node->getType()->getType() == DATA_TYPE_VOID) {
+    addException(new DataTypeNotPrintableError(
+        *(exp_node->getType()), node->getLineNum()));
+  }
 }
 
-void TypeChecker::doAssignNode(AssignNode* node) {
-  //LOG4CXX_TRACE(logger_, "doAssignNode() called");
-  //if (NULL == node) return;
+void TypeChecker::finishBase(AssignNode* node) {
+  ExpNode* left = node->getLeftSide();
+  CHECK(left);
+  ExpNode* right = node->getRightSide();
+  CHECK(right);
+  CHECK(left->getType());
+  CHECK(right->getType());
+  if (!left->getType()->equals(*(right->getType()))) {
+    addException(new NotAssig);
 
-  //if (NULL == node->getExpNode()) {
-    //LOG4CXX_DEBUG(logger_, "right expression of expNode is null");
-    //return;
-  //}
+  }
 
   //DataTypeNode* varType = node->getVarDataTypeNode();
   //DataTypeNode* expType = node->getExpDataTypeNode();
@@ -56,7 +56,7 @@ void TypeChecker::doAssignNode(AssignNode* node) {
   //LOG4CXX_TRACE(logger_, "doAssignNode() return");
 }
 
-void TypeChecker::doIfNode(IfNode* node) {
+void TypeChecker::finishBase(IfNode* node) {
   //LOG4CXX_TRACE(logger_, "doIfNode() called");
 
   //if (NULL == node) return;
@@ -100,7 +100,7 @@ void TypeChecker::doIfNode(IfNode* node) {
   //LOG4CXX_TRACE(logger_, "doIfNode() return");
 }
 
-void TypeChecker::doWhileNode(WhileNode* node) {
+void TypeChecker::finishBase(WhileNode* node) {
   //if (NULL == node) return;
 
   //ExpNode* test = node->getTest();
@@ -132,7 +132,7 @@ void TypeChecker::doWhileNode(WhileNode* node) {
   //}
 }
 
-void TypeChecker::doBreakNode(BreakNode* node) {
+void TypeChecker::finishBase(BreakNode* node) {
   //LOG4CXX_TRACE(logger_, "doBreakNode() called");
   //if (NULL == node) return;
 
@@ -174,7 +174,7 @@ void TypeChecker::doBreakNode(BreakNode* node) {
   //LOG4CXX_TRACE(logger_, "doGlobalFuncNode() return");
 // }
 
-void TypeChecker::doReturnNode(ReturnNode* node) {
+void TypeChecker::finishBase(ReturnNode* node) {
   //LOG4CXX_TRACE(logger_, "doReturnNode() called");
   //if (NULL == node) return;
 
@@ -196,7 +196,7 @@ void TypeChecker::doReturnNode(ReturnNode* node) {
   //LOG4CXX_TRACE(logger_, "doReturnNode() return");
 }
 
-void TypeChecker::doCallNode(CallNode* node) {
+void TypeChecker::finishBase(CallNode* node) {
   //LOG4CXX_TRACE(logger_, "doCallNode() called");
 
   //if (NULL == node) return;
@@ -257,7 +257,7 @@ void TypeChecker::doCallNode(CallNode* node) {
   //LOG4CXX_TRACE(logger_, "doCallNode() return");
 }
 
-void TypeChecker::doClassNode(ClassNode* node) {
+void TypeChecker::finishBase(ClassNode* node) {
   //LOG4CXX_TRACE(logger_, "doClassNode() called");
 
   //if (NULL == node) return;
@@ -297,7 +297,7 @@ void TypeChecker::doClassNode(ClassNode* node) {
   //LOG4CXX_TRACE(logger_, "doClassNode() return");
 }
 
-void TypeChecker::doNewNode(NewNode* node) {
+void TypeChecker::finishBase(NewNode* node) {
   //LOG4CXX_TRACE(logger_, "doNewNode() called");
   //if (NULL == node) return;
 

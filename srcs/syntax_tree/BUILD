@@ -1,4 +1,14 @@
 cc_library(
+  name = 'ast_visitor',
+  srcs = ['ast_visitor.cpp'],
+  deps = [
+    '#boost_system',
+    '//exception:exception',
+    '//symbol_table:symbol_table',
+  ]
+)
+
+cc_library(
  name = 'syntax_tree',
  srcs = [
    'syntax_tree.cpp',
@@ -17,6 +27,7 @@ cc_library(
    ':new_node',
    ':ctrl_node',
    ':block_node',
+   ':ast_visitor',
  ]
 )
 

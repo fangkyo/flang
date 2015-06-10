@@ -8,17 +8,13 @@ namespace flang {
 
 class Exception : public std::exception {
  public:
-  Exception(const std::string& msg, int lineno = INVALID_LINENO) :
-    message_(msg), lineno_(lineno) {}
-  Exception() {}
+  Exception(int lineno);
   ~Exception() override {}
 
-  const char* what() const noexcept override { return message_.c_str(); }
+  const char* what() const noexcept override;
 
   int getLineNum() { return lineno_; }
   void setLineNum(int lineno) { lineno_ = lineno;  }
-
-  static const int INVALID_LINENO = -1;
 
  protected:
   std::string message_;
@@ -27,13 +23,13 @@ class Exception : public std::exception {
 
 class Warning : public Exception {
  public:
-  Warning(const std::string& msg) : Exception(msg) {}
+  Warning(int lineno);
   ~Warning() override {}
 };
 
 class Error : public Exception {
  public:
-  Error() {}
+  Error(int lineno);
   ~Error() override {}
 };
 

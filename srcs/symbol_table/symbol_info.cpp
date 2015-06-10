@@ -8,30 +8,50 @@
 
 namespace flang {
 
+bool DataType::equals (const DataType& dtype) const {
+  if (this == &dtype || dtype.getType() == type_) {
+    return true;
+  }
+  return false;
+}
+
 bool ArrayType::equals(const DataType& dtype) const {
   if (dtype.getType() != DATA_TYPE_ARRAY) {
     return false;
   }
-  const ArrayType* array_type = static_cast<const ArrayType*>(&dtype);
-  if (this == array_type) {
+  const ArrayType& array_type = static_cast<const ArrayType&>(dtype);
+  if (this == &array_type) {
     return true;
   }
-  if (!data_type_->equals(*(array_type->getDataType())) &&
-      dimension_ != array_type->dimension_) {
+
+  if (!data_type_->equals(*(array_type.getDataType())) &&
+      dimension_ != array_type.dimension_) {
     return false;
   }
   return true;
+}
+
+std::string ArrayType::getName() const {
+  std::string name = data_type_->getName();
+  for (uint32_t i = 0; i < dimension_; ++i) {
+    name.append("[]");
+  }
+  return name;
 }
 
 bool ClassType::equals(const DataType& dtype) const {
   if (dtype.getType() != DATA_TYPE_CLASS) {
     return false;
   }
-  const ClassType* class_type = static_cast<const ClassType*>(&dtype);
-  if (this == class_type) {
+  const ClassType& class_type = static_cast<const ClassType&>(dtype);
+  if (this == &class_type) {
     return true;
   }
-  return class_info_->equals(*(class_type->class_info_));
+  return class_info_->equals(*(class_type.getClassInfo()));
+}
+
+std::string ClassType::getName() const {
+  return class_info_->getName();
 }
 
 
@@ -63,6 +83,7 @@ bool SymbolInfo::equals(const SymbolInfo& symbol_info) const {
   return (name_ == symbol_info.name_ &&
           symbol_type_ == symbol_info.symbol_type_);
 }
+
 
 VariableInfo::VariableInfo() :
     SymbolInfo(SymbolType::SYMBOL_VARIABLE) {

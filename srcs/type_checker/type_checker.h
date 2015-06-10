@@ -12,6 +12,14 @@ class TypeChecker : public ASTVisitor {
  public:
   void finishBase(BinaryExpNode* node);
   void finishBase(PrintNode* node);
+  void finishBase(AssignNode* node);
+  void finishBase(IfNode* node);
+  void finishBase(WhileNode* node);
+  void finishBase(BreakNode* node);
+  void finishBase(ReturnNode* node);
+  void finishBase(CallNode* node);
+  void finishBase(ClassNode* node);
+  void finishBase(NewNode* node);
 
  private:
   static log4cxx::LoggerPtr logger_;

@@ -9,7 +9,7 @@
 namespace flang {
 
 // Expression node with unary operator
-class UnaryExpNode : public ASTNode {
+class UnaryExpNode : public ExpNode {
  public:
   enum UnaryOpType {
     OP_INC, // ++

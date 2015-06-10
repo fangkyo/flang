@@ -1,7 +1,10 @@
 #ifndef AST_VISITOR_H_
 #define AST_VISITOR_H_
 
+#include <boost/ptr_container/ptr_vector.hpp>
+
 #include "base/check.h"
+#include "exception/exception.h"
 #include "symbol_table/symbol_table.h"
 
 namespace flang {
@@ -41,6 +44,7 @@ class ArrayTypeNode;
 
 #define VISIT_METHOD(ASTNodeClass) \
     virtual void start(ASTNodeClass* ast_node) { \
+      CHECK(ast_node); \
       startBase(ast_node); \
       if (next_) { \
         next_->start(ast_node); \
@@ -48,6 +52,7 @@ class ArrayTypeNode;
     } \
     virtual void startBase(ASTNodeClass*) {} \
     virtual void finish(ASTNodeClass* ast_node) { \
+      CHECK(ast_node); \
       finishBase(ast_node); \
       if (next_) { \
         next_->finish(ast_node); \
@@ -57,7 +62,7 @@ class ArrayTypeNode;
 
 class ASTVisitor {
  public:
-  ASTVisitor() : next_(nullptr), previous_(nullptr), symbol_table_(nullptr) {}
+  ASTVisitor();
   virtual ~ASTVisitor() {}
 
   VISIT_METHOD(ProgramNode)
@@ -91,12 +96,7 @@ class ASTVisitor {
 
   ASTVisitor* getNext() { return next_; }
 
-  void setNext(ASTVisitor* next) {
-    CHECK(next);
-    next_ = next;
-    next_->setPrevious(this);
-  }
-
+  void setNext(ASTVisitor* next);
   ASTVisitor* getPrevious() { return previous_; }
 
   void setSymbolTable(SymbolTable* symbol_table) {
@@ -107,6 +107,14 @@ class ASTVisitor {
     return symbol_table_;
   }
 
+  boost::ptr_vector<Exception>& getException() {
+    return exceptions_;
+  }
+
+  void addException(Exception* e) {
+    exceptions_.push_back(e);
+  }
+
  protected:
   void setPrevious(ASTVisitor* previous) { previous_ = previous; }
 
@@ -114,6 +122,7 @@ class ASTVisitor {
   ASTVisitor* previous_;
 
   SymbolTable* symbol_table_;
+  boost::ptr_vector<Exception> exceptions_;
 };
 
 }  // namespace flang

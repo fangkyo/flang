@@ -10,3 +10,10 @@ cc_library (
       '//syntax_tree:syntax_tree',
     ]
 )
+
+cc_library(
+    name = 'error',
+    srcs = [
+        'error.cpp',
+    ],
+)

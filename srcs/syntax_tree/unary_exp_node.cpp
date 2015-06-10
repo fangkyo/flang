@@ -3,7 +3,7 @@
 namespace flang {
 
 UnaryExpNode::UnaryExpNode(UnaryOpType op, ExpNode* operand) :
-    ASTNode(ASTNode::UNARY_EXP_NODE),
+    ExpNode(ASTNode::UNARY_EXP_NODE),
     operator_(op), operand_(operand) {
 }
 
