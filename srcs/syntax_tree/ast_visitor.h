@@ -42,6 +42,13 @@ class BoolValNode;
 class QualifiedTypeNode;
 class ArrayTypeNode;
 
+/**
+ * @brief This struct is used for passing inherit attributes between visitor
+ * functions.
+ */
+struct ASTVisitorContext {
+};
+
 #define VISIT_METHOD(ASTNodeClass) \
     virtual void start(ASTNodeClass* ast_node) { \
       CHECK(ast_node); \

@@ -45,18 +45,6 @@ public:
 
   void accept(ASTVisitor* visitor) override;
 
-  // void acceptVars(Visitor &visitor);
-
-  // void acceptFuncs(Visitor &visitor, ScopeManager &scopeManager,
-                   // ErrorEngine &errorEngine);
-
-  // ClassFuncNode *findMemberFunc(const std::string &funcName,
-                                // vector<DataTypeNode *> &paramsType);
-
-  // ClassFuncNode *findMemberFunc(const std::string &funcName);
-
-  // VarNode *findMemberVar(const std::string &varName);
-
  private:
   std::string name_;
   std::unique_ptr<NameNode> base_class_;

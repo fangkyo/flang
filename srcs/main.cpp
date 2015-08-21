@@ -18,7 +18,7 @@ int main(int argc, char* argv[]){
       "l", "log_config", "Log4cxx configuration file.",
       false, "log4cxx.properties", "string");
   cmd.add(file_arg);
-  cmd.add(log_config_arg);
+  // cmd.add(log_config_arg);
   cmd.parse(argc, argv);
   std::string filename = file_arg.getValue();
 

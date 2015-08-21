@@ -76,33 +76,12 @@ void TypeChecker::finishBase(BreakNode* node) {
   addException(new BreakError(*node));
 }
 
-// void TypeChecker::doGlobalFuncNode(GlobalFuncNode* funcNode) {
-  //LOG4CXX_TRACE(logger_, "doGlobalFuncNode() called");
-
-  //if (NULL == funcNode) return;
-
-  //LOG4CXX_DEBUG(logger_, "handle function \"" << funcNode->getName()
-                                                //<< "\"()");
-
-  //FuncNode* funcTmp = findFunc(funcNode->getName());
-
-  //if (NULL != funcTmp) {
-    //LOG4CXX_DEBUG(logger_, "function \"" << funcNode->getName()
-                                           //<< "\" redefined");
-    //FuncRedefinedError error(funcTmp, funcNode);
-    //emitError(&error);
-
-  //} else {
-    //LOG4CXX_DEBUG(logger_, "add function \"" << funcNode->getName() << "\"");
-    //addFunc(funcNode);
-  //}
-
-  //doFuncNodePart(funcNode);
-
-  //LOG4CXX_TRACE(logger_, "doGlobalFuncNode() return");
-// }
-
 void TypeChecker::finishBase(ReturnNode* node) {
+  ExpNode* exp_node = node->getExpression();
+  if (exp_node) {
+    CHECK(exp_node->getType());
+    if (exp_node->getType()->equals());
+  }
   //LOG4CXX_TRACE(logger_, "doReturnNode() called");
   //if (NULL == node) return;
 
@@ -185,7 +164,26 @@ void TypeChecker::finishBase(CallNode* node) {
   //LOG4CXX_TRACE(logger_, "doCallNode() return");
 }
 
+void TypeChecker::startBase(ClassNode* node) {
+  symbol_table_->pushScope(new Scope());
+  NameNode* base_class_name = node->getBaseClass();
+  if (base_class_name) {
+    std::vector<std::string*> qualifiers;
+    base_class_name->getQualifiers(&qualifiers);
+    SymbolInfo* symbol_info =
+        symbol_table_->lookup(qualifiers, base_class_name->getName());
+    if (nullptr == symbol_info) {
+      addException();
+      return;
+    }
+    if (symbol_info->getSymbolType() != SYMBOL_CLASS) {
+      addException();
+    }
+  }
+}
+
 void TypeChecker::finishBase(ClassNode* node) {
+  symbol_table_->popScope();
   //LOG4CXX_TRACE(logger_, "doClassNode() called");
 
   //if (NULL == node) return;

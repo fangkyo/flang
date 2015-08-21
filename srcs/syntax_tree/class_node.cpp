@@ -6,14 +6,18 @@ namespace flang {
 
 void ClassNode::accept(ASTVisitor* visitor) {
   visitor->start(this);
-  if (base_class_) {
-    base_class_->accept(visitor);
-  }
   for (auto& member_var : member_var_list_) {
-    member_var.accept(visitor);
+    visitor->start(member_var);
   }
   for (auto& member_func : member_func_list_) {
-    member_func.accept(visitor);
+    visitor->start(member_func);
+  }
+
+  for (auto& member_var : member_var_list_) {
+    visitor->finish(member_var);
+  }
+  for (auto& member_func : member_func_list_) {
+    visitor->finish(member_func);
   }
   visitor->finish(this);
 }

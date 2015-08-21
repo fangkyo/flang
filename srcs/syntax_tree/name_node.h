@@ -9,11 +9,14 @@
 
 namespace flang{
 
+// Name:
+//     Name.SimpleName
 class NameNode : public ExpNode {
  public:
   ~NameNode() override {}
   virtual std::string getFullyQualifiedName() = 0;
-  virtual void getNames(std::vector<const std::string*>*) = 0;
+  virtual void getName(std::vector<const std::string*>*) = 0;
+  virtual std::string getName() const = 0;
   virtual void getQualifiers(std::vector<const std::string*>* qualifiers) = 0;
 
  protected:
@@ -26,21 +29,21 @@ class SimpleNameNode : public NameNode {
   ~SimpleNameNode() override {}
 
   void setName(const std::string& name) { name_ = name; }
-  const std::string& getName() { return name_; }
-
+  std::string getName() const override { return name_; }
+  void getName(std::vector<const std::string*>* name) override {
+    CHECK(name);
+    name->push_back(&name_);
+  }
 
   std::string getFullyQualifiedName() override { return name_; }
 
-  void getNames(std::vector<const std::string*>* names) override {
-    names->push_back(&name_);
-  }
   void getQualifiers(std::vector<const std::string*>* qualifiers) override {}
 
  private:
   std::string name_;
 };
 
-// QualifiedName.SimpleName
+// Name.SimpleName
 class QualifiedNameNode : public NameNode {
  public:
   QualifiedNameNode(NameNode* qualifier, SimpleNameNode* name);
@@ -57,7 +60,7 @@ class QualifiedNameNode : public NameNode {
   std::string getFullyQualifiedName() override;
 
   void getQualifiers(std::vector<const std::string*>* qualifiers) override;
-  void getNames(std::vector<const std::string*>* names) override;
+  void getName(std::vector<const std::string*>* name) override;
 
  private:
   std::unique_ptr<NameNode> qualifier_;

@@ -41,8 +41,9 @@ SymbolInfo* SymbolTable::lookup(const std::string& name) {
 
 SymbolInfo* SymbolTable::lookup(const std::vector<std::string*>& qualifiers,
                                 const std::string& name) {
-  CHECK_MSG(qualifiers.size(),
-            "Using SymbolTable::lookup(name) instead.");
+  if (qualifiers.empty()) {
+    return lookup(name);
+  }
   for (auto& scope : scope_stack_) {
     auto iter = qualifiers.begin();
     SymbolInfo* symbol_info(nullptr);

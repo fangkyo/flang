@@ -13,6 +13,34 @@
 
 namespace flang {
 
+class AbstractSymbolTable {
+ public:
+  virtual void bind(const std::string& name, SymbolInfo* symbol_info);
+  virtual void bind(const std::string& name, AbstractSymbolTable* symbol_table);
+
+  /**
+   * @brief Whethe the symbole table is empty.
+   * @return True if empty, else false.
+   */
+  virtual bool empty() = 0;
+
+ protected:
+  /**
+   * @brief Enter a named scope(e.g. namespace, etc).
+   */
+  virtual void enter(const std::string& name) {}
+
+  /**
+   * @brief Enter an anonymous scope.
+   */
+  virtual void enter() {}
+
+  /**
+   * @brief Exit a scope.
+   */
+  virtual void exit() {}
+};
+
 class SymbolTable {
  public:
   SymbolTable();

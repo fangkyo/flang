@@ -18,6 +18,7 @@ class TypeChecker : public ASTVisitor {
   void finishBase(BreakNode* node) override;
   void finishBase(ReturnNode* node) override;
   void finishBase(CallNode* node) override;
+  void startBase(ClassNode* node) override;
   void finishBase(ClassNode* node) override;
   void finishBase(NewNode* node) override;
 

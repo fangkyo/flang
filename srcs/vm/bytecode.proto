@@ -1,0 +1,57 @@
+syntax = "proto2";
+
+package flang;
+
+message Address {
+  enum Type {
+    INSTANT = 1;
+    DIRECT = 2;
+    INTERMEDIA = 3;
+    ADDRESS = 4;
+  }
+  oneof value {
+    int32 int32_value;
+    uint32 uint32_value;
+    float float_value;
+    int64 int64_value;
+    uint64 uint64_value;
+    bool bool_value;
+    uint32 char_value;
+    string string_value;
+    uint64 address;
+  }
+}
+
+message Move {
+  optional string name = 1 [default = "move"];
+  required Address src = 2;
+  required Address dest = 3;
+  required uint32 size = 4;
+}
+
+message Add {
+  optional string name = 1[default = "add"];
+  required Address oprend1;
+  required Address oprend2;
+  required Address dest;
+  required uint32 size;
+}
+
+message Jump {
+  optional string name = 1[default = "jump"];
+  required Address address;
+}
+
+message Push {
+
+}
+
+message Pop {
+  required uint32 address;
+  required uint32 stack;
+}
+
+message Call {
+  required uint32 func_addr = 2;
+  required uint32 
+}

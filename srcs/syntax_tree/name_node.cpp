@@ -27,10 +27,10 @@ void QualifiedNameNode::getQualifiers(
   qualifier_->getNames(qualifiers);
 }
 
-void QualifiedNameNode::getNames(std::vector<const std::string*>* names) {
-  CHECK(names);
-  qualifier_->getNames(names);
-  names->push_back(&(name_->getName()));
+void QualifiedNameNode::getName(std::vector<const std::string*>* name) {
+  CHECK(name);
+  qualifier_->getNames(name);
+  name->push_back(&(name_->getName()));
 }
 
 void QualifiedNameNode::accept(ASTVisitor* visitor) {
