@@ -10,12 +10,37 @@
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 
+#include "exception/exception.h"
 #include "flang_parser.h"
 #include "flang_scanner.h"
 #include "syntax_tree/syntax_tree.h"
 
 /* typedef to make the returns for the tokens shorter */
 typedef flang::FlangParser::token Token;
+
+class IntegerCastError : public Error {
+ public:
+  IntegerCastError(
+      const char* text, const std::string& filename, uint32_t lineno) :
+      Error(filename, lineno) {
+    boost::format fmt(
+        "%1% can't be parse to integer, out of range [%2%, %3%].");
+    fmt % text % INT64_MAX % INT64_MAX;
+    setMessage(fmt.str());
+  }
+};
+
+class DoubleCastError : public Error {
+ public:
+  DoubleCastError(
+      const char* text, const std::string& filename, uint32_t lineno) :
+      Error(filename, lineno) {
+    boost::format fmt(
+        "%1% can't be parsed to double, out of range [2.2E-308, 1.8E+308].");
+    fmt % text;
+    setMessage(fmt.str());
+  }
+};
 
 %}
 
@@ -26,7 +51,7 @@ typedef flang::FlangParser::token Token;
 %option yyclass="FlangScanner"
 
 integer [0-9]+
-float [0-9]*.[0-9]+
+double [0-9]*.[0-9]+
 op [-+*/%(){}<>.;=!,:]
 identifier [a-zA-Z_][a-zA-Z0-9_]*
 string \"[^"]*\"
@@ -134,15 +159,23 @@ and {
 {integer} {
   try {
     yylval->int64_val = boost::lexical_cast<int64_t>(yytext);
+    yylval->lineno = lineno();
   } catch (const boost::bad_lexical_cast&) {
-    std::string msg = boost::str(boost::format(
-        "Can't parse %1% to integer. It's out of range [%2%, %3%].")
-        % yytext % INT64_MAX % INT64_MAX);
-    throw msg;
+    IntegerCastError error(yytext, filename_, lineno());
+    throw error;
   }
   return Token::INT_VAL;
 }
 
+{double} {
+  try {
+    yylval->float_val = boost::lexical_cast<double>(yytext);
+  } catch (const boost::bad_lexical_cast&) {
+    DoubleCastError error(yytext, filename_, lineno());
+    throw error;
+  }
+
+}
 
 {op} {
   yylval->lineno = lineno();

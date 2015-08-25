@@ -1,18 +1,30 @@
+#include <string>
+
 #include "exception/exception.h"
 
 namespace flang {
 
-Exception::Exception(int lineno) : lineno_(lineno) {
+Exception::Exception(const std::string& filename, uint32_t lineno) :
+    filename_(filename), lineno_(lineno) {
 }
 
-const char* Exception::what() const noexcept {
-  return message_.c_str();
+// static
+boost::format Exception::format_("%s(%s:%u): %s");
+
+const std::string& Exception::getMessage() const {
+  return message_;
 }
 
-Warning::Warning(int lineno) : Exception(lineno) {
+void Exception::setMessage(const std::string& message) {
+  message_ = boost::str(format_ % getName() % filename_ % lineno_ % message);
 }
 
-Error::Error(int lineno) : Exception(lineno) {
+Warning::Warning(const std::string& filename, uint32_t lineno) :
+    Exception(filename, lineno) {
+}
+
+Error::Error(const std::string& filename, uint32_t lineno) :
+    Exception(filename, lineno) {
 }
 
 }  // namespace flang
