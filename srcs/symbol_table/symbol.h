@@ -1,5 +1,5 @@
-#ifndef SYMBOL_INFO_H_
-#define SYMBOL_INFO_H_
+#ifndef SYMBOL_TABLE_SYMBOL_H_
+#define SYMBOL_TABLE_SYMBOL_H_
 
 #include <memory>
 #include <string>
@@ -11,9 +11,6 @@
 
 namespace flang {
 
-class ClassSymbol;
-class FunctionSymbol;
-class Scope;
 class SymbolHandler;
 
 // Symbol is the entry of symbol table.
@@ -31,7 +28,6 @@ class Symbol {
   void setName(const std::string& name) { name_ = name; }
 
   SymbolType getSymbolType() const { return symbol_type_; }
-
 
   /**
    * @brief Execute a symbol hander.

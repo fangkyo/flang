@@ -6,7 +6,7 @@ namespace flang {
 
 void Scope::insert(const std::string& name, Symbol* symbol) {
   std::string& key = const_cast<std::string&>(name);
-  CHECK(symbol_map_.find(key) != symbol_map_.end());
+  CHECK_EQ(symbol_map_.find(key), symbol_map_.end());
   symbol_map_.insert(key, symbol);
 }
 

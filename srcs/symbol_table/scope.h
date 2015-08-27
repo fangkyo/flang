@@ -1,5 +1,5 @@
-#ifndef SCOPE_H_
-#define SCOPE_H_
+#ifndef SYMBOL_TABLE_SCOPE_H_
+#define SYMBOL_TABLE_SCOPE_H_
 
 #include <cstdint>
 #include <string>
@@ -8,7 +8,6 @@
 #include <vector>
 
 #include <boost/ptr_container/ptr_map.hpp>
-
 
 namespace flang {
 
@@ -19,8 +18,8 @@ class Scope {
   Scope() : owned_by_symtable_(true) {}
   virtual ~Scope() {}
 
-  virtual void insert(const std::string& name, Symbol* symbol);
-  virtual Symbol* lookup(const std::string& name);
+  void insert(const std::string& name, Symbol* symbol);
+  Symbol* lookup(const std::string& name);
 
   const std::string& getName() const { return name_; }
   void setName(const std::string& name) { name_ = name; }

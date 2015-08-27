@@ -1,21 +1,12 @@
 cc_library(
-    name = "scope",
-    srcs = [
-        "scope.cpp",
-    ],
-    deps = [
-        "#boost_system",
-    ]
-)
-
-cc_library(
     name = "symbol",
     srcs = [
+        "scope.cpp",
         "symbol.cpp",
         "data_type.cpp"
     ],
     deps = [
-        ":scope",
+        "#boost_system",
     ]
 )
 
@@ -29,6 +20,16 @@ cc_library(
       "#log4cxx",
       ":symbol",
   ]
+)
+
+cc_test(
+    name = "scope_test",
+    srcs = [
+        "scope_test.cpp"
+    ],
+    deps = [
+        ":symbol"
+    ],
 )
 
 cc_test(
