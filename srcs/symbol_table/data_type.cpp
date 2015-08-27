@@ -1,6 +1,6 @@
 #include "base/check.h"
 #include "symbol_table/data_type.h"
-#include "symbol_table/symbol_info.h"
+#include "symbol_table/symbol.h"
 
 namespace flang {
 

@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-#include "symbol_info.h"
+#include "symbol_table/symbol.h"
 #include "symbol_table/symbol_table.h"
 
 namespace flang {

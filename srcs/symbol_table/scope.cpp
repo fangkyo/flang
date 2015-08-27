@@ -1,13 +1,12 @@
+#include "base/check.h"
 #include "symbol_table/scope.h"
-#include "symbol_table/symbol_info.h"
+#include "symbol_table/symbol.h"
 
 namespace flang {
 
 void Scope::insert(const std::string& name, Symbol* symbol) {
   std::string& key = const_cast<std::string&>(name);
-  if (symbol_map_.find(key) != symbol_map_.end()) {
-    throw "Redefine";
-  }
+  CHECK(symbol_map_.find(key) != symbol_map_.end());
   symbol_map_.insert(key, symbol);
 }
 

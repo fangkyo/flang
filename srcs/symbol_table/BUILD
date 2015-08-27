@@ -11,7 +11,7 @@ cc_library(
 cc_library(
     name = "symbol",
     srcs = [
-        "symbol_info.cpp",
+        "symbol.cpp",
         "data_type.cpp"
     ],
     deps = [

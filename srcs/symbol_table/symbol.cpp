@@ -3,7 +3,7 @@
 #include <boost/format.hpp>
 
 #include "base/check.h"
-#include "symbol_table/symbol_info.h"
+#include "symbol_table/symbol.h"
 #include "symbol_table/scope.h"
 
 namespace flang {

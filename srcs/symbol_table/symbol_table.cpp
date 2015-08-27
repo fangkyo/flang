@@ -1,7 +1,7 @@
 #include <algorithm>
 
 #include "symbol_table/scope.h"
-#include "symbol_table/symbol_info.h"
+#include "symbol_table/symbol.h"
 #include "symbol_table/symbol_table.h"
 
 namespace flang {
