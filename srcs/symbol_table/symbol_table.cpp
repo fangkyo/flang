@@ -1,56 +1,78 @@
 #include <algorithm>
 
+#include "symbol_table/scope.h"
+#include "symbol_table/symbol_info.h"
 #include "symbol_table/symbol_table.h"
 
 namespace flang {
+
+// static
+log4cxx::LoggerPtr SymbolTable::logger_(
+    log4cxx::Logger::getLogger("flang.SymbolTable"));
 
 SymbolTable::SymbolTable(){
   scope_stack_.emplace_back(new Scope());
 }
 
-void SymbolTable::pushScope(const std::shared_ptr<Scope>& scope) {
-  scope_stack_.emplace_front(scope);
+SymbolTable::~SymbolTable() {
+  CHECK_EQ_MSG(scope_stack_.size(), 1,
+               "There is scope left in scope track except the global one.");
+  for (auto* scope : scope_stack_) {
+    if (scope->isOwnedBySymbolTable()) {
+      delete scope;
+    }
+  }
+  scope_stack_.clear();
 }
 
-void SymbolTable::pushScope(Scope* scope) {
-  scope_stack_.emplace_front(scope);
+void SymbolTable::enter() {
+  enter(new Scope());
 }
 
-void SymbolTable::popScope() {
+void SymbolTable::enter(Scope* scope) {
+  scope_stack_.push_front(scope);
+}
+
+void SymbolTable::exit() {
   CHECK_GT_MSG(scope_stack_.size(), 1, "Can't pop global scope.");
+  Scope* scope = scope_stack_.front();
   scope_stack_.pop_front();
+  if (scope->isOwnedBySymbolTable()) {
+    delete scope;
+  }
 }
 
 void SymbolTable::insert(
-    const std::string& name, SymbolInfo* symbol_info) {
-  std::shared_ptr<Scope>& local_scope = scope_stack_.front();
+    const std::string& name, Symbol* symbol_info) {
+  CHECK_GT(scope_stack_.size(), 0);
+  Scope* local_scope = scope_stack_.front();
   local_scope->insert(name, symbol_info);
 }
 
 // Look up name starting in the first table in the list.
 // If it is not there, then look up name in each successive table in the list.
-SymbolInfo* SymbolTable::lookup(const std::string& name) {
+Symbol* SymbolTable::lookup(const std::string& name) {
   for (auto& scope : scope_stack_) {
-    SymbolInfo* symbol_info = scope->lookup(name);
-    if (symbol_info != nullptr) {
-      return symbol_info;
+    Symbol* symbol = scope->lookup(name);
+    if (symbol != nullptr) {
+      return symbol;
     }
   }
   return nullptr;
 }
 
-SymbolInfo* SymbolTable::lookup(const std::vector<std::string*>& qualifiers,
-                                const std::string& name) {
+Symbol* SymbolTable::lookup(const std::vector<std::string*>& qualifiers,
+                            const std::string& name) {
   if (qualifiers.empty()) {
     return lookup(name);
   }
   for (auto& scope : scope_stack_) {
     auto iter = qualifiers.begin();
-    SymbolInfo* symbol_info(nullptr);
+    Symbol* symbol(nullptr);
     // The scope which probably has the symbol user are looking for.
     Scope* symbol_scope(nullptr);
-    while (iter != qualifiers.end() && (symbol_info = scope->lookup(**iter))) {
-      symbol_scope = symbol_info->getScope();
+    while (iter != qualifiers.end() && (symbol = scope->lookup(**iter))) {
+      symbol_scope = symbol->getScope();
       if (nullptr == symbol_scope) {
         break;
       }

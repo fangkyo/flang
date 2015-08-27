@@ -6,87 +6,65 @@
 #include <unordered_map>
 #include <vector>
 
-#include <boost/ptr_container/ptr_vector.hpp>
-
-#include "symbol_table/scope.h"
-#include "symbol_table/symbol_info.h"
+#include <log4cxx/logger.h>
 
 namespace flang {
 
-class AbstractSymbolTable {
- public:
-  virtual void bind(const std::string& name, SymbolInfo* symbol_info);
-  virtual void bind(const std::string& name, AbstractSymbolTable* symbol_table);
-
-  /**
-   * @brief Whethe the symbole table is empty.
-   * @return True if empty, else false.
-   */
-  virtual bool empty() = 0;
-
- protected:
-  /**
-   * @brief Enter a named scope(e.g. namespace, etc).
-   */
-  virtual void enter(const std::string& name) {}
-
-  /**
-   * @brief Enter an anonymous scope.
-   */
-  virtual void enter() {}
-
-  /**
-   * @brief Exit a scope.
-   */
-  virtual void exit() {}
-};
+class Scope;
+class Symbol;
 
 class SymbolTable {
  public:
   SymbolTable();
+  ~SymbolTable();
 
-  /** Push a scope to the symbol table's scope stack.
-   *
-   *  @param[in] scope The scope to push. Symbol table has a refenence of the scope.
+  /**
+   * @brief Enter a anonymous scope.
    */
-  void pushScope(const std::shared_ptr<Scope>& scope);
+  void enter();
 
-  /** Push a scope to the symbol table's scope stack.
-   *
-   *  @param[in] scope The scope to push. Symbol table takes its ownership.
+  /**
+   * @brief Enter a scope and push it to the symbol table's scope stack.
+   * @param[in] scope The scope to push. Symbol table takes its ownership.
    */
-  void pushScope(Scope* scope);
+  void enter(Scope* scope);
 
-  /** Pop the top scope of symbol table's scope stack. */
-  void popScope();
-
-  /** Insert a symbol to symbol table. Insert to global scope also if global
-   *  is set to true. It takes the ownership of passed in <symbol_info>.
-   *
-   *  @param[in] name The name of the symbol, which is the key to look up.
-   *  @param[in] symbol_info The symbol to insert. Symbol table takes its ownership.
+  /**
+   * @brief Exit a scope and pop it from symbol table's scope stack.
    */
-  void insert(const std::string& name, SymbolInfo* symbol_info);
+  void exit();
 
-  /** Look up the symbol specification for the given symbol name.
+  /**
+   * @brief Insert a symbol to symbol table.
    *
-   *  @param[in] name The symbol's name.
-   *  @return The symbol if found or nullptr if not.
-   */
-  SymbolInfo* lookup(const std::string& name);
-
-
-  /** Look up the symbol specification for the given symbol name.
+   * The symbol table also takes the ownership of passed in <symbol>.
    *
-   *  @param[in] qualifers The symbol's qualifier list.
-   *  @param[in] name The symbol's name.
-   *  @return The symbol if found or nullptr if not.
+   * @param[in] name The name of the symbol, which also is the key to look up.
+   * @param[in] symbol The symbol to be inserted.
    */
-  SymbolInfo* lookup(const std::vector<std::string*>& qualifiers,
-                     const std::string& name);
+  void insert(const std::string& name, Symbol* symbol);
+
+  /**
+   * @brief Look up the symbol specification for the given symbol name.
+   *
+   * @param[in] name The symbol's name.
+   * @return The symbol if found or nullptr if not.
+   */
+  Symbol* lookup(const std::string& name);
+
+  /**
+   * @brief Look up the symbol specification for the given symbol name.
+   *
+   * @param[in] qualifers The symbol's qualifier list.
+   * @param[in] name The symbol's name.
+   * @return The symbol if found or nullptr if not.
+   */
+  Symbol* lookup(const std::vector<std::string*>& qualifiers,
+                 const std::string& name);
 
  private:
-  std::list<std::shared_ptr<Scope>> scope_stack_;
+  std::list<Scope*> scope_stack_;
+  static log4cxx::LoggerPtr logger_;
 };
 
 }  // namespace flang

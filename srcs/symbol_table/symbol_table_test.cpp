@@ -2,6 +2,7 @@
 
 #include <gtest/gtest.h>
 
+#include "symbol_info.h"
 #include "symbol_table/symbol_table.h"
 
 namespace flang {
@@ -16,33 +17,31 @@ class SymbolTableTest : public ::testing::Test {
 };
 
 TEST_F(SymbolTableTest, TestInsert) {
-  VariableInfo* var_info = new VariableInfo();
-  var_info->setDataType(new Int32Type());
-  var_info->setName("my_var");
-  symbol_table_.insert("abc", var_info);
-  SymbolInfo* symbol_info = symbol_table_.lookup("abc");
-  ASSERT_EQ(var_info, symbol_info);
+  VariableSymbol* var = new VariableSymbol();
+  var->setDataType(DataTypeFactory::getInt32Type());
+  var->setName("my_var");
+  symbol_table_.insert("abc", var);
+  Symbol* symbol = symbol_table_.lookup("abc");
+  ASSERT_EQ(var, symbol);
 }
 
 TEST_F(SymbolTableTest, TestLookUp) {
-  VariableInfo* bar = new VariableInfo();
+  VariableSymbol* bar = new VariableSymbol();
   bar->setName("bar");
 
-  ClassInfo* class_info = new ClassInfo();
-  std::shared_ptr<Scope> class_scope(new Scope());
-  class_info->setScope(class_scope);
-  class_info->setName("MyClass");
-  VariableInfo* foo = new VariableInfo();
+  ClassSymbol* class_symbol = new ClassSymbol();
+  class_symbol->setName("MyClass");
+  VariableSymbol* foo = new VariableSymbol();
   foo->setName("foo");
   foo->setDataType(new Int32Type());
-  class_info->addMemberVar(foo);
+  class_symbol->addVariable(foo);
 
-  FunctionInfo* func_info = new FunctionInfo();
-  func_info->setName("getName");
-  func_info->setReturnType(new Int64Type());
-  class_info->addMemberFunc(func_info);
+  FunctionSymbol* func = new FunctionSymbol();
+  func->setName("getName");
+  func->setReturnType(DataTypeFactory::getInt64Type());
+  class_symbol->addFunction(func);
 
-  DataType* bar_type = new ClassType(class_info);
+  DataType* bar_type = new ClassType(class_symbol);
   bar->setDataType(bar_type);
 
   symbol_table_.insert(bar->getName(), bar);
