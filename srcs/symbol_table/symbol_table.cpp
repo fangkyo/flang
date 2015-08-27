@@ -30,13 +30,22 @@ void SymbolTable::enter() {
 }
 
 void SymbolTable::enter(Scope* scope) {
+  CHECK(scope);
   scope_stack_.push_front(scope);
+  if (scope->getName().length()) {
+    namespace_.push_back(scope->getName());
+  }
 }
 
 void SymbolTable::exit() {
   CHECK_GT_MSG(scope_stack_.size(), 1, "Can't pop global scope.");
   Scope* scope = scope_stack_.front();
   scope_stack_.pop_front();
+  // Pop the namespace if it isn't a anonymous scope
+  if (scope->getName().length()) {
+    CHECK_EQ(namespace_.back(), scope->getName());
+    namespace_.pop_back();
+  }
   if (scope->isOwnedBySymbolTable()) {
     delete scope;
   }

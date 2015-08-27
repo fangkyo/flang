@@ -33,7 +33,7 @@ TEST_F(SymbolTableTest, TestLookUp) {
   class_symbol->setName("MyClass");
   VariableSymbol* foo = new VariableSymbol();
   foo->setName("foo");
-  foo->setDataType(new Int32Type());
+  foo->setDataType(DataTypeFactory::getInt32Type());
   class_symbol->addVariable(foo);
 
   FunctionSymbol* func = new FunctionSymbol();

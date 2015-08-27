@@ -19,7 +19,7 @@ class SymbolTable {
   ~SymbolTable();
 
   /**
-   * @brief Enter a anonymous scope.
+   * @brief Enter an anonymous scope.
    */
   void enter();
 
@@ -62,8 +62,12 @@ class SymbolTable {
   Symbol* lookup(const std::vector<std::string*>& qualifiers,
                  const std::string& name);
 
+  const std::vector<std::string>& getNamespace() { return namespace_; }
+
  private:
   std::list<Scope*> scope_stack_;
+  // Namespace of the current scope
+  std::vector<std::string> namespace_;
   static log4cxx::LoggerPtr logger_;
 };
 
