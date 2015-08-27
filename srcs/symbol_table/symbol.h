@@ -25,7 +25,7 @@ class Symbol {
   virtual ~Symbol();
 
   const std::string& getName() { return name_; }
-  void setName(const std::string& name) { name_ = name; }
+  virtual void setName(const std::string& name) { name_ = name; }
 
   SymbolType getSymbolType() const { return symbol_type_; }
 
@@ -99,7 +99,6 @@ class FunctionSymbol : public Symbol {
   }
 
   Scope* getScope() override { return &scope_; }
-  // void setScope(std::shared_ptr<Scope>& scope) { scope_ = scope; }
 
   /**
    * @brief Get the full name of function, including parameters and return type.
@@ -120,7 +119,7 @@ class ClassSymbol : public Symbol {
    * @brief Get member function list.
    * @return The member function list.
    */
-  const std::vector<FunctionSymbol*>& getFunctions();
+  const std::vector<FunctionSymbol*>& getFunctions() { return member_funcs_; }
   /**
    * @brief Add a member function.
    */
@@ -129,22 +128,27 @@ class ClassSymbol : public Symbol {
    * @brief Get member variable list.
    * @return The member variable list.
    */
-  const std::vector<VariableSymbol*>& getVariables();
+  const std::vector<VariableSymbol*>& getVariables() { return member_vars_; }
   /**
    * @brief Add a member variable.
    */
   void addVariable(VariableSymbol* var_info);
 
+  void setName(const std::string& name) override;
+
   ClassType* getClassType() { return &class_type_; }
 
   Scope* getScope() override { return &scope_; }
-  // void setScope(std::shared_ptr<Scope>& scope) { scope_ = scope; }
+
+  void setSuperClass(ClassSymbol* super_class);
+  ClassSymbol* getSuperClass() const { return super_class_; }
 
  private:
   Scope scope_;
   std::vector<FunctionSymbol*> member_funcs_;
   std::vector<VariableSymbol*> member_vars_;
   ClassType class_type_;
+  ClassSymbol* super_class_;
 };
 
 class SymbolHandler {

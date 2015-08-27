@@ -47,7 +47,7 @@ void FunctionSymbol::addParameter(VariableSymbol* parameter) {
 }
 
 ClassSymbol::ClassSymbol() :
-    Symbol(Symbol::SYMBOL_CLASS), class_type_(this) {
+    Symbol(Symbol::SYMBOL_CLASS), class_type_(this), super_class_(nullptr) {
   setDataType(&class_type_);
   scope_.setOwnedBySymbolTable(false);
 }
@@ -64,9 +64,24 @@ void ClassSymbol::addVariable(VariableSymbol* variable) {
   scope_.insert(variable->getName(), variable);
 }
 
+void ClassSymbol::setName(const std::string& name) {
+  CHECK_MSG(name.size(), "Can't assign the class an empty name.");
+  scope_.setName(name);
+  Symbol::setName(name);
+}
+
 void ClassSymbol::execute(SymbolHandler* handler) {
   CHECK(handler);
   handler->handle(this);
+}
+
+void ClassSymbol::setSuperClass(ClassSymbol* super_class) {
+  CHECK(super_class);
+  ClassSymbol* ancestor_class = super_class;
+  while (nullptr != ancestor_class) {
+    CHECK_NE_MSG(this, ancestor_class, "Super class circulation exists.");
+  }
+  super_class_ = super_class;
 }
 
 }  // namespace flang

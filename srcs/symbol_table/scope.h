@@ -20,14 +20,12 @@ class Scope {
 
   void insert(const std::string& name, Symbol* symbol);
   Symbol* lookup(const std::string& name);
+  size_t getSize() const { return symbol_map_.size(); }
 
   const std::string& getName() const { return name_; }
   void setName(const std::string& name) { name_ = name; }
 
-  Scope* getParent() { return parent_; }
-  void setParent(Scope* parent) { parent_ = parent; }
-
-  bool isOwnedBySymbolTable() { return owned_by_symtable_; }
+  bool isOwnedBySymbolTable() const { return owned_by_symtable_; }
   void setOwnedBySymbolTable(bool owned) { owned_by_symtable_ = owned; }
 
  protected:
