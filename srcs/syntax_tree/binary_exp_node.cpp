@@ -12,10 +12,10 @@ BinaryExpNode::BinaryExpNode(
 }
 
 void BinaryExpNode::accept(ASTVisitor* visitor) {
-  visitor->start(this);
+  visitor->visit(this);
   left_side_->accept(visitor);
   right_side_->accept(visitor);
-  visitor->finish(this);
+  visitor->endVisit(this);
 }
 
 /* void AddNode::accept(Visitor& visitor) { */

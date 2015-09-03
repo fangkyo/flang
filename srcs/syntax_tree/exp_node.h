@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "symbol_table/symbol_info.h"
+#include "symbol_table/symbol.h"
 #include "syntax_tree/stmt_node.h"
 
 namespace flang {
@@ -13,13 +13,14 @@ class ExpNode : public StmtNode {
  public:
   ~ExpNode() override {}
   virtual bool isConst() { return false; }
-  DataType* getType() const { return data_type_; }
-  void setType(DataType* data_type) { data_type_ = data_type; }
+  // DataType* getType() const { return data_type_; }
+  // void setType(DataType* data_type) { data_type_ = data_type; }
 
  protected:
   ExpNode(ASTNode::ASTNodeType node_type) :
-      StmtNode(node_type), data_type_(nullptr) {}
-  DataType* data_type_;
+      StmtNode(node_type) {}
+  std::unique_ptr<Symbol> symbol_;
+  // DataType* data_type_;
 };
 
 

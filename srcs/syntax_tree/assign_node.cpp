@@ -9,10 +9,10 @@ AssignNode::AssignNode(ExpNode* left_side, ExpNode* right_side) :
 }
 
 void AssignNode::accept(ASTVisitor* visitor) {
-  visitor->start(this);
+  visitor->visit(this);
   left_side_->accept(visitor);
   right_side_->accept(visitor);
-  visitor->finish(this);
+  visitor->endVisit(this);
 }
 
 }  // namespace flang

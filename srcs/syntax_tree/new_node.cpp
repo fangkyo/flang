@@ -8,8 +8,8 @@ NewNode::NewNode(NameNode* class_name) :
 }
 
 void NewNode::accept(ASTVisitor* visitor) {
-  visitor->start(this);
-  visitor->finish(this);
+  visitor->visit(this);
+  visitor->endVisit(this);
 }
 
 }  // namespace flang

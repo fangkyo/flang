@@ -26,8 +26,8 @@ class Int32ValNode : public PrimitiveNode<int32_t> {
   Int32ValNode(int32_t value) :
       PrimitiveNode(value, ASTNode::INT_VAL_NODE) {}
   void accept(ASTVisitor* visitor) {
-    visitor->start(this);
-    visitor->finish(this);
+    visitor->visit(this);
+    visitor->endVisit(this);
   }
 };
 
@@ -38,8 +38,8 @@ class Int64ValNode : public PrimitiveNode<int64_t> {
       PrimitiveNode(value, ASTNode::INT_VAL_NODE) {}
 
   void accept(ASTVisitor* visitor) {
-    visitor->start(this);
-    visitor->finish(this);
+    visitor->visit(this);
+    visitor->endVisit(this);
   }
 };
 
@@ -48,10 +48,12 @@ class StringValNode : public PrimitiveNode<std::string> {
  public:
   StringValNode(const std::string& value) :
       PrimitiveNode(value, ASTNode::STRING_VAL_NODE) {}
+  StringValNode(const char* str, uint32_t len) :
+      PrimitiveNode(std::string(str, len), ASTNode::STRING_VAL_NODE) {}
 
   void accept(ASTVisitor* visitor) {
-    visitor->start(this);
-    visitor->finish(this);
+    visitor->visit(this);
+    visitor->endVisit(this);
   }
 };
 
@@ -62,8 +64,8 @@ class BoolValNode : public PrimitiveNode<bool> {
       PrimitiveNode(value, ASTNode::BOOL_VAL_NODE) {}
 
   void accept(ASTVisitor* visitor) {
-    visitor->start(this);
-    visitor->finish(this);
+    visitor->visit(this);
+    visitor->endVisit(this);
   }
 };
 
@@ -74,8 +76,8 @@ class CharValNode : public PrimitiveNode<char> {
       PrimitiveNode(value, ASTNode::CHAR_VAL_NODE) {}
 
   void accept(ASTVisitor* visitor) {
-    visitor->start(this);
-    visitor->finish(this);
+    visitor->visit(this);
+    visitor->endVisit(this);
   }
 };
 
@@ -86,8 +88,8 @@ class FloatValNode : public PrimitiveNode<float> {
       PrimitiveNode(value, ASTNode::FLOAT_VAL_NODE) {}
 
   void accept(ASTVisitor* visitor) {
-    visitor->start(this);
-    visitor->finish(this);
+    visitor->visit(this);
+    visitor->endVisit(this);
   }
 };
 

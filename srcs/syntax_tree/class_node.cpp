@@ -5,21 +5,23 @@ using namespace std;
 namespace flang {
 
 void ClassNode::accept(ASTVisitor* visitor) {
-  visitor->start(this);
+  visitor->visit(this);
   for (auto& member_var : member_var_list_) {
-    visitor->start(member_var);
+    // visitor->visit(member_var);
+    member_var.accept(visitor);
   }
   for (auto& member_func : member_func_list_) {
-    visitor->start(member_func);
+    // visitor->visit(member_func);
+    member_func.accept(visitor);
   }
 
-  for (auto& member_var : member_var_list_) {
-    visitor->finish(member_var);
-  }
-  for (auto& member_func : member_func_list_) {
-    visitor->finish(member_func);
-  }
-  visitor->finish(this);
+  // for (auto& member_var : member_var_list_) {
+    // visitor->endVisit(member_var);
+  // }
+  // for (auto& member_func : member_func_list_) {
+    // visitor->endVisit(member_func);
+  // }
+  visitor->endVisit(this);
 }
 
 // void ClassNode::acceptVars(Visitor& visitor) {

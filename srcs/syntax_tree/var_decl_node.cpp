@@ -10,9 +10,9 @@ VarDeclarationFragmentNode::VarDeclarationFragmentNode(
 }
 
 void VarDeclarationFragmentNode::accept(ASTVisitor* visitor) {
-  visitor->start(this);
+  visitor->visit(this);
   initializer_->accept(visitor);
-  visitor->finish(this);
+  visitor->endVisit(this);
 }
 
 VarDeclarationNode::VarDeclarationNode() : StmtNode(ASTNode::VAR_DECL_NODE) {
@@ -20,11 +20,11 @@ VarDeclarationNode::VarDeclarationNode() : StmtNode(ASTNode::VAR_DECL_NODE) {
 }
 
 void VarDeclarationNode::accept(ASTVisitor* visitor) {
-  visitor->start(this);
+  visitor->visit(this);
   for (auto& var_decl_fragment : var_decl_fragments_) {
     var_decl_fragment.accept(visitor);
   }
-  visitor->finish(this);
+  visitor->endVisit(this);
 }
 
 }  // namespace flang

@@ -7,8 +7,8 @@ BlockNode::BlockNode() : ASTNode(ASTNode::BLOCK_NODE) {
 }
 
 void BlockNode::accept(ASTVisitor* visitor) {
-  visitor->start(this);
-  visitor->finish(this);
+  visitor->visit(this);
+  visitor->endVisit(this);
 }
 
 void BlockNode::addStatement(StmtNode* stmt_node) {

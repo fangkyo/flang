@@ -17,6 +17,7 @@
 #include "syntax_tree/primitive_node.h"
 #include "syntax_tree/new_node.h"
 #include "syntax_tree/block_node.h"
+#include "syntax_tree/reference_node.h"
 
 namespace flang {
 

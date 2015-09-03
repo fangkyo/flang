@@ -9,11 +9,11 @@ ProgramNode::ProgramNode() : ASTNode(ASTNode::PROGRAM_NODE) {
 
 void ProgramNode::accept(ASTVisitor* visitor) {
   CHECK(visitor);
-  visitor->start(this);
+  visitor->visit(this);
   for (auto& stmt : stmt_list_) {
     stmt.accept(visitor);
   }
-  visitor->finish(this);
+  visitor->endVisit(this);
 }
 
 void ProgramNode::addStatement(StmtNode* stmt_node) {
