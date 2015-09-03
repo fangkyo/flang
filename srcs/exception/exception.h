@@ -27,9 +27,11 @@ class Exception {
     ERROR
   };
   virtual Exception::Type getType() const = 0;
-  virtual const char* getName() const = 0;
 
  protected:
+  virtual const char* getName() const = 0;
+
+ private:
   static boost::format format_;
   std::string message_;
   const std::string& filename_;
@@ -46,6 +48,7 @@ class Warning : public Exception {
   Exception::Type getType() const override {
     return Exception::WARNING;
   }
+ protected:
   const char* getName() const override { return "Warning"; };
 };
 
@@ -59,9 +62,11 @@ class Error : public Exception {
   Exception::Type getType() const override {
     return Exception::ERROR;
   }
+ protected:
   const char* getName() const override { return "Error"; };
 };
 
 }
 
 #endif
+
