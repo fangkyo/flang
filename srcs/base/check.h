@@ -8,6 +8,9 @@
 #define CHECK(val) BOOST_ASSERT(val)
 #define CHECK_MSG(val, msg) BOOST_ASSERT_MSG(val, msg)
 
+#define CHECK_NOT(val) BOOST_ASSERT(!val)
+#define CHECK_NOT_MSG(val, msg) BOOST_ASSERT_MSG(!val, msg)
+
 #define CHECK_NULL(val) BOOST_ASSERT(nullptr == val)
 #define CHECK_NULL_MSG(val, msg) BOOST_ASSERT_MSG(nullptr == val, msg)
 
