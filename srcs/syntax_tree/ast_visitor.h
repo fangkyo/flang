@@ -1,11 +1,13 @@
 #ifndef AST_VISITOR_H_
 #define AST_VISITOR_H_
 
+#include <vector>
+
 #include <boost/ptr_container/ptr_vector.hpp>
 
 #include "base/check.h"
 #include "exception/exception.h"
-#include "symbol_table/symbol_table.h"
+// #include "symbol_table/symbol_table.h"
 
 namespace flang {
 
@@ -29,6 +31,7 @@ class BinaryExpNode;
 class BlockNode;
 class QualifiedNameNode;
 class SimpleNameNode;
+class ReferenceNode;
 
 // Primitive value node
 class Int32ValNode;
@@ -50,22 +53,8 @@ struct ASTVisitorContext {
 };
 
 #define VISIT_METHOD(ASTNodeClass) \
-    virtual void start(ASTNodeClass* ast_node) { \
-      CHECK(ast_node); \
-      startBase(ast_node); \
-      if (next_) { \
-        next_->start(ast_node); \
-      } \
-    } \
-    virtual void startBase(ASTNodeClass*) {} \
-    virtual void finish(ASTNodeClass* ast_node) { \
-      CHECK(ast_node); \
-      finishBase(ast_node); \
-      if (next_) { \
-        next_->finish(ast_node); \
-      } \
-    } \
-    virtual void finishBase(ASTNodeClass*) {} \
+    virtual void visit(ASTNodeClass*) {} \
+    virtual void endVisit(ASTNodeClass*) {} \
 
 class ASTVisitor {
  public:
@@ -100,19 +89,15 @@ class ASTVisitor {
   VISIT_METHOD(FloatValNode)
   VISIT_METHOD(QualifiedTypeNode)
   VISIT_METHOD(ArrayTypeNode)
+  VISIT_METHOD(ReferenceNode)
 
-  ASTVisitor* getNext() { return next_; }
+  // void setSymbolTable(SymbolTable* symbol_table) {
+    // symbol_table_ = symbol_table;
+  // }
 
-  void setNext(ASTVisitor* next);
-  ASTVisitor* getPrevious() { return previous_; }
-
-  void setSymbolTable(SymbolTable* symbol_table) {
-    symbol_table_ = symbol_table;
-  }
-
-  SymbolTable* getSymbolTable() {
-    return symbol_table_;
-  }
+  // SymbolTable* getSymbolTable() {
+    // return symbol_table_;
+  // }
 
   boost::ptr_vector<Exception>& getException() {
     return exceptions_;
@@ -123,13 +108,32 @@ class ASTVisitor {
   }
 
  protected:
-  void setPrevious(ASTVisitor* previous) { previous_ = previous; }
-
-  ASTVisitor* next_;
-  ASTVisitor* previous_;
-
-  SymbolTable* symbol_table_;
+  // SymbolTable* symbol_table_;
   boost::ptr_vector<Exception> exceptions_;
+};
+
+
+#define COMPOSITE_VISIT(ASTNodeClass) \
+    void visit(ASTNodeClass* node) { \
+      CHECK(node); \
+      for (auto* visitor : visitors_) { \
+        visitor->visit(node); \
+      } \
+    }  \
+    void endVisit(ASTNodeClass* node) { \
+      CHECK(node); \
+      for (auto* visitor : visitors_) { \
+        visitor->endVisit(node); \
+      } \
+    }  \
+
+class CompositeVisitor : public ASTVisitor {
+ public:
+  COMPOSITE_VISIT(ReferenceNode)
+  void addVisitor(ASTVisitor* visitor);
+
+ private:
+  std::vector<ASTVisitor*> visitors_;
 };
 
 }  // namespace flang
