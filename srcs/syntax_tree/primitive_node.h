@@ -82,10 +82,10 @@ class CharValNode : public PrimitiveNode<char> {
 };
 
 // Float value node
-class FloatValNode : public PrimitiveNode<float> {
+class DoubleValNode : public PrimitiveNode<double> {
  public:
-  FloatValNode(float value) :
-      PrimitiveNode(value, ASTNode::FLOAT_VAL_NODE) {}
+  DoubleValNode(double value) :
+      PrimitiveNode(value, ASTNode::DOUBLE_VAL_NODE) {}
 
   void accept(ASTVisitor* visitor) {
     visitor->visit(this);

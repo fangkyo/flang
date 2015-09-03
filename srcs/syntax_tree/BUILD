@@ -28,6 +28,7 @@ cc_library(
         ":program_node",
         ":unary_exp_node",
         ":var_decl_node",
+        ":reference_node",
         "//symbol_table:symbol",
     ],
 )

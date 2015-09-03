@@ -1,5 +1,5 @@
-#ifndef ERROR_H
-#define ERROR_H
+#ifndef TYPE_CHECKER_ERROR_H
+#define TYPE_CHECKER_ERROR_H
 
 #include "exception/exception.h"
 #include "syntax_tree/syntax_tree.h"

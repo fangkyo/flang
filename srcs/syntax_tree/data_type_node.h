@@ -65,6 +65,12 @@ class SimpleTypeNode : public DataTypeNode {
   std::string name_;
 };
 
+class DoubleTypeNode : public DataTypeNode {
+ public:
+  DoubleTypeNode() : DataTypeNode(ASTNode::DOUBLE_TYPE_NODE) {}
+  ~DoubleTypeNode() override {}
+};
+
 // DataType.SimpleName
 class QualifiedTypeNode : public DataTypeNode {
  public:

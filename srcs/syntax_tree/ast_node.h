@@ -34,6 +34,7 @@ class ASTNode {
     INT_VAL_NODE, // Int value node
     STRING_VAL_NODE, // String value node
     FLOAT_VAL_NODE, // Float value node
+    DOUBLE_VAL_NODE,
     CHAR_VAL_NODE, // Char value node
     BOOL_VAL_NODE, // Bool value node, 'true' or 'false'
     NAME_NODE, // Name node
@@ -45,6 +46,7 @@ class ASTNode {
     INT32_TYPE_NODE,
     INT64_TYPE_NODE,
     FLOAT_TYPE_NODE,
+    DOUBLE_TYPE_NODE,
     CHAR_TYPE_NODE,
     STRING_TYPE_NODE,
     BOOL_TYPE_NODE,

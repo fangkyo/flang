@@ -23,7 +23,7 @@ class ByteCode {
   /**
    * @brief Get the size of the instruction after serialization.
    */
-  virtual uint32_t Size();
+  virtual size_t Size();
 };
 
 #endif

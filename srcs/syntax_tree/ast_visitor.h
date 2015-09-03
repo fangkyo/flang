@@ -38,8 +38,8 @@ class Int32ValNode;
 class Int64ValNode;
 class CharValNode;
 class StringValNode;
-class FloatValNode;
 class BoolValNode;
+class DoubleValNode;
 
 // Data type node
 class QualifiedTypeNode;
@@ -86,7 +86,7 @@ class ASTVisitor {
   VISIT_METHOD(CharValNode)
   VISIT_METHOD(StringValNode)
   VISIT_METHOD(BoolValNode)
-  VISIT_METHOD(FloatValNode)
+  VISIT_METHOD(DoubleValNode)
   VISIT_METHOD(QualifiedTypeNode)
   VISIT_METHOD(ArrayTypeNode)
   VISIT_METHOD(ReferenceNode)

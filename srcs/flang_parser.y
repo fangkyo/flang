@@ -2,6 +2,7 @@
 %require  "3.0"
 %debug
 %defines
+%locations
 %define api.namespace {flang}
 %define parser_class_name {FlangParser}
 
@@ -17,6 +18,10 @@ namespace flang {
 %lex-param {FlangScanner& scanner}
 %parse-param {FlangScanner& scanner}
 %parse-param {SyntaxTree* syntax_tree}
+%parse-param {std::string* filename}
+%initial-action {
+  @$.begin.filename = @$.end.filename = filename;
+}
 
 %code {
 #include <cstdio>
@@ -32,6 +37,7 @@ using namespace std;
 using namespace log4cxx;
 
 static int yylex(flang::FlangParser::semantic_type *yylval,
+                 flang::FlangParser::location_type* yylloc,
                  flang::FlangScanner &scanner) {
    return scanner.yylex(yylval);
 }
@@ -42,6 +48,7 @@ static int yylex(flang::FlangParser::semantic_type *yylval,
   char  char_val; // char value
   bool  bool_val; // bool value
   std::string*   str_val; // string value
+  double double_val; // double value
   int   lineno; // line number
 
   ASTNode* ast_node;
@@ -61,15 +68,18 @@ static int yylex(flang::FlangParser::semantic_type *yylval,
   SimpleNameNode* simple_name_node;
   StmtNode* stmt_node;
   BlockNode* block_node;
+  ReferenceNode* refer_node;
 }
 
 %token <int64_val> INT_VAL
 %token <char_val> CHAR_VAL
 %token <bool_val> BOOL_VAL
 %token <str_val> STR_VAL ID
+%token <double_val> DOUBLE_VAL
 
 %token <lineno> WHILE IF PRINT BREAK DEF CLASS RETURN THIS NEW
 %token <lineno> BOOL_TYPE CHAR_TYPE STR_TYPE INT32_TYPE INT64_TYPE TRUE FALSE
+%token <lineno> DOUBLE_TYPE
 
 %destructor { if ($$)  {delete ($$); ($$) = nullptr; } }  <str_val>
 
@@ -105,6 +115,7 @@ static int yylex(flang::FlangParser::semantic_type *yylval,
 %type <simple_name_node> simple_name
 %type <qualified_name_node> qualified_name
 %type <name_node> name
+%type <refer_node> reference
 
 %start program
 
@@ -173,14 +184,17 @@ expression : INT_VAL {
   $$->setLineNum(scanner.lineno());
 } | FALSE {
   $$ = new BoolValNode(false);
-  $$->setLineNum( scanner.lineno() );
+  $$->setLineNum(scanner.lineno());
 } | STR_VAL {
-  $$ = new StringValNode( *($1) );
-  $$->setLineNum( scanner.lineno() );
+  $$ = new StringValNode(*($1));
+  $$->setLineNum(scanner.lineno());
 } | CHAR_VAL {
   $$ = new CharValNode($1);
-  $$->setLineNum( scanner.lineno() );
-}| expression '+' expression {
+  $$->setLineNum(scanner.lineno());
+} | DOUBLE_VAL {
+  $$ = new DoubleValNode($1);
+  $$->setLineNum(scanner.lineno());
+} | expression '+' expression {
   $$ = new BinaryExpNode(BinaryExpNode::OP_ADD, $1, $3);
   $$->setLineNum( scanner.lineno() );
 } | expression '-' expression {
@@ -203,11 +217,9 @@ expression : INT_VAL {
   $$->setLineNum( scanner.lineno() );
 } | '(' expression ')' {
   $$ = $2;
-} | call {
-  $$ = $1;
-} | NEW simple_name {
+} | NEW name {
   $$ = new NewNode($2);
-} | name {
+} | reference {
   $$ = $1;
 };
 
@@ -218,15 +230,30 @@ name : simple_name {
   $$ = $1;
 };
 
-qualified_name : qualified_name '.' simple_name {
+qualified_name : qualified_name '$' simple_name {
   $$ = new QualifiedNameNode($1, $3);
-} | simple_name '.' simple_name {
+} | simple_name '$' simple_name {
   $$ = new QualifiedNameNode($1, $3);
 }
 
 simple_name : ID {
   $$ = new SimpleNameNode(*$1);
+
 };
+
+reference : reference '.' name {
+  $$ = $1;
+  $$->addChildNode($3);
+} | reference '.' call {
+  $$ = $1;
+  $$->addChildNode($3);
+} | name {
+  $$ = new ReferenceNode();
+  $$->addChildNode($1);
+} | call {
+  $$ = new ReferenceNode();
+  $$->addChildNode($1);
+}
 
 var_declaration : var_declaration ',' var_declaration_fragment {
   $$ = $1;
@@ -258,6 +285,8 @@ type : INT32_TYPE {
   $$ = new CharTypeNode();
 } | STR_TYPE {
   $$ = new StringTypeNode();
+} | DOUBLE_TYPE {
+  $$ = new DoubleTypeNode();
 };
 
 if_stmt : IF '(' expression ')' '{'
@@ -330,9 +359,10 @@ func_param_list : func_param_list ',' type ID {
   $$->addParameter(var_decl_node);
 };
 
-call : ID '(' call_param_list ')' {
+call : name '(' call_param_list ')' {
   $$ = $3;
-  $$->setName(*($1));
+  // TODO(congfang): Change CallNode interface.
+  // $$->setName(*($1));
 };
 
 call_param_list : param_list {
@@ -359,6 +389,8 @@ class : CLASS ID '{' class_stmt_list  '}' {
   $$->setBaseClass($4);
   $$->setName(*($2));
   $$->setLineNum($1);
+  std::cout << @$.begin;
+  std::cout << @1.begin;
 };
 
 class_stmt_list : class_stmt_list var_declaration ';' {
@@ -371,10 +403,12 @@ class_stmt_list : class_stmt_list var_declaration ';' {
   $$->addFunction($2);
 } | {
   $$ = new ClassNode();
+  $$->setLineNum(scanner.lineno());
 };
 
 %%
 
-void flang::FlangParser::error(const std::string& err_message) {
-   std::cerr << "Error: " << err_message << "\n";
+void flang::FlangParser::error(const flang::FlangParser::location_type& loc,
+                               const std::string& err_message) {
+  std::cerr << "Error: " << err_message << "\n";
 }

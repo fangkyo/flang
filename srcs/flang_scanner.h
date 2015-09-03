@@ -26,9 +26,35 @@
 #undef YY_DECL
 #define YY_DECL int flang::FlangScanner::yylex()
 
+#include <boost/format.hpp>
+#include "exception/exception.h"
 #include "flang_parser.h"
 
 namespace flang {
+
+class IntegerCastError : public Error {
+ public:
+  IntegerCastError(
+      const char* text, const std::string& filename, uint32_t lineno) :
+      Error(filename, lineno) {
+    boost::format fmt(
+        "%1% can't be parsed to integer, out of range [%2%, %3%].");
+    fmt % text % INT64_MAX % INT64_MAX;
+    setMessage(fmt.str());
+  }
+};
+
+class DoubleCastError : public Error {
+ public:
+  DoubleCastError(
+      const char* text, const std::string& filename, uint32_t lineno) :
+      Error(filename, lineno) {
+    boost::format fmt(
+        "%1% can't be parsed to double, out of range [2.2E-308, 1.8E+308].");
+    fmt % text;
+    setMessage(fmt.str());
+  }
+};
 
 /**
  * @brief The flang lex scanner which scans the source file and turns it into
@@ -38,8 +64,8 @@ namespace flang {
  */
 class FlangScanner : public yyFlexLexer{
  public:
-  FlangScanner(std::istream *in, const std::string& filename)
-      : yyFlexLexer(in), yylval(nullptr), filename_(filename) {}
+  FlangScanner(std::istream *in)
+      : yyFlexLexer(in), yylval(nullptr) {}
   /**
    * The scan function which is passed in the value struct given by FlangParser
    * and defined by %union section in flang_parser.y.
@@ -54,10 +80,6 @@ class FlangScanner : public yyFlexLexer{
   // Hide this one from public view
   int yylex();
   FlangParser::semantic_type *yylval;
-
-  // The name of the file under scanning
-  const std::string& filename_;
-
 };
 
 }  // namespace flang

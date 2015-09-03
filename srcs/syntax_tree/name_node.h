@@ -43,8 +43,9 @@ class QualifiedNameNode : public NameNode {
 
   void accept(ASTVisitor* visitor) override;
 
-  void setName(SimpleNameNode* name) { name_.reset(name); }
-  SimpleNameNode* getName() { return name_.get(); }
+  // void setName(SimpleNameNode* name) { name_.reset(name); }
+  // SimpleNameNode* getName() { return name_.get(); }
+  std::string getName() const override { return ""; }
 
   void setQualifier(NameNode* qualifier) { qualifier_.reset(qualifier); }
   NameNode* getQualifier() { return qualifier_.get(); }

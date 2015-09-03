@@ -30,7 +30,7 @@ int main(int argc, char* argv[]){
   flang::SyntaxTree syntax_tree;
   std::ifstream file_stream(filename);
   flang::FlangScanner scanner(&file_stream);
-  flang::FlangParser parser(scanner, &syntax_tree);
+  flang::FlangParser parser(scanner, &syntax_tree, &filename);
   parser.parse();
 
   LOG4CXX_INFO(logger, "abstract syntax tree built completed");
