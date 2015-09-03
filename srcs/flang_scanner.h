@@ -24,7 +24,7 @@
 // }
 //
 #undef YY_DECL
-#define YY_DECL int flang::FlangScanner::yylex()
+#define YY_DECL int flang::FlangScanner::yylex(FlangParser::semantic_type *yylval)
 
 #include <boost/format.hpp>
 #include "exception/exception.h"
@@ -65,21 +65,15 @@ class DoubleCastError : public Error {
 class FlangScanner : public yyFlexLexer{
  public:
   FlangScanner(std::istream *in)
-      : yyFlexLexer(in), yylval(nullptr) {}
+      : yyFlexLexer(in) {}
   /**
    * The scan function which is passed in the value struct given by FlangParser
    * and defined by %union section in flang_parser.y.
-   * @param[out] lval The yylval in C version scanner.
+   * @param[in] yyval The yylval in C version scanner.
    */
-  int yylex(FlangParser::semantic_type *lval) {
-    yylval = lval;
-    return( yylex() );
-  }
+  int yylex(FlangParser::semantic_type* yylval);
 
  private:
-  // Hide this one from public view
-  int yylex();
-  FlangParser::semantic_type *yylval;
 };
 
 }  // namespace flang
