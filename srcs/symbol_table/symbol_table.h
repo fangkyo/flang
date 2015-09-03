@@ -48,27 +48,29 @@ class SymbolTable {
    * @brief Look up the symbol specification for the given symbol name.
    *
    * @param[in] name The symbol's name.
+   * @param[in] global Whether search the symbol from global scope.
    * @return The symbol if found or nullptr if not.
    */
-  Symbol* lookup(const std::string& name);
-
-  /**
-   * @brief Look up the symbol specification for the given symbol name.
-   *
-   * @param[in] qualifers The symbol's qualifier list.
-   * @param[in] name The symbol's name.
-   * @return The symbol if found or nullptr if not.
-   */
-  Symbol* lookup(const std::vector<std::string*>& qualifiers,
-                 const std::string& name);
-
-  const std::vector<std::string>& getNamespace() { return namespace_; }
+  Symbol* lookup(const std::string& name, bool global = false);
 
  private:
-  std::list<Scope*> scope_stack_;
+  std::vector<Scope*> scope_stack_;
+
   // Namespace of the current scope
   std::vector<std::string> namespace_;
   static log4cxx::LoggerPtr logger_;
+};
+
+/**
+ * @brief SymbolTableLock lets symbole table enter a scope when constructed and
+ * exit it when destroyed.
+ */
+class SymbolTableLock {
+ public:
+  SymbolTableLock(SymbolTable* symbol_table, Scope* scope = nullptr);
+  ~SymbolTableLock();
+ private:
+  SymbolTable* symbol_table_;
 };
 
 }  // namespace flang

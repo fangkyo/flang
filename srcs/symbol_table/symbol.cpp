@@ -9,8 +9,8 @@
 namespace flang {
 
 
-Symbol::Symbol(SymbolType symbol_type) :
-    symbol_type_(symbol_type), data_type_(nullptr) {
+Symbol::Symbol(const std::string& name, SymbolType symbol_type) :
+    name_(name), symbol_type_(symbol_type), data_type_(nullptr) {
 }
 
 Symbol::~Symbol() {
@@ -24,17 +24,21 @@ bool Symbol::equals(const Symbol& symbol) const {
           symbol_type_ == symbol.symbol_type_);
 }
 
-VariableSymbol::VariableSymbol() :
-    Symbol(Symbol::SYMBOL_VARIABLE) {
+VariableSymbol::VariableSymbol(const std::string& name) :
+    Symbol(name, Symbol::SYMBOL_VARIABLE) {
+  CHECK(name.length());
 }
 
 void VariableSymbol::execute(SymbolHandler* handler) {
   handler->handle(this);
 }
 
-FunctionSymbol::FunctionSymbol() :
-    Symbol(Symbol::SYMBOL_FUNCTION) {
+FunctionSymbol::FunctionSymbol(const std::string& name) :
+    Symbol(name, Symbol::SYMBOL_FUNCTION) {
+  CHECK(name.length());
   scope_.setOwnedBySymbolTable(false);
+  // Insert this function to its own scope when constructing
+  scope_.insert(getName(), this);
 }
 
 void FunctionSymbol::execute(SymbolHandler* handler) {
@@ -46,10 +50,15 @@ void FunctionSymbol::addParameter(VariableSymbol* parameter) {
   scope_.insert(parameter->getName(), parameter);
 }
 
-ClassSymbol::ClassSymbol() :
-    Symbol(Symbol::SYMBOL_CLASS), class_type_(this), super_class_(nullptr) {
+ClassSymbol::ClassSymbol(const std::string& name) :
+    Symbol(name, Symbol::SYMBOL_CLASS),
+    class_type_(this), super_class_(nullptr) {
+  CHECK(name.length());
   setDataType(&class_type_);
   scope_.setOwnedBySymbolTable(false);
+  // Insert this symbol to its own scope when constructing
+  scope_.insert(getName(), this);
+  scope_.setName(name);
 }
 
 void ClassSymbol::addFunction(FunctionSymbol* function) {
@@ -64,12 +73,6 @@ void ClassSymbol::addVariable(VariableSymbol* variable) {
   scope_.insert(variable->getName(), variable);
 }
 
-void ClassSymbol::setName(const std::string& name) {
-  CHECK_MSG(name.size(), "Can't assign the class an empty name.");
-  scope_.setName(name);
-  Symbol::setName(name);
-}
-
 void ClassSymbol::execute(SymbolHandler* handler) {
   CHECK(handler);
   handler->handle(this);
@@ -78,10 +81,12 @@ void ClassSymbol::execute(SymbolHandler* handler) {
 void ClassSymbol::setSuperClass(ClassSymbol* super_class) {
   CHECK(super_class);
   ClassSymbol* ancestor_class = super_class;
-  while (nullptr != ancestor_class) {
+  while (ancestor_class) {
     CHECK_NE_MSG(this, ancestor_class, "Super class circulation exists.");
+    ancestor_class = ancestor_class->getSuperClass();
   }
   super_class_ = super_class;
+  scope_.setParent(super_class->getScope());
 }
 
 }  // namespace flang

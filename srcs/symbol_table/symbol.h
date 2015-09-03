@@ -13,7 +13,11 @@ namespace flang {
 
 class SymbolHandler;
 
-// Symbol is the entry of symbol table.
+/**
+ * This class is the entry of symbol table. It represent all the information
+ * of a symbol. The symbol instance is only owned by the corresponding AST node
+ * in the syntax tree.
+ */
 class Symbol {
  public:
   enum SymbolType {
@@ -23,9 +27,7 @@ class Symbol {
   };
 
   virtual ~Symbol();
-
   const std::string& getName() { return name_; }
-  virtual void setName(const std::string& name) { name_ = name; }
 
   SymbolType getSymbolType() const { return symbol_type_; }
 
@@ -71,7 +73,8 @@ class Symbol {
   }
 
  protected:
-  Symbol(SymbolType symbol_type);
+  virtual void setName(const std::string& name) { name_ = name; }
+  Symbol(const std::string& name, SymbolType symbol_type);
   std::string name_;
   SymbolType symbol_type_;
   DataType* data_type_;
@@ -79,13 +82,13 @@ class Symbol {
 
 class VariableSymbol : public Symbol {
  public:
-  VariableSymbol();
+  VariableSymbol(const std::string& name);
   void execute(SymbolHandler* handler) override;
 };
 
 class FunctionSymbol : public Symbol {
  public:
-  FunctionSymbol();
+  FunctionSymbol(const std::string& name);
   void execute(SymbolHandler* handler) override;
 
   std::vector<VariableSymbol*>& getParameters() { return parameters_; }
@@ -113,7 +116,7 @@ class FunctionSymbol : public Symbol {
 
 class ClassSymbol : public Symbol {
  public:
-  ClassSymbol();
+  ClassSymbol(const std::string& name);
   void execute(SymbolHandler* handler) override;
   /**
    * @brief Get member function list.
@@ -133,8 +136,6 @@ class ClassSymbol : public Symbol {
    * @brief Add a member variable.
    */
   void addVariable(VariableSymbol* var_info);
-
-  void setName(const std::string& name) override;
 
   ClassType* getClassType() { return &class_type_; }
 

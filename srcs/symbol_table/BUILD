@@ -46,7 +46,9 @@ cc_test(
     name = "symbol_table_test",
     srcs = ["symbol_table_test.cpp"],
     deps = [
+        "#log4cxx",
         "#gtest_main",
         ":symbol_table",
+        "//test:test",
     ]
 )
