@@ -15,7 +15,6 @@ namespace flang {
 }
 }
 
-%lex-param {FlangScanner& scanner}
 %parse-param {FlangScanner& scanner}
 %parse-param {SyntaxTree* syntax_tree}
 %parse-param {std::string* filename}
@@ -36,11 +35,10 @@ namespace flang {
 using namespace std;
 using namespace log4cxx;
 
-static int yylex(flang::FlangParser::semantic_type *yylval,
-                 flang::FlangParser::location_type* yylloc,
-                 flang::FlangScanner &scanner) {
-   return scanner.yylex(yylval);
-}
+#undef yylex
+// Redefine the default yylex function used in parser
+#define yylex scanner.yylex
+
 }
 
 %union {

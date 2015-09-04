@@ -17,12 +17,19 @@
 /* typedef to make the returns for the tokens shorter */
 typedef flang::FlangParser::token Token;
 
+
+/* The following paragraph suffices to track locations accurately. Each time
+ * yylex is invoked, the begin position is moved onto the end position. */
+#define YY_USER_ACTION  yylloc->columns(yyleng);
+
 %}
 
 %option debug
 %option yylineno
 %option noyywrap
 %option c++
+%option batch
+%option stack
 %option yyclass="FlangScanner"
 
 integer [0-9]+
@@ -33,6 +40,14 @@ string \"[^"]*\"
 char '.'
 
 %%
+
+ /* code to place at the beginning of yylex() */
+%{
+    // reset location
+    yylloc->step();
+%}
+
+
 
 while {
   yylval->lineno = lineno();
@@ -134,7 +149,14 @@ and {
   return Token::AND;
 }
 
-[ \n\r\t] ;
+[ \r\t]+ {
+  yylloc->step();
+}
+
+"\n" {
+  yylloc->lines(yyleng);
+  yylloc->step();
+}
 
 {integer} {
   try {

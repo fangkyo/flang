@@ -24,7 +24,10 @@
 // }
 //
 #undef YY_DECL
-#define YY_DECL int flang::FlangScanner::yylex(FlangParser::semantic_type *yylval)
+#define YY_DECL \
+    int flang::FlangScanner::yylex( \
+        FlangParser::semantic_type *yylval, \
+        FlangParser::location_type* yylloc)
 
 #include <boost/format.hpp>
 #include "exception/exception.h"
@@ -71,7 +74,8 @@ class FlangScanner : public yyFlexLexer{
    * and defined by %union section in flang_parser.y.
    * @param[in] yyval The yylval in C version scanner.
    */
-  int yylex(FlangParser::semantic_type* yylval);
+  int yylex(FlangParser::semantic_type* yylval,
+            FlangParser::location_type* yylloc);
 
  private:
 };
