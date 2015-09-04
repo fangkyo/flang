@@ -7,6 +7,8 @@
 
 #include <boost/format.hpp>
 
+#include "location.hh"
+
 namespace flang {
 
 /**
@@ -14,19 +16,20 @@ namespace flang {
  */
 class Exception {
  public:
-  Exception(const std::string& filename, uint32_t lineno);
+  Exception(const location& loc);
   virtual ~Exception() {}
 
   const std::string& getMessage() const;
   virtual void setMessage(const std::string& message);
 
-  uint32_t getLineno() { return lineno_; }
-  void setLineno(uint32_t lineno) { lineno_ = lineno;  }
   enum Type {
     WARNING,
     ERROR
   };
   virtual Exception::Type getType() const = 0;
+
+  const location& getLocation() const { return location_; }
+  void setLocation(const location& loc) { location_ = loc; }
 
  protected:
   virtual const char* getName() const = 0;
@@ -34,8 +37,7 @@ class Exception {
  private:
   static boost::format format_;
   std::string message_;
-  const std::string& filename_;
-  uint32_t lineno_;
+  location location_;
 };
 
 /**
@@ -43,7 +45,7 @@ class Exception {
  */
 class Warning : public Exception {
  public:
-  Warning(const std::string& filename, uint32_t lineno);
+  Warning(const location& loc);
   ~Warning() override {}
   Exception::Type getType() const override {
     return Exception::WARNING;
@@ -57,7 +59,7 @@ class Warning : public Exception {
  */
 class Error : public Exception {
  public:
-  Error(const std::string& filename, uint32_t lineno);
+  Error(const location& loc);
   ~Error() override {}
   Exception::Type getType() const override {
     return Exception::ERROR;

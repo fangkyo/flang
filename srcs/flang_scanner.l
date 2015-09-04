@@ -162,7 +162,7 @@ and {
   try {
     yylval->int64_val = boost::lexical_cast<int64_t>(yytext);
   } catch (const boost::bad_lexical_cast&) {
-    throw new IntegerCastError(yytext, "", lineno());
+    throw new IntegerCastError(yytext, *yylloc);
   }
   return Token::INT_VAL;
 }
@@ -171,7 +171,7 @@ and {
   try {
     yylval->double_val = boost::lexical_cast<double>(yytext);
   } catch (const boost::bad_lexical_cast&) {
-    throw new DoubleCastError(yytext, "", lineno());
+    throw new DoubleCastError(yytext, *yylloc);
   }
 
 }

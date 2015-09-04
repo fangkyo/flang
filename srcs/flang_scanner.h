@@ -38,8 +38,8 @@ namespace flang {
 class IntegerCastError : public Error {
  public:
   IntegerCastError(
-      const char* text, const std::string& filename, uint32_t lineno) :
-      Error(filename, lineno) {
+      const char* text, const FlangParser::location_type& loc) :
+      Error(loc) {
     boost::format fmt(
         "%1% can't be parsed to integer, out of range [%2%, %3%].");
     fmt % text % INT64_MAX % INT64_MAX;
@@ -50,8 +50,8 @@ class IntegerCastError : public Error {
 class DoubleCastError : public Error {
  public:
   DoubleCastError(
-      const char* text, const std::string& filename, uint32_t lineno) :
-      Error(filename, lineno) {
+      const char* text, const FlangParser::location_type& loc) :
+      Error(loc) {
     boost::format fmt(
         "%1% can't be parsed to double, out of range [2.2E-308, 1.8E+308].");
     fmt % text;

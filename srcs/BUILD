@@ -28,6 +28,7 @@ cc_library(
     name = "flang_parser",
     srcs = ["flang_parser.cpp"],
     deps = [
+        "#log4cxx",
         ":flang_parser_src",
         ":flang_scanner",
     ]

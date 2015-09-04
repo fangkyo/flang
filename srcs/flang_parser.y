@@ -28,8 +28,8 @@ namespace flang {
 #include <string>
 
 #include <log4cxx/logger.h>
-#include <log4cxx/propertyconfigurator.h>
 
+#include "exception/exception.h"
 #include "flang_scanner.h"
 
 using namespace std;
@@ -444,6 +444,10 @@ class_stmt_list : class_stmt_list var_declaration ';' {
 %%
 
 void flang::FlangParser::error(const flang::FlangParser::location_type& loc,
-                               const std::string& err_message) {
-  std::cerr << "Error: " << err_message << "\n";
+                               const std::string& msg) {
+  Error err(loc);
+  err.setMessage(msg);
+  log4cxx::LoggerPtr logger(
+      log4cxx::Logger::getLogger("flang.FlangParser"));
+  LOG4CXX_ERROR(logger, err.getMessage());
 }
