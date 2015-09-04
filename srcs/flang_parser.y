@@ -121,21 +121,25 @@ using namespace log4cxx;
 
 program : program stmt {
   $$ = $1;
+  $$->setLocation(@$);
   $$->addStatement($2);
 } | {
   syntax_tree->setRoot(new ProgramNode());
   $$ = syntax_tree->getRoot();
+  $$->setLocation(@$);
 };
 
 stmt : simple_stmt {
   $$ = $1;
+  $$->setLocation(@$);
 } | complex_stmt {
   $$ = $1;
+  $$->setLocation(@$);
 };
 
 block : simple_stmt {
   $$ = new BlockNode();
-  $$->setLineNum(scanner.lineno());
+  $$->setLocation(@$);
   $$->addStatement($1);
 } | block simple_stmt {
   $$ = $1;
@@ -144,147 +148,172 @@ block : simple_stmt {
 
 complex_stmt : function {
   $$ = $1;
+  $$->setLocation(@$);
 } | class {
   $$ = $1;
+  $$->setLocation(@$);
 };
 
-simple_stmt : ';' {
-  $$ = NULL;
-} | expression ';' {
+simple_stmt : expression ';' {
   $$ = $1;
+  $$->setLocation(@$);
 } | PRINT expression ';' {
   $$ = new PrintNode( $2 );
-  $$->setLineNum( $1 );
+  $$->setLocation(@$);
 } | RETURN expression ';' {
   $$ = new ReturnNode( $2 );
-  $$->setLineNum( $1 );
+  $$->setLocation(@$);
 } | RETURN ';' {
   $$ = new ReturnNode();
-  $$->setLineNum( $1 );
+  $$->setLocation(@$);
 } | BREAK ';' {
   $$ = new BreakNode();
-  $$->setLineNum( $1 );
+  $$->setLocation(@$);
 } | var_declaration ';' {
   $$ = $1;
+  $$->setLocation(@$);
 } | if_stmt {
   $$ = $1;
+  $$->setLocation(@$);
 } | while_stmt {
   $$ = $1;
+  $$->setLocation(@$);
 } | assignment {
   $$ = $1;
+  $$->setLocation(@$);
 };
 
 expression : INT_VAL {
   $$ = new Int64ValNode($1);
-  $$->setLineNum(scanner.lineno());
+  $$->setLocation(@$);
 } | TRUE {
   $$ = new BoolValNode(true);
-  $$->setLineNum(scanner.lineno());
+  $$->setLocation(@$);
 } | FALSE {
   $$ = new BoolValNode(false);
-  $$->setLineNum(scanner.lineno());
+  $$->setLocation(@$);
 } | STR_VAL {
   $$ = new StringValNode(*($1));
-  $$->setLineNum(scanner.lineno());
+  $$->setLocation(@$);
 } | CHAR_VAL {
   $$ = new CharValNode($1);
-  $$->setLineNum(scanner.lineno());
+  $$->setLocation(@$);
 } | DOUBLE_VAL {
   $$ = new DoubleValNode($1);
-  $$->setLineNum(scanner.lineno());
+  $$->setLocation(@$);
 } | expression '+' expression {
   $$ = new BinaryExpNode(BinaryExpNode::OP_ADD, $1, $3);
-  $$->setLineNum( scanner.lineno() );
+  $$->setLocation(@$);
 } | expression '-' expression {
   $$ = new BinaryExpNode(BinaryExpNode::OP_SUB, $1, $3);
-  $$->setLineNum( scanner.lineno() );
+  $$->setLocation(@$);
 } | expression '*' expression {
   $$ = new BinaryExpNode(BinaryExpNode::OP_MUL, $1, $3);
-  $$->setLineNum( scanner.lineno() );
+  $$->setLocation(@$);
 } | expression '/' expression {
   $$ = new BinaryExpNode(BinaryExpNode::OP_DIV, $1, $3);
-  $$->setLineNum( scanner.lineno() );
+  $$->setLocation(@$);
 } | expression '<' expression {
   $$ = new BinaryExpNode(BinaryExpNode::OP_LT, $1, $3);
-  $$->setLineNum( scanner.lineno() );
+  $$->setLocation(@$);
 } | expression AND  expression {
   $$ = new BinaryExpNode(BinaryExpNode::OP_AND, $1, $3);
-  $$->setLineNum( scanner.lineno() );
+  $$->setLocation(@$);
 } | expression EQ  expression {
   $$ = new BinaryExpNode(BinaryExpNode::OP_EQ,$1, $3);
-  $$->setLineNum( scanner.lineno() );
+  $$->setLocation(@$);
 } | '(' expression ')' {
   $$ = $2;
+  $$->setLocation(@$);
 } | NEW name {
   $$ = new NewNode($2);
+  $$->setLocation(@$);
 } | reference {
   $$ = $1;
+  $$->setLocation(@$);
 };
 
 name : simple_name {
- $$ = $1;
-
+  $$ = $1;
+  $$->setLocation(@$);
 } | qualified_name {
   $$ = $1;
+  $$->setLocation(@$);
 };
 
 qualified_name : qualified_name '$' simple_name {
   $$ = new QualifiedNameNode($1, $3);
+  $$->setLocation(@$);
 } | simple_name '$' simple_name {
   $$ = new QualifiedNameNode($1, $3);
+  $$->setLocation(@$);
 }
 
 simple_name : ID {
   $$ = new SimpleNameNode(*$1);
-
+  $$->setLocation(@$);
 };
 
 reference : reference '.' name {
   $$ = $1;
   $$->addChildNode($3);
+  $$->setLocation(@$);
 } | reference '.' call {
   $$ = $1;
   $$->addChildNode($3);
+  $$->setLocation(@$);
 } | name {
   $$ = new ReferenceNode();
   $$->addChildNode($1);
+  $$->setLocation(@$);
 } | call {
   $$ = new ReferenceNode();
   $$->addChildNode($1);
+  $$->setLocation(@$);
 }
 
 var_declaration : var_declaration ',' var_declaration_fragment {
   $$ = $1;
+  $$->setLocation(@$);
   $$->addVarDeclFragment($3);
-  $$->setLineNum(scanner.lineno());
 } | type var_declaration_fragment {
   $$ = new VarDeclarationNode();
+  $$->setLocation(@$);
   $$->setDataType($1);
   $$->addVarDeclFragment($2);
 };
 
 var_declaration_fragment : ID '=' expression {
   $$ = new VarDeclarationFragmentNode(*$1, $3);
+  $$->setLocation(@$);
 } | ID {
   $$ = new VarDeclarationFragmentNode(*$1, nullptr);
+  $$->setLocation(@$);
 };
 
 assignment : simple_name '=' expression {
   $$ = new AssignNode($1, $3);
+  $$->setLocation(@$);
 }
 
 type : INT32_TYPE {
   $$ = new Int32TypeNode();
+  $$->setLocation(@$);
 } | INT64_TYPE {
   $$ = new Int64TypeNode();
+  $$->setLocation(@$);
 } | BOOL_TYPE {
   $$ = new BoolTypeNode();
+  $$->setLocation(@$);
 } | CHAR_TYPE {
   $$ = new CharTypeNode();
+  $$->setLocation(@$);
 } | STR_TYPE {
   $$ = new StringTypeNode();
+  $$->setLocation(@$);
 } | DOUBLE_TYPE {
   $$ = new DoubleTypeNode();
+  $$->setLocation(@$);
 };
 
 if_stmt : IF '(' expression ')' '{'
@@ -293,54 +322,57 @@ if_stmt : IF '(' expression ')' '{'
             block
           '}' {
   $$ = new IfNode($3, $6, $10);
-  $$->setLineNum($1);
+  $$->setLocation(@$);
 } | IF '(' expression ')' '{' block '}' ELSE  stmt {
   $$ = new IfNode($3, $6, $9);
-  $$->setLineNum($1);
+  $$->setLocation(@$);
 } | IF '(' expression ')'  stmt ELSE '{' block '}' {
   $$ = new IfNode($3, $5, $8);
-  $$->setLineNum($1);
+  $$->setLocation(@$);
 } | IF '(' expression ')'  stmt  ELSE stmt {
   $$ = new IfNode($3, $5, $7);
-  $$->setLineNum($1);
+  $$->setLocation(@$);
 } | IF '(' expression ')' '{' block '}' %prec IFX {
   $$ = new IfNode($3, $6, nullptr);
-  $$->setLineNum($1);
+  $$->setLocation(@$);
 } | IF '(' expression ')'  stmt  %prec IFX {
   $$ = new IfNode($3, $5, nullptr);
-  $$->setLineNum($1);
+  $$->setLocation(@$);
 };
 
 while_stmt : WHILE '(' expression ')' '{' block '}' {
   $$ = new WhileNode($3, $6);
-  $$->setLineNum($1);
+  $$->setLocation(@$);
 } | WHILE '(' expression ')' stmt {
   $$ = new WhileNode($3, $5);
-  $$->setLineNum( $1 );
+  $$->setLocation(@$);
 };
 
 function : DEF ID '(' func_param_list ')' ret_type '{' block '}' {
   $$ = $4;
+  $$->setLocation(@$);
   $$->setName(*($2));
   $$->setReturnType($6);
   $$->setBody($8);
-  $$->setLineNum($1);
 } | DEF ID '(' ')' ret_type '{'block '}' {
   $$ = new FuncNode();
+  $$->setLocation(@$);
   $$->setBody($7);
   $$->setName(*$2);
   $$->setReturnType($5);
-  $$->setLineNum($1);
 };
 
 ret_type : type {
   $$ = $1;
+  $$->setLocation(@$);
 } | {
   $$ = new VoidTypeNode();
+  $$->setLocation(@$);
 };
 
 func_param_list : func_param_list ',' type ID {
   $$ = $1;
+  $$->setLocation(@$);
   VarDeclarationNode* var_decl_node = new VarDeclarationNode();
   VarDeclarationFragmentNode* var_decl_fragment_node = new
       VarDeclarationFragmentNode(*($4), nullptr);
@@ -349,6 +381,7 @@ func_param_list : func_param_list ',' type ID {
   $$->addParameter(var_decl_node);
 } | type ID {
   $$ = new FuncNode();
+  $$->setLocation(@$);
   VarDeclarationNode* var_decl_node = new VarDeclarationNode();
   VarDeclarationFragmentNode* var_decl_fragment_node = new
       VarDeclarationFragmentNode(*($2), nullptr);
@@ -359,49 +392,53 @@ func_param_list : func_param_list ',' type ID {
 
 call : name '(' call_param_list ')' {
   $$ = $3;
+  $$->setLocation(@$);
   // TODO(congfang): Change CallNode interface.
   // $$->setName(*($1));
 };
 
 call_param_list : param_list {
   $$ = $1;
+  $$->setLocation(@$);
 } | {
   $$ = new CallNode();
+  $$->setLocation(@$);
 };
 
 param_list : param_list ',' expression {
   $$ = $1;
   $$->addParameter($3);
+  $$->setLocation(@$);
 } | expression {
   $$ = new CallNode();
   $$->addParameter($1);
-  $$->setLineNum(scanner.lineno());
+  $$->setLocation(@$);
 };
 
 class : CLASS ID '{' class_stmt_list  '}' {
   $$ = $4;
   $$->setName(*($2));
-  $$->setLineNum($1);
+  $$->setLocation(@$);
 } | CLASS ID ':' simple_name '{' class_stmt_list '}' {
   $$ = $6;
+  $$->setLocation(@$);
   $$->setBaseClass($4);
   $$->setName(*($2));
-  $$->setLineNum($1);
-  std::cout << @$.begin;
-  std::cout << @1.begin;
 };
 
 class_stmt_list : class_stmt_list var_declaration ';' {
   $$ = $1;
   $$->addVarDeclaration($2);
+  $$->setLocation(@$);
 } | class_stmt_list function {
   $$ = $1;
+  $$->setLocation(@$);
   // create a new class function to wrap a global function
   // add the function to the class
   $$->addFunction($2);
 } | {
   $$ = new ClassNode();
-  $$->setLineNum(scanner.lineno());
+  $$->setLocation(@$);
 };
 
 %%

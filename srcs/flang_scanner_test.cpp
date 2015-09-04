@@ -9,16 +9,55 @@ class FlangScannerTest : public Test {
 };
 
 TEST_F(FlangScannerTest, testScanID) {
-  std::istringstream is_stream("aaa bbb");
+  std::istringstream is_stream("aaa bbb \n ccc ddd");
   FlangScanner scanner(&is_stream);
   FlangParser::semantic_type yylval;
   FlangParser::location_type yylloc;
   yylloc.step();
   ASSERT_EQ(FlangParser::token_type::ID, scanner.yylex(&yylval, &yylloc));
   delete yylval.str_val;
-  position begin(nullptr, 1, 3);
-  EXPECT_EQ(begin, yylloc.begin);
+  position begin1(nullptr, 1, 1);
+  EXPECT_EQ(begin1, yylloc.begin);
+  position end1(nullptr, 1, 4);
+  EXPECT_EQ(end1, yylloc.end);
 
+  ASSERT_EQ(FlangParser::token_type::ID, scanner.yylex(&yylval, &yylloc));
+  EXPECT_EQ("bbb", *yylval.str_val);
+  delete yylval.str_val;
+  position begin2(nullptr, 1, 5);
+  EXPECT_EQ(begin2, yylloc.begin);
+  position end2(nullptr, 1, 8);
+  EXPECT_EQ(end2, yylloc.end);
+
+  ASSERT_EQ(FlangParser::token_type::ID, scanner.yylex(&yylval, &yylloc));
+  EXPECT_EQ("ccc", *yylval.str_val);
+  delete yylval.str_val;
+  position begin3(nullptr, 2, 2);
+  EXPECT_EQ(begin3, yylloc.begin);
+  position end3(nullptr, 2, 5);
+  EXPECT_EQ(end3, yylloc.end);
+
+  ASSERT_EQ(FlangParser::token_type::ID, scanner.yylex(&yylval, &yylloc));
+  EXPECT_EQ("ddd", *yylval.str_val);
+  delete yylval.str_val;
+  position begin4(nullptr, 2, 6);
+  EXPECT_EQ(begin4, yylloc.begin);
+  position end4(nullptr, 2, 9);
+  EXPECT_EQ(end4, yylloc.end);
+}
+
+TEST_F(FlangScannerTest, testScanInteger) {
+  std::istringstream is_stream("1123   43435345435349999999999999");
+  FlangScanner scanner(&is_stream);
+  FlangParser::semantic_type yylval;
+  FlangParser::location_type yylloc;
+  ASSERT_EQ(FlangParser::token_type::INT_VAL, scanner.yylex(&yylval, &yylloc));
+  EXPECT_EQ(1123, yylval.int64_val);
+  position begin1(nullptr, 1, 1);
+  EXPECT_EQ(begin1, yylloc.begin);
+  position end1(nullptr, 1, 5);
+  EXPECT_EQ(end1, yylloc.end);
+  EXPECT_THROW(scanner.yylex(&yylval, &yylloc), IntegerCastError*);
 }
 
 }  // namespace flang

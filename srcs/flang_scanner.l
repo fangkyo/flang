@@ -161,7 +161,6 @@ and {
 {integer} {
   try {
     yylval->int64_val = boost::lexical_cast<int64_t>(yytext);
-    yylval->lineno = lineno();
   } catch (const boost::bad_lexical_cast&) {
     throw new IntegerCastError(yytext, "", lineno());
   }

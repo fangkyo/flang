@@ -3,6 +3,7 @@
 
 #include <cstdint>
 
+#include "location.hh"
 #include "symbol_table/symbol.h"
 #include "syntax_tree/ast_visitor.h"
 
@@ -76,11 +77,16 @@ class ASTNode {
   void setLineNum(int32_t line_num) { line_num_ = line_num; }
   int32_t getLineNum() const { return line_num_; }
 
+  void setLocation(const location& loc) { location_ = loc; }
+  const location& getLocation() { return location_; }
+
  protected:
   ASTNodeType node_type_;
   ASTNode* parent_;
   std::unique_ptr<Symbol> symbol_;
   int32_t line_num_;
+  /** The location of this AST node in the source file. */
+  location location_;
 };
 
 class EmptyNode : public ASTNode {
