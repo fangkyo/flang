@@ -9,6 +9,8 @@ BinaryExpNode::BinaryExpNode(
     operator_(op), left_side_(left_exp), right_side_(right_exp) {
   CHECK_MSG(left_exp, "Left expression can't be null");
   CHECK_MSG(right_exp, "Right expression can't be null");
+  left_side_->setParent(this);
+  right_side_->setParent(this);
 }
 
 void BinaryExpNode::accept(ASTVisitor* visitor) {

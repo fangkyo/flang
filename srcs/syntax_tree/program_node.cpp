@@ -10,15 +10,16 @@ ProgramNode::ProgramNode() : ASTNode(ASTNode::PROGRAM_NODE) {
 void ProgramNode::accept(ASTVisitor* visitor) {
   CHECK(visitor);
   visitor->visit(this);
-  for (auto& stmt : stmt_list_) {
-    stmt.accept(visitor);
+  for (auto& child : child_nodes_) {
+    child.accept(visitor);
   }
   visitor->endVisit(this);
 }
 
-void ProgramNode::addStatement(StmtNode* stmt_node) {
-  stmt_node->setParent(this);
-  stmt_list_.push_back(stmt_node);
+void ProgramNode::addChildNode(ASTNode* child_node) {
+  CHECK(child_node);
+  child_node->setParent(this);
+  child_nodes_.push_back(child_node);
 }
 
 } // namespace flang

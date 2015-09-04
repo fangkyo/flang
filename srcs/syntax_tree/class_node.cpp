@@ -1,29 +1,37 @@
 #include "syntax_tree/class_node.h"
+#include "base/stl_utils.h"
 
 using namespace std;
 
 namespace flang {
 
+ClassNode::~ClassNode() {
+  stdDeleteElements(inner_classes_);
+}
+
 void ClassNode::accept(ASTVisitor* visitor) {
   visitor->visit(this);
-  for (auto& member_var : member_var_list_) {
-    // visitor->visit(member_var);
+  for (auto& member_var : member_vars_) {
     member_var.accept(visitor);
   }
-  for (auto& member_func : member_func_list_) {
-    // visitor->visit(member_func);
+  for (auto& member_func : member_funcs_) {
     member_func.accept(visitor);
   }
 
-  // for (auto& member_var : member_var_list_) {
+  // for (auto& member_var : member_vars_) {
     // visitor->endVisit(member_var);
   // }
-  // for (auto& member_func : member_func_list_) {
+  // for (auto& member_func : member_funcs_) {
     // visitor->endVisit(member_func);
   // }
   visitor->endVisit(this);
 }
 
+
+void ClassNode::addInnerClass(ClassNode* class_node) {
+  CHECK(class_node);
+  inner_classes_.push_back(class_node);
+}
 // void ClassNode::acceptVars(Visitor& visitor) {
 
   // for (size_t i = 0; i < m_varList.size(); ++i) {

@@ -44,6 +44,7 @@ class DoubleValNode;
 // Data type node
 class QualifiedTypeNode;
 class ArrayTypeNode;
+class ContinueNode;
 
 /**
  * @brief This struct is used for passing inherit attributes between visitor
@@ -90,6 +91,7 @@ class ASTVisitor {
   VISIT_METHOD(QualifiedTypeNode)
   VISIT_METHOD(ArrayTypeNode)
   VISIT_METHOD(ReferenceNode)
+  VISIT_METHOD(ContinueNode)
 
   // void setSymbolTable(SymbolTable* symbol_table) {
     // symbol_table_ = symbol_table;

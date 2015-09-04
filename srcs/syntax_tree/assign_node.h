@@ -23,10 +23,16 @@ class AssignNode : public ExpNode {
   AssignNode(ExpNode* left_side, ExpNode* right_side);
   ~AssignNode() override {}
 
-  void setLeftSide(ExpNode* exp_node) { left_side_.reset(exp_node); }
+  void setLeftSide(ExpNode* exp_node) {
+    left_side_.reset(exp_node);
+    left_side_->setParent(this);
+  }
   ExpNode* getLeftSide() { return left_side_.get(); }
 
-  void setRightSide(ExpNode* exp_node) { right_side_.reset(exp_node); }
+  void setRightSide(ExpNode* exp_node) {
+    right_side_.reset(exp_node);
+    right_side_->setParent(this);
+  }
   ExpNode* getRightSide() { return right_side_.get(); }
 
   AssignOpType getOperator() { return operator_; }

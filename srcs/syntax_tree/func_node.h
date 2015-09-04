@@ -10,6 +10,7 @@
 #include "syntax_tree/exp_node.h"
 #include "syntax_tree/stmt_node.h"
 #include "syntax_tree/var_decl_node.h"
+#include "syntax_tree/name_node.h"
 
 namespace flang {
 
@@ -22,13 +23,22 @@ class FuncNode : public StmtNode {
   void setName(const std::string& name) { name_ = name; }
 
   ASTNode* getBody() { return body_.get(); }
-  void setBody(ASTNode* body) { body_.reset(body); }
+  void setBody(ASTNode* body) {
+    body_.reset(body);
+    body_->setParent(this);
+  }
 
   boost::ptr_vector<VarDeclarationNode>& getParameters() { return parameters_; }
-  void addParameter(VarDeclarationNode* param) { parameters_.push_back(param); }
+  void addParameter(VarDeclarationNode* param) {
+    parameters_.push_back(param);
+    param->setParent(this);
+  }
 
   DataTypeNode* getReturnType() { return return_type_.get(); }
-  void setReturnType(DataTypeNode* type) { return_type_.reset(type); }
+  void setReturnType(DataTypeNode* type) {
+    return_type_.reset(type);
+    return_type_->setParent(this);
+  }
 
   void accept(ASTVisitor* visitor) override;
 
@@ -47,6 +57,9 @@ class ReturnNode : public StmtNode {
   ExpNode* getExpression() { return expression_.get(); }
   void setExpression(ExpNode* exp_node) {
     expression_.reset(exp_node);
+    if (expression_) {
+      expression_->setParent(this);
+    }
   }
   void accept(ASTVisitor* visitor) override;
 
@@ -56,20 +69,26 @@ class ReturnNode : public StmtNode {
 
 class CallNode : public ExpNode {
  public:
-  CallNode(const std::string& name = "");
+  CallNode();
   ~CallNode() override {}
 
   void accept(ASTVisitor* visitor) override;
 
-  void setName(const std::string& name) { name_ = name; }
-  const std::string& getName() { return name_; }
+  void setName(NameNode* name) {
+    name_.reset(name);
+    name_->setParent(this);
+  }
+  NameNode* getName() const { return name_.get(); }
 
-  void addParameter(ExpNode* param) { parameters_.push_back(param); }
+  void addParameter(ExpNode* param) {
+    parameters_.push_back(param);
+    param->setParent(this);
+  }
   boost::ptr_vector<ExpNode>& getParameters() { return parameters_; }
 
  private:
   boost::ptr_vector<ExpNode> parameters_;
-  std::string name_;
+  std::unique_ptr<NameNode> name_;
 };
 
 }  // namespace flang

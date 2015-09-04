@@ -12,6 +12,7 @@ SimpleNameNode::SimpleNameNode(const std::string name) :
 QualifiedNameNode::QualifiedNameNode(NameNode* qualifier, SimpleNameNode* name) :
     NameNode(ASTNode::QUALIFIED_NAME_NODE),
     qualifier_(qualifier), name_(name) {
+  name_->setParent(this);
 }
 
 std::string QualifiedNameNode::getFullName() {

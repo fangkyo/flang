@@ -18,13 +18,13 @@ class ProgramNode : public ASTNode {
 
   void accept(ASTVisitor* visitor) override;
 
-  const boost::ptr_vector<StmtNode>& getStatementList() {
-    return stmt_list_;
+  const boost::ptr_vector<ASTNode>& getChildNodes() {
+    return child_nodes_;
   };
-  void addStatement(StmtNode* stmt_node);
+  void addChildNode(ASTNode* child_node);
 
  private:
-  boost::ptr_vector<StmtNode> stmt_list_;
+  boost::ptr_vector<ASTNode> child_nodes_;
 };
 
 } // namespace flang

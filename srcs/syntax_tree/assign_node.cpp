@@ -6,6 +6,8 @@ AssignNode::AssignNode(ExpNode* left_side, ExpNode* right_side) :
       ExpNode(ASTNode::ASSIGN_EXP_NODE),
       left_side_(left_side),
       right_side_(right_side) {
+  left_side_->setParent(this);
+  right_side_->setParent(this);
 }
 
 void AssignNode::accept(ASTVisitor* visitor) {

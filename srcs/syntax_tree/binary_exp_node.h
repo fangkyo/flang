@@ -34,10 +34,16 @@ class BinaryExpNode : public ExpNode {
   void setOperator(BinaryOpType op) { operator_ = op; }
 
   ExpNode* getLeftSide() { return left_side_.get(); }
-  void setLeftSide(ExpNode* exp_node) { left_side_.reset(exp_node); }
+  void setLeftSide(ExpNode* exp_node) {
+    left_side_.reset(exp_node);
+    left_side_->setParent(this);
+  }
 
   ExpNode* getRightSide() { return right_side_.get(); }
-  void setRightSide(ExpNode* exp_node) { right_side_.reset(exp_node); }
+  void setRightSide(ExpNode* exp_node) {
+    right_side_.reset(exp_node);
+    right_side_->setParent(this);
+  }
 
  protected:
   BinaryOpType operator_;

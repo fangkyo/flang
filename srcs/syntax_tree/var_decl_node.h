@@ -21,7 +21,10 @@ class VarDeclarationFragmentNode : public ASTNode {
   const std::string& getName() { return name_; }
 
   ExpNode* getInitializer() { return initializer_.get(); }
-  void setInitializer(ExpNode* initializer) { initializer_.reset(initializer); }
+  void setInitializer(ExpNode* initializer) {
+    initializer_.reset(initializer);
+    initializer_->setParent(this);
+  }
 
   void accept(ASTVisitor* visitor) override;
 
@@ -39,13 +42,17 @@ class VarDeclarationNode : public StmtNode {
 
   void addVarDeclFragment(VarDeclarationFragmentNode* var_decl_fragment) {
     var_decl_fragments_.push_back(var_decl_fragment);
+    var_decl_fragment->setParent(this);
   }
   const boost::ptr_vector<VarDeclarationFragmentNode>& getVarDeclFragmentList() {
     return var_decl_fragments_;
   }
 
   DataTypeNode* getDataType() { return data_type_.get(); }
-  void setDataType(DataTypeNode* data_type) { data_type_.reset(data_type); }
+  void setDataType(DataTypeNode* data_type) {
+    data_type_.reset(data_type);
+    data_type_->setParent(this);
+  }
 
  private:
   std::unique_ptr<DataTypeNode> data_type_;

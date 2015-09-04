@@ -35,4 +35,11 @@ void BreakNode::accept(ASTVisitor* visitor) {
   visitor->endVisit(this);
 }
 
+ContinueNode::ContinueNode() : StmtNode(ASTNode::CONTINUE_NODE) {}
+
+void ContinueNode::accept(ASTVisitor* visitor) {
+  visitor->visit(this);
+  visitor->endVisit(this);
+}
+
 }  // namespace flang

@@ -29,7 +29,10 @@ class UnaryExpNode : public ExpNode {
   void setOperator(UnaryOpType op) { operator_ = op; }
 
   // Accessor of operand
-  void setOperand(ExpNode* operand) { operand_.reset(operand); }
+  void setOperand(ExpNode* operand) {
+    operand_.reset(operand);
+    operand_->setParent(this);
+  }
   ExpNode* getOperand() { return operand_.get(); }
 
  protected:

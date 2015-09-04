@@ -6,7 +6,7 @@ VarDeclarationFragmentNode::VarDeclarationFragmentNode(
     const std::string& name, ExpNode* initializer) :
     ASTNode(ASTNode::VAR_DECL_FRAGMENT_NODE),
     name_(name), initializer_(initializer) {
-
+  initializer_->setParent(this);
 }
 
 void VarDeclarationFragmentNode::accept(ASTVisitor* visitor) {

@@ -16,6 +16,7 @@ void ReferenceNode::accept(ASTVisitor* visitor) {
 void ReferenceNode::addChildNode(ASTNode* child) {
   CHECK(child);
   child_nodes_.push_back(child);
+  child->setParent(this);
 }
 
 }  // namespace

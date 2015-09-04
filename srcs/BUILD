@@ -31,6 +31,7 @@ cc_library(
         "#log4cxx",
         ":flang_parser_src",
         ":flang_scanner",
+        "//syntax_tree:syntax_tree",
     ]
 )
 
@@ -47,8 +48,6 @@ cc_binary(
     name = "flang",
     srcs = [
         "main.cpp",
-        "flang_parser.cpp",
-        "flang_scanner.cpp",
     ],
     deps = [
         "#boost_system",

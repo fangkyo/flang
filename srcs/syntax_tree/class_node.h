@@ -16,40 +16,46 @@ namespace flang {
 class ClassNode : public StmtNode {
 public:
   ClassNode() : StmtNode(ASTNode::CLASS_NODE) {}
-  ~ClassNode() override {}
+  ~ClassNode() override;
 
   void setName(const std::string &name) { name_ = name; }
   const std::string &getName() { return name_; }
 
-  void setBaseClass(NameNode* base_class) { base_class_.reset(base_class); }
-  NameNode* getBaseClass() { return base_class_.get(); }
+  void setSuperClass(NameNode* super_class) { super_class_.reset(super_class); }
+  NameNode* getSuperClass() { return super_class_.get(); }
 
   // Add member variable declaration
-  void addVarDeclaration(VarDeclarationNode* member_var) {
+  void addVariable(VarDeclarationNode* member_var) {
     member_var->setParent(this);
-    member_var_list_.push_back(member_var);
+    member_vars_.push_back(member_var);
   }
-  const boost::ptr_vector<VarDeclarationNode>& getVarDeclarationList() {
-    return member_var_list_;
-  }
-
-  void addFunction(FuncNode* member_func) {
-    member_func->setParent(this);
-    member_func_list_.push_back(member_func);
-  }
-  const boost::ptr_vector<FuncNode>& getFunctionList() {
-    return member_func_list_;
+  const boost::ptr_vector<VarDeclarationNode>& getVarDeclar() {
+    return member_vars_;
   }
 
-  bool hasBaseClass() { return base_class_ == nullptr; }
+  void addFunction(FuncNode* func) {
+    func->setParent(this);
+    member_funcs_.push_back(func);
+  }
+  const boost::ptr_vector<FuncNode>& getFunctions() {
+    return member_funcs_;
+  }
+
+  void addInnerClass(ClassNode* class_node);
+  const std::vector<ClassNode*>& getInnerClasses() const {
+    return inner_classes_;
+  }
+
+  bool hasSuperClass() { return super_class_ == nullptr; }
 
   void accept(ASTVisitor* visitor) override;
 
  private:
   std::string name_;
-  std::unique_ptr<NameNode> base_class_;
-  boost::ptr_vector<VarDeclarationNode> member_var_list_;
-  boost::ptr_vector<FuncNode> member_func_list_;
+  std::unique_ptr<NameNode> super_class_;
+  boost::ptr_vector<VarDeclarationNode> member_vars_;
+  boost::ptr_vector<FuncNode> member_funcs_;
+  std::vector<ClassNode*> inner_classes_;
 };
 
 }  // namespace flang

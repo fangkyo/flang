@@ -12,7 +12,11 @@ void FuncNode::accept(ASTVisitor* visitor) {
 }
 
 ReturnNode::ReturnNode(ExpNode* exp_node)
-    : StmtNode(ASTNode::RETURN_NODE), expression_(exp_node) {}
+  : StmtNode(ASTNode::RETURN_NODE), expression_(exp_node) {
+  if (expression_) {
+    expression_->setParent(this);
+  }
+}
 
 void ReturnNode::accept(ASTVisitor* visitor) {
   visitor->visit(this);
@@ -22,8 +26,7 @@ void ReturnNode::accept(ASTVisitor* visitor) {
   visitor->endVisit(this);
 }
 
-CallNode::CallNode(const std::string& name) :
-  ExpNode(ASTNode::RETURN_NODE), name_(name){
+CallNode::CallNode() : ExpNode(ASTNode::CALL_NODE) {
 }
 
 void CallNode::accept(ASTVisitor* visitor) {
