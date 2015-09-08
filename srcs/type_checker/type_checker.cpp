@@ -1,8 +1,8 @@
-#include "type_checker/type_checker.h"
-#include "type_checker/error.h"
 #include "base/check.h"
 #include "symbol_table/symbol.h"
 #include "syntax_tree/syntax_tree.h"
+#include "type_checker/type_checker.h"
+#include "type_checker/exception.h"
 
 namespace flang {
 
