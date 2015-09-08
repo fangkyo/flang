@@ -15,7 +15,8 @@ class DataType;
 class IncompatibleOpError : public Error {
  public:
   IncompatibleOpError(
-      const std::string& op, DataType* type1, DataType* type2, const location& loc);
+      const std::string& op, DataType* type1,
+      DataType* type2, const location& loc);
   IncompatibleOpError(
       const std::string& op, DataType* type, const location& loc);
 };

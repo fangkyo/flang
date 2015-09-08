@@ -126,6 +126,7 @@ program : program stmt {
 } | program '{' block '}' {
   $$ = $1;
   $$->setLocation(@$);
+  $$->addChildNode($3);
 } | {
   syntax_tree->setRoot(new ProgramNode());
   $$ = syntax_tree->getRoot();
@@ -173,8 +174,6 @@ stmt : expr ';' {
   $$ = $1;
   $$->setLocation(@$);
 };
-
-
 
 expr : INT_VAL {
   $$ = new Int64ValNode($1);

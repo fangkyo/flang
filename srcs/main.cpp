@@ -37,15 +37,15 @@ int main(int argc, char* argv[]){
 
   log4cxx::LoggerPtr logger(log4cxx::Logger::getLogger("flang"));
   LOG4CXX_INFO(logger, "start to parse program and build abstract syntax tree");
-  flang::SyntaxTree syntax_tree;
-  std::ifstream file_stream(filename);
-  flang::FlangScanner scanner(&file_stream);
-  flang::FlangParser parser(scanner, &syntax_tree, &filename);
-  try {
-    parser.parse();
-  } catch (flang::Exception* e) {
-    LOG4CXX_ERROR(logger, e->getMessage());
-  }
+/*   flang::SyntaxTree syntax_tree; */
+  // std::ifstream file_stream(filename);
+  // flang::FlangScanner scanner(&file_stream);
+  // flang::FlangParser parser(scanner, &syntax_tree, &filename);
+  // try {
+    // parser.parse();
+  // } catch (flang::Exception* e) {
+    // LOG4CXX_ERROR(logger, e->getMessage());
+  /* } */
 
   // LOG4CXX_INFO(logger, "abstract syntax tree built completed");
   // LOG4CXX_INFO(logger, "start to do type check");
