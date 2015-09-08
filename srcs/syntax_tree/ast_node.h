@@ -71,8 +71,8 @@ class ASTNode {
   void setParent(ASTNode* parent) { parent_ = parent; }
   ASTNode* getParent() const { return parent_; }
 
-  // void setSymbol(Symbol* symbol) { symbol_.reset(symbol); }
-  // Symbol* getSymbol() const { return symbol_.get(); }
+  void setSymbol(Symbol* symbol) { symbol_.reset(symbol); }
+  Symbol* getSymbol() const { return symbol_.get(); }
 
   // Lineno's accessor
   void setLineNum(int32_t line_num) { line_num_ = line_num; }
@@ -84,7 +84,7 @@ class ASTNode {
  protected:
   ASTNodeType node_type_;
   ASTNode* parent_;
-  // std::unique_ptr<Symbol> symbol_;
+  std::unique_ptr<Symbol> symbol_;
   int32_t line_num_;
   /** The location of this AST node in the source file. */
   location location_;

@@ -15,7 +15,10 @@ class NewNode : public ExpNode {
   ~NewNode() override {};
 
   NameNode* getClassName() { return class_name_.get(); }
-  void setClassName(NameNode* class_name) { class_name_.reset(class_name); }
+  void setClassName(NameNode* class_name) {
+    class_name_.reset(class_name);
+    class_name_->setParent(this);
+  }
 
   void accept(ASTVisitor* visitor) override;
 

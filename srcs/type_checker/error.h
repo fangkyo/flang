@@ -1,14 +1,24 @@
 #ifndef TYPE_CHECKER_ERROR_H
 #define TYPE_CHECKER_ERROR_H
 
+#include "location.hh"
+
 #include "exception/exception.h"
 #include "syntax_tree/syntax_tree.h"
-#include "symbol_table/symbol_info.h"
+#include "symbol_table/symbol.h"
 
 namespace flang {
 
-class SymbolInfo;
+class Symbol;
 class DataType;
+
+class IncompatibleOpError : public Error {
+ public:
+  IncompatibleOpError(
+      const std::string& op, DataType* type1, DataType* type2, const location& loc);
+  IncompatibleOpError(
+      const std::string& op, DataType* type, const location& loc);
+};
 
 class RedefineSymbolError : public Error {
  public:
@@ -16,8 +26,8 @@ class RedefineSymbolError : public Error {
       SymbolInfo* existing_symbol, SymbolInfo* redefined_symbol, int lineno);
 
  private:
-  SymbolInfo* existing_symbol_;
-  SymbolInfo* redefined_symbol_;
+  Symbol* existing_symbol_;
+  Symbol* redefined_symbol_;
 };
 
 class DataTypeNotEqualError : public Error {

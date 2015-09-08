@@ -5,6 +5,22 @@
 
 namespace flang {
 
+IncompatibleOpError::IncompatibleOpError(
+    const std::string& op, DataType* type, const location& loc) : Error(loc) {
+  boost::format format("Can't use \"%1%\" for type \"%2%\".");
+  format % op % type->getName();
+  setMessage(format.str());
+}
+
+IncompatibleOpError::IncompatibleOpError(
+    const std::string& op, DataType* type1,
+    DataType* type2, const location& loc) : Error(loc) {
+  boost::format format(
+      "Can't use \"%1%\" between type \"%2%\" and type \"%3%\".");
+  format % op % type1->getName() % type2->getName();
+  setMessage(format.str());
+}
+
 RedefineSymbolError::RedefineSymbolError(
     SymbolInfo* existing_symbol, SymbolInfo* redefined_symbol, int lineno) :
     Error(lineno),

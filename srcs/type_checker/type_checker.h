@@ -9,6 +9,7 @@ namespace flang {
 
 class TypeChecker : public ASTVisitor {
  public:
+  void endVisit(BinaryExpNode*) override;
 
  private:
   static log4cxx::LoggerPtr logger_;
