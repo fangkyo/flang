@@ -63,12 +63,13 @@ class Scope {
   std::unordered_map<std::string, Symbol*>  symbol_map_;
 
   std::string name_;
-  Scope* parent_;
 
   // Whether this scope object is owned by a symbol table (like class, function or
   // named namespace). If so, the symbol table will delete this scope object
   // after exiting this scope.
   bool owned_by_symtable_;
+  Scope* parent_;
+
 };
 
 }  // namespace flang

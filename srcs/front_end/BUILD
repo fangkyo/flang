@@ -27,15 +27,19 @@ cc_library(
     srcs = ["flang_scanner.cpp"],
 		hdrs = [
 				"flang_scanner.h",
-				"flang_parser.h"
+				"flang_parser.h",
+				"location.hh",
+				"position.hh",
+				"stack.hh",
 		],
 		data = [
         ":flang_parser_src",
         ":flang_scanner_src",
 		],
-    deps = [
-#        "//exception:exception",
-    ]
+		deps = [
+				"//syntax_tree",
+				"//exception"
+		],
 )
 
 #cc_library(

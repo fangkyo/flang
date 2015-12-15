@@ -7,7 +7,7 @@
 
 #include "base/check.h"
 #include "exception/exception.h"
-#include "symbol_table/symbol_table.h"
+//#include "symbol_table/symbol_table.h"
 
 namespace flang {
 
@@ -93,13 +93,13 @@ class ASTVisitor {
   VISIT_METHOD(ReferenceNode)
   VISIT_METHOD(ContinueNode)
 
-  void setSymbolTable(SymbolTable* symbol_table) {
-    symbol_table_ = symbol_table;
-  }
+  //void setSymbolTable(SymbolTable* symbol_table) {
+    //symbol_table_ = symbol_table;
+  //}
 
-  SymbolTable* getSymbolTable() {
-    return symbol_table_;
-  }
+  //SymbolTable* getSymbolTable() {
+    //return symbol_table_;
+  //}
 
   boost::ptr_vector<Exception>& getException() {
     return exceptions_;
@@ -118,7 +118,7 @@ class ASTVisitor {
   }
 
  protected:
-  SymbolTable* symbol_table_;
+  //SymbolTable* symbol_table_;
   boost::ptr_vector<Exception> exceptions_;
   std::unique_ptr<ASTVisitorContext> context_;
 };

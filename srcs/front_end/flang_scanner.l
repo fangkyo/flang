@@ -10,8 +10,8 @@
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 
-#include "flang_parser.h"
-#include "flang_scanner.h"
+#include "front_end/flang_parser.h"
+#include "front_end/flang_scanner.h"
 #include "syntax_tree/syntax_tree.h"
 
 /* typedef to make the returns for the tokens shorter */
@@ -162,7 +162,7 @@ and {
   try {
     yylval->int64_val = boost::lexical_cast<int64_t>(yytext);
   } catch (const boost::bad_lexical_cast&) {
-    throw new IntegerCastError(yytext, *yylloc);
+		throw new IntegerCastError(yytext, *yylloc);
   }
   return Token::INT_VAL;
 }
@@ -171,7 +171,7 @@ and {
   try {
     yylval->double_val = boost::lexical_cast<double>(yytext);
   } catch (const boost::bad_lexical_cast&) {
-    throw new DoubleCastError(yytext, *yylloc);
+		throw new DoubleCastError(yytext, *yylloc);
   }
 
 }

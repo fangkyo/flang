@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-#include "location.hh"
+#include "front_end/location.hh"
 #include "symbol_table/symbol.h"
 #include "syntax_tree/ast_visitor.h"
 

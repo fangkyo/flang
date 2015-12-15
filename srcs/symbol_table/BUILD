@@ -1,3 +1,7 @@
+package(
+		default_visibility = ["//visibility:public"],
+)
+
 cc_library(
     name = "symbol",
     srcs = [
@@ -5,9 +9,9 @@ cc_library(
         "symbol.cpp",
         "data_type.cpp"
     ],
-    deps = [
-        "#boost_system",
-    ]
+		hdrs = ["scope.h", "symbol.h", "data_type.h"],
+		linkopts = ["-lboost_system"],
+		deps = ["//base"],
 )
 
 cc_library(
@@ -15,9 +19,12 @@ cc_library(
     srcs = [
         "symbol_table.cpp"
     ],
+		hdrs = ["symbol_table.h"],
+		linkopts = [
+				"-lboost_system",
+				"-llog4cxx"
+		],
     deps = [
-        "#boost_system",
-        "#log4cxx",
         ":symbol",
     ]
 )
@@ -42,13 +49,13 @@ cc_test(
     ]
 )
 
-cc_test(
-    name = "symbol_table_test",
-    srcs = ["symbol_table_test.cpp"],
-    deps = [
-        "#log4cxx",
-        "#gtest_main",
-        ":symbol_table",
-        "//test:test",
-    ]
-)
+#cc_test(
+#    name = "symbol_table_test",
+#    srcs = ["symbol_table_test.cpp"],
+#    deps = [
+#        "#log4cxx",
+#        "#gtest_main",
+#        ":symbol_table",
+#        "//test:test",
+#    ]
+#)

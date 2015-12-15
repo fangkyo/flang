@@ -7,7 +7,7 @@
 
 #include <boost/format.hpp>
 
-#include "location.hh"
+#include "front_end/location.hh"
 
 namespace flang {
 

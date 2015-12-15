@@ -4,3 +4,4 @@ doc
 build
 srcs/blade*
 srcs/build*
+srcs/bazel-*

@@ -31,7 +31,7 @@
 
 #include <boost/format.hpp>
 #include "exception/exception.h"
-#include "flang_parser.h"
+#include "front_end/flang_parser.h"
 
 namespace flang {
 
