@@ -48,7 +48,6 @@ char '.'
 %}
 
 
-
 while {
   yylval->lineno = lineno();
   return Token::WHILE;
@@ -221,4 +220,3 @@ and {
 };
 
 %%
-

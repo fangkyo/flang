@@ -6,7 +6,7 @@ genrule(
     name = "flang_scanner_src",
     srcs = ["flang_scanner.l"],
     outs = ["flang_scanner.cpp"],
-    cmd = "flex --c++ -o $@  $(location flang_scanner.l)",
+    cmd = "flex --c++ -o $@ $(location flang_scanner.l)",
 )
 
 genrule(
@@ -16,8 +16,8 @@ genrule(
         "flang_parser.h",
         "flang_parser.cpp",
 				"location.hh",
-				"stack.hh",
 				"position.hh",
+				"stack.hh",
     ],
     cmd = "bison -L c++ --defines=$(location flang_parser.h) -o $(location flang_parser.cpp) $(location flang_parser.y)",
 )
@@ -59,20 +59,5 @@ cc_library(
 #    deps = [
 #        ":flang_scanner",
 #        "//test:test",
-#    ]
-#)
-#
-#cc_binary(
-#    name = "flang",
-#    srcs = [
-#        "main.cpp",
-#    ],
-#    deps = [
-#        "#boost_system",
-#        "#log4cxx",
-#        ":flang_parser",
-#        ":flang_scanner",
-#        "//exception:exception",
-#        "//syntax_tree:syntax_tree",
 #    ]
 #)
