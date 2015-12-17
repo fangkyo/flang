@@ -49,6 +49,7 @@ public:
   bool hasSuperClass() { return super_class_ == nullptr; }
 
   void accept(ASTVisitor* visitor) override;
+	bool getChildNodes(ASTNodeList* child_nodes) override;
 
  private:
   std::string name_;

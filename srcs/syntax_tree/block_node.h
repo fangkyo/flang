@@ -23,7 +23,6 @@ class BlockNode : public ASTNode {
   boost::ptr_vector<StmtNode> stmt_list_;
 };
 
-} // namespace flang
-
+}  // namespace flang
 
 #endif

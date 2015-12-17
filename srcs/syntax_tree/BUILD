@@ -5,23 +5,42 @@ package(
 cc_library(
     name = "ast_visitor",
     srcs = ["ast_visitor.cpp"],
-		hdrs = ["ast_visitor.h"],
+		hdrs = ["ast_visitor.h", "ast_node.h"],
 		linkopts = ["-lboost_system"],
     deps = [
       	"//exception:exception",
 				"//base",
-        # "//symbol_table",
+        ":program_node",
+#        "//symbol_table",
     ],
 )
 
+#cc_library(
+#		name = "ast_node",
+#		hdrs = glob(["*_node.h"]),
+#		srcs = glob(["*_node.cpp"]),
+#		deps = [
+#			":ast_visitor",
+#			"//symbol_table:symbol",
+#		],
+#)
+
 cc_library(
-		name = "ast_node",
-		hdrs = glob(["*_node.h"]),
-		srcs = glob(["*_node.cpp"]),
-		deps = [
-			":ast_visitor",
-			"//symbol_table:symbol",
-		],
+    name = "ast_node",
+    hdrs = [
+        "ast_node.h",
+        "ast_visitor.h",
+        "program_node.h",
+    ],
+    srcs = [
+        "ast_visitor.cpp",
+        "program_node.cpp",
+    ],
+		linkopts = ["-lboost_system"],
+    deps = [
+				"//base",
+      	"//exception",
+    ],
 )
 
 cc_library(

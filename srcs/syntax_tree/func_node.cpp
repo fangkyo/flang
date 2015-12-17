@@ -3,12 +3,7 @@
 namespace flang {
 
 void FuncNode::accept(ASTVisitor* visitor) {
-  visitor->visit(this);
-  for (auto& param : parameters_) {
-    param.accept(visitor);
-  }
-  return_type_->accept(visitor);
-  visitor->endVisit(this);
+  visitor->traverse(this);
 }
 
 ReturnNode::ReturnNode(ExpNode* exp_node)

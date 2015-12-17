@@ -1,5 +1,5 @@
-#include "base/check.h"
 #include "syntax_tree/block_node.h"
+#include "syntax_tree/ast_visitor.h"
 
 namespace flang {
 
@@ -7,8 +7,6 @@ BlockNode::BlockNode() : ASTNode(ASTNode::BLOCK_NODE) {
 }
 
 void BlockNode::accept(ASTVisitor* visitor) {
-  visitor->visit(this);
-  visitor->endVisit(this);
 }
 
 void BlockNode::addStatement(StmtNode* stmt_node) {

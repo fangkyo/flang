@@ -1,5 +1,5 @@
-#ifndef FUNC_NODE_H
-#define FUNC_NODE_H
+#ifndef FUNC_NODE_H_
+#define FUNC_NODE_H_
 
 #include <string>
 #include <vector>

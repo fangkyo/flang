@@ -10,23 +10,22 @@ ClassNode::~ClassNode() {
 }
 
 void ClassNode::accept(ASTVisitor* visitor) {
-  visitor->visit(this);
-  for (auto& member_var : member_vars_) {
-    member_var.accept(visitor);
-  }
-  for (auto& member_func : member_funcs_) {
-    member_func.accept(visitor);
-  }
-
-  // for (auto& member_var : member_vars_) {
-    // visitor->endVisit(member_var);
-  // }
-  // for (auto& member_func : member_funcs_) {
-    // visitor->endVisit(member_func);
-  // }
-  visitor->endVisit(this);
+	visitor->traverse(this);
 }
 
+
+bool ClassNode::getChildNodes(ASTNodeList* child_nodes) {
+	child_nodes->push_back(super_class_.get());
+	for (auto& member_var: member_vars_) {
+		child_nodes->push_back(&member_var);
+	}
+	for (auto& member_func: member_funcs_) {
+		child_nodes->push_back(&member_func);
+	}
+	child_nodes.insert(
+			child_nodes.end(), inner_classes_.begin(), inner_classes_.end());
+  return true;
+}
 
 void ClassNode::addInnerClass(ClassNode* class_node) {
   CHECK(class_node);
