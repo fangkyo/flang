@@ -29,6 +29,7 @@ class BinaryExpNode : public ExpNode {
   ~BinaryExpNode() override {};
 
   void accept(ASTVisitor* visitor) override;
+  bool getChildNodes(ASTNodeList* child_nodes) override;
 
   BinaryOpType getOperator() { return operator_; }
   void setOperator(BinaryOpType op) { operator_ = op; }

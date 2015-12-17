@@ -2,6 +2,7 @@
 #define AST_NODE_H_
 
 #include <cstdint>
+#include <vector>
 
 #include "location.hh"
 #include "symbol_table/symbol.h"
@@ -63,7 +64,7 @@ class ASTNode {
       node_type_(node_type), parent_(nullptr) {}
 
   virtual ~ASTNode() {}
-  virtual void accept(ASTVisitor*) {}
+  virtual void accept(ASTVisitor* visitor) {}
 
   ASTNodeType getNodeType() const { return node_type_; }
 
@@ -80,6 +81,15 @@ class ASTNode {
 
   void setLocation(const location& loc) { location_ = loc; }
   const location& getLocation() { return location_; }
+
+  typedef std::vector<ASTNode*> ASTNodeList;
+
+  /**
+   * @brief Get the child ast nodes.
+   *
+   * @return true if has children. Otherwise return false.
+   */
+  virtual bool getChildNodes(ASTNodeList* child_nodes) { return false; };
 
  protected:
   ASTNodeType node_type_;

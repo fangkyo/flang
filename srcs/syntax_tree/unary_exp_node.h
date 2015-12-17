@@ -23,6 +23,7 @@ class UnaryExpNode : public ExpNode {
   ~UnaryExpNode() override {}
 
   void accept(ASTVisitor* visitor) override;
+  bool getChildNodes(ASTNodeList* child_nodes) override;
 
   // Accessor of operator
   UnaryOpType getOperator() { return operator_; }

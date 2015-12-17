@@ -54,6 +54,16 @@ struct ASTVisitorContext {
 };
 
 #define VISIT_METHOD(ASTNodeClass) \
+    virtual void traverse(ASTNodeClass* node) { \
+      visit(node); \
+      std::vector<ASTNode*> child_nodes; \
+      if (node->getChildNodes(&child_nodes) { \
+        for (auto* child: child_nodes) { \
+          child->accept(this); \
+        } \
+      } \
+      endVisit(node); \
+    } \
     virtual void visit(ASTNodeClass*) {} \
     virtual void endVisit(ASTNodeClass*) {} \
 
@@ -124,28 +134,28 @@ class ASTVisitor {
 };
 
 
-#define COMPOSITE_VISIT(ASTNodeClass) \
-    void visit(ASTNodeClass* node) { \
-      CHECK(node); \
-      for (auto* visitor : visitors_) { \
-        visitor->visit(node); \
-      } \
-    }  \
-    void endVisit(ASTNodeClass* node) { \
-      CHECK(node); \
-      for (auto* visitor : visitors_) { \
-        visitor->endVisit(node); \
-      } \
-    }  \
+/* #define COMPOSITE_VISIT(ASTNodeClass) \ */
+    // void visit(ASTNodeClass* node) { \
+      // CHECK(node); \
+      // for (auto* visitor : visitors_) { \
+        // visitor->visit(node); \
+      // } \
+    // }  \
+    // void endVisit(ASTNodeClass* node) { \
+      // CHECK(node); \
+      // for (auto* visitor : visitors_) { \
+        // visitor->endVisit(node); \
+      // } \
+    // }  \
 
-class CompositeVisitor : public ASTVisitor {
- public:
-  COMPOSITE_VISIT(ReferenceNode)
-  void addVisitor(ASTVisitor* visitor);
+// class CompositeVisitor : public ASTVisitor {
+ // public:
+  // COMPOSITE_VISIT(ReferenceNode)
+  // void addVisitor(ASTVisitor* visitor);
 
- private:
-  std::vector<ASTVisitor*> visitors_;
-};
+ // private:
+  // std::vector<ASTVisitor*> visitors_;
+// };
 
 }  // namespace flang
 
