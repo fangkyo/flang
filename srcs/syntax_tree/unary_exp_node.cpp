@@ -9,9 +9,12 @@ UnaryExpNode::UnaryExpNode(UnaryOpType op, ExpNode* operand) :
 }
 
 void UnaryExpNode::accept(ASTVisitor* visitor) {
-  visitor->visit(this);
-  operand_->accept(visitor);
-  visitor->endVisit(this);
+  visitor->traverse(this);
+}
+
+bool UnaryExpNode::getChildNodes(ASTNodeList* child_nodes) {
+  child_nodes->push_back(operand_.get());
+  return true;
 }
 
 }  // namespace flang

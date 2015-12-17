@@ -14,10 +14,13 @@ BinaryExpNode::BinaryExpNode(
 }
 
 void BinaryExpNode::accept(ASTVisitor* visitor) {
-  visitor->visit(this);
-  left_side_->accept(visitor);
-  right_side_->accept(visitor);
-  visitor->endVisit(this);
+  visitor->traverse(this);
+}
+
+bool BinaryExpNode::getChildNodes(ASTNodeList* child_nodes) {
+  child_nodes->push_back(left_side_.get());
+  child_nodes->push_back(right_side_.get());
+  return true;
 }
 
 /* void AddNode::accept(Visitor& visitor) { */
