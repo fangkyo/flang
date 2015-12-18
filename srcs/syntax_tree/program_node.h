@@ -11,15 +11,13 @@ namespace flang {
 // This class represents the program of a file, which is the root
 // of a syntax tree.
 class ProgramNode : public ASTNode {
+
+ INHERIT_AST_NODE(ProgramNode, ASTNode)
+
  public:
   ProgramNode();
   ~ProgramNode() override {}
 
-  void accept(ASTVisitor* visitor) override;
-
-  //const boost::ptr_vector<ASTNode>& getChildNodes() {
-    //return child_nodes_;
-  //};
   void addChildNode(ASTNode* child_node);
 
   bool getChildNodes(ASTNodeList* child_nodes) override;

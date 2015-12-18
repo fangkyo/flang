@@ -5,16 +5,24 @@
 #include <vector>
 
 #include "front_end/location.hh"
-//#include "symbol_table/symbol.h"
+#include "syntax_tree/ast_visitor.h"
 
 namespace flang {
  
 class ASTVisitor;
 
-// Abstract syntax tree node class.
+#define INHERIT_AST_NODE(Derived, Base) \
+    public: \
+     Base* toBaseNode() { return dynamic_cast<Base*>(this); } \
+     bool accept(ASTVisitor* visitor) { \
+       return traverse<Derived>(visitor); \
+     }
+
+/** @breif Abstract syntax tree node. */
 class ASTNode {
  public:
-  // The type of ast nodes, which are the subclasses of ASTNode.
+
+  /** @ Ast node type. */
   enum ASTNodeType {
     PROGRAM_NODE, // Program node
     EMPTY_NODE, // Empty node
@@ -65,8 +73,69 @@ class ASTNode {
       node_type_(node_type), parent_(nullptr) {}
 
   virtual ~ASTNode() {}
-  virtual void accept(ASTVisitor* visitor) {}
+  virtual bool accept(ASTVisitor* visitor) {
+    return traverse<ASTNode>(visitor);
+  }
+  // @brief Transfer 'this' pointer to base class pointer type. 
+  //
+  // @return Base class type this pointer. Return nullptr if this class
+  //     doesn't inherit any class.
+  ASTNode* toBaseNode() { return nullptr; }
+ 
+ protected:
+  /**
+   * @brief Traverse this ast node.
+   *
+   * 1. Call visitor.visit() on this node over the inheritance hierarchy.
+   * 2. Traverse the child nodes.
+   * 3. Call visitor.endVisit() on this node.
+   *
+   * @return Return whether traverse this node successfully.
+   */
+  template <typename Derived>
+  bool traverse(ASTVisitor* visitor) {
+    Derived* derived = dynamic_cast<Derived*>(this);
+    if (!ASTNode::visitFromTop(visitor, derived)) {
+      return false;
+    }  
+    ASTNodeList child_nodes;
+    if (getChildNodes(&child_nodes)) {
+      for (auto* child : child_nodes) {
+        if(!child->accept(visitor)) {
+          return false;
+        }
+      }
+    }
+    return ASTNode::endVisitFromTop(visitor, derived);
+  }
 
+  template <typename Derived>
+  static bool visitFromTop(ASTVisitor* visitor, Derived* derived) {
+    if (visitor->isVisitFromTop()) {
+      auto* base = derived->toBaseNode();
+      if (base) {
+        if (!visitor->visit(base)) {
+          return false;
+        }
+      }
+    }
+    return visitor->visit(derived);
+  }
+
+  template <typename Derived>
+  static bool endVisitFromTop(ASTVisitor* visitor, Derived* derived) {
+    if (visitor->isEndVisitFromTop()) {
+      auto* base = derived->toBaseNode();
+      if (base) {
+        if (!visitor->endVisit(base)) {
+          return false;
+        }
+      }
+    }
+    return visitor->endVisit(derived);
+  }
+
+ public:
   ASTNodeType getNodeType() const { return node_type_; }
 
   // Parent's accessor
@@ -101,11 +170,11 @@ class ASTNode {
   location location_;
 };
 
-class EmptyNode : public ASTNode {
- public:
-  EmptyNode() : ASTNode(ASTNode::EMPTY_NODE) {}
-  ~EmptyNode() override {}
-};
+//class EmptyNode : public ASTNode {
+ //public:
+  //EmptyNode() : ASTNode(ASTNode::EMPTY_NODE) {}
+  //~EmptyNode() override {}
+//};
 
 }  // namespace flang
 

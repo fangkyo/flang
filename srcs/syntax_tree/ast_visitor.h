@@ -7,7 +7,6 @@
 
 #include "base/check.h"
 #include "exception/exception.h"
-#include "syntax_tree/ast_node.h"
 
 namespace flang {
 
@@ -55,15 +54,15 @@ struct ASTVisitorContext {
 };
 
 #define VISIT_METHOD(ASTNodeClass) \
-    virtual void traverse(ASTNodeClass*); \
-    virtual void visit(ASTNodeClass*) {} \
-    virtual void endVisit(ASTNodeClass*) {}
-
+    virtual bool visit(ASTNodeClass*) { return true; } \
+    virtual bool endVisit(ASTNodeClass*) { return true; }
+  
 class ASTVisitor {
  public:
   ASTVisitor();
   virtual ~ASTVisitor() {}
 
+  VISIT_METHOD(ASTNode)
   VISIT_METHOD(ProgramNode)
   //VISIT_METHOD(PrintNode)
   //VISIT_METHOD(VarDeclarationNode)
@@ -111,18 +110,23 @@ class ASTVisitor {
     exceptions_.push_back(e);
   }
 
-  void resetContext(ASTVisitorContext* context) {
-    context_.reset(context);
+  //void resetContext(ASTVisitorContext* context) {
+    //context_.reset(context);
+  //}
+
+  bool isVisitFromTop() {
+    return visit_from_top_;
   }
 
-  ASTVisitorContext* releaseContext() {
-    return context_.release();
+  bool isEndVisitFromTop() {
+    return end_visit_from_top_;
   }
 
  protected:
-  //SymbolTable* symbol_table_;
+  bool visit_from_top_;
+  bool end_visit_from_top_;
+
   boost::ptr_vector<Exception> exceptions_;
-  std::unique_ptr<ASTVisitorContext> context_;
 };
 
 }  // namespace flang

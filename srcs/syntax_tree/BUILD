@@ -4,13 +4,19 @@ package(
 
 cc_library(
     name = "ast_visitor",
-    srcs = ["ast_visitor.cpp"],
-		hdrs = ["ast_visitor.h", "ast_node.h"],
+    srcs = [
+        "ast_visitor.cpp",
+        "program_node.cpp",
+    ],
+		hdrs = [
+        "ast_visitor.h",
+        "ast_node.h",
+        "program_node.h",
+    ],
 		linkopts = ["-lboost_system"],
     deps = [
       	"//exception:exception",
 				"//base",
-        ":program_node",
 #        "//symbol_table",
     ],
 )

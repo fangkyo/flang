@@ -148,6 +148,16 @@ and {
   return Token::AND;
 }
 
+import {
+  yylval->lineno = lineno();
+  return Token::IMPORT;
+}
+
+as {
+  yylval->lineno = lineno();
+  return Token::AS;
+}
+
 [ \r\t]+ {
   yylloc->step();
 }
@@ -155,6 +165,7 @@ and {
 "\n" {
   yylloc->lines(yyleng);
   yylloc->step();
+  return Token::LF;
 }
 
 {integer} {

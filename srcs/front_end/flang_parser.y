@@ -67,6 +67,8 @@ using namespace log4cxx;
   StmtNode* stmt_node;
   BlockNode* block_node;
   ReferenceNode* refer_node;
+  /*ImportListNode* import_list_node;*/
+  /*ImportNode* import_node;*/
 }
 
 %token <int64_val> INT_VAL
@@ -78,6 +80,7 @@ using namespace log4cxx;
 %token <lineno> WHILE IF PRINT BREAK DEF CLASS RETURN THIS NEW
 %token <lineno> BOOL_TYPE CHAR_TYPE STR_TYPE INT32_TYPE INT64_TYPE TRUE FALSE
 %token <lineno> DOUBLE_TYPE
+%token <lineno> LF IMPORT AS
 
 %destructor { delete ($$); }  <str_val>
 
@@ -114,6 +117,8 @@ using namespace log4cxx;
 %type <qualified_name_node> qualified_name
 %type <name_node> name
 %type <refer_node> reference
+/*%type <import_list_node> import_list*/
+/*%type <import_node> import*/
 
 %start program
 
@@ -123,15 +128,30 @@ program : program stmt {
   $$ = $1;
   $$->setLocation(@$);
   $$->addChildNode($2);
-} | program '{' block '}' {
-  $$ = $1;
-  $$->setLocation(@$);
-  $$->addChildNode($3);
 } | {
   syntax_tree->setRoot(new ProgramNode());
   $$ = syntax_tree->getRoot();
   $$->setLocation(@$);
 };
+
+/*import_list : import_list  import {*/
+  /*$$ = $1;*/
+  /*$$->setLocation(@$);*/
+  /*[>$$->addImportStmt($2);<]*/
+/*} | import {*/
+  /*$$ = new ImportStmtlist();*/
+  /*$$->setLocation(@$);*/
+  /*[>$$->addImportStmt($1);<]*/
+/*};*/
+
+/*import : IMPORT name {*/
+  /*$$ = new ImportStmt();*/
+  /*$$->setPackage($1);*/
+/*} IMPORT name AS simple_name {*/
+  /*$$ = new ImportStmt();*/
+  /*$$->setPackage($1);*/
+  /*$$->setAlias($4);*/
+/*};*/
 
 block : block stmt {
   $$ = $1;
