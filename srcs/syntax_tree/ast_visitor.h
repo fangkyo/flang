@@ -56,7 +56,7 @@ struct ASTVisitorContext {
 #define VISIT_METHOD(ASTNodeClass) \
     virtual bool visit(ASTNodeClass*) { return true; } \
     virtual bool endVisit(ASTNodeClass*) { return true; }
-  
+
 class ASTVisitor {
  public:
   ASTVisitor();
