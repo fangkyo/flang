@@ -42,17 +42,19 @@ cc_library(
 		],
 )
 
-#cc_library(
-#    name = "flang_parser",
-#    srcs = ["flang_parser.cpp"],
-#    deps = [
-#        "#log4cxx",
-#        ":flang_parser_src",
-#        ":flang_scanner",
-#        "//syntax_tree:syntax_tree",
-#    ]
-#)
-#
+cc_library(
+    name = "flang_parser",
+    srcs = ["flang_parser.cpp"],
+    hdrs = ["flang_parser.h"],
+    linkopts = [
+        "-llog4cxx",
+    ],
+    deps = [
+        ":flang_scanner",
+        "//syntax_tree",
+    ]
+)
+
 #cc_test(
 #    name = "flang_scanner_test",
 #    srcs = ["flang_scanner_test.cpp"],

@@ -64,11 +64,13 @@ using namespace log4cxx;
   NameNode* name_node;
   QualifiedNameNode* qualified_name_node;
   SimpleNameNode* simple_name_node;
+  StmtListNode* stmt_list_node;
   StmtNode* stmt_node;
   BlockNode* block_node;
   ReferenceNode* refer_node;
-  /*ImportListNode* import_list_node;*/
-  /*ImportNode* import_node;*/
+  ImportListNode* import_list_node;
+  ImportNode* import_node;
+  ReturnNode* return_node;
 }
 
 %token <int64_val> INT_VAL
@@ -80,7 +82,7 @@ using namespace log4cxx;
 %token <lineno> WHILE IF PRINT BREAK DEF CLASS RETURN THIS NEW
 %token <lineno> BOOL_TYPE CHAR_TYPE STR_TYPE INT32_TYPE INT64_TYPE TRUE FALSE
 %token <lineno> DOUBLE_TYPE
-%token <lineno> LF IMPORT AS
+%token <lineno> IMPORT AS
 
 %destructor { delete ($$); }  <str_val>
 
@@ -103,9 +105,10 @@ using namespace log4cxx;
 %type <program_node> program
 %type <block_node> block
 %type <stmt_node> stmt
+%type <stmt_list_node> stmt_list
 %type <exp_node> expr
-%type <var_decl_node> var_declaration
-%type <var_decl_fragment_node> var_declaration_fragment
+%type <var_decl_node> var_declare
+%type <var_decl_fragment_node> var_declare_fragment
 %type <data_type_node> type ret_type
 %type <if_node> if_stmt
 %type <while_node> while_stmt
@@ -117,48 +120,49 @@ using namespace log4cxx;
 %type <qualified_name_node> qualified_name
 %type <name_node> name
 %type <refer_node> reference
-/*%type <import_list_node> import_list*/
-/*%type <import_node> import*/
+%type <import_list_node> import_list
+%type <import_node> import
+%type <return_node> return_stmt
 
 %start program
 
 %%
 
-program : program stmt {
+program : import_list stmt_list {
+  $$ = new ProgramNode();
+  $$->setLocation(@$);
+  $$->setImportList($1);
+  $$->setStmtList($1);
+  syntax_tree->setRoot($$);
+};
+
+import_list : import_list import {
   $$ = $1;
   $$->setLocation(@$);
-  $$->addChildNode($2);
+  $$->addImport($2);
 } | {
-  syntax_tree->setRoot(new ProgramNode());
-  $$ = syntax_tree->getRoot();
+  $$ = new ImportList();
   $$->setLocation(@$);
 };
 
-/*import_list : import_list  import {*/
-  /*$$ = $1;*/
-  /*$$->setLocation(@$);*/
-  /*[>$$->addImportStmt($2);<]*/
-/*} | import {*/
-  /*$$ = new ImportStmtlist();*/
-  /*$$->setLocation(@$);*/
-  /*[>$$->addImportStmt($1);<]*/
-/*};*/
-
-/*import : IMPORT name {*/
-  /*$$ = new ImportStmt();*/
-  /*$$->setPackage($1);*/
-/*} IMPORT name AS simple_name {*/
-  /*$$ = new ImportStmt();*/
-  /*$$->setPackage($1);*/
-  /*$$->setAlias($4);*/
-/*};*/
-
-block : block stmt {
-  $$ = $1;
-  $$->addStatement($2);
-} | {
-  $$ = new BlockNode();
+import : IMPORT name {
+  $$ = new ImportNode();
+  $$->setPackage($1);
+} | IMPORT name AS simple_name {
+  $$ = new ImportNode();
+  $$->setPackage($1);
+  $$->setAlias($4);
 };
+
+stmt_list : stmt_list  stmt {
+  $$ = $1;
+  $$->setLocation(@$);
+  $$->addStatement(stmt);
+} | {
+  $$ = new StmtListNode();
+  $$->setLocation(@$);
+}
+
 
 stmt : expr ';' {
   $$ = $1;
@@ -166,16 +170,13 @@ stmt : expr ';' {
 } | PRINT expr ';' {
   $$ = new PrintNode($2);
   $$->setLocation(@$);
-} | RETURN expr ';' {
-  $$ = new ReturnNode($2);
-  $$->setLocation(@$);
-} | RETURN ';' {
-  $$ = new ReturnNode();
+} | return_stmt {
+  $$ = $1;
   $$->setLocation(@$);
 } | BREAK ';' {
   $$ = new BreakNode();
   $$->setLocation(@$);
-} | var_declaration ';' {
+} | var_declare ';' {
   $$ = $1;
   $$->setLocation(@$);
 } | if_stmt {
@@ -193,7 +194,28 @@ stmt : expr ';' {
 } | class {
   $$ = $1;
   $$->setLocation(@$);
+} | block {
+  $$ = $1;
+  $$->setLocation(@$);
+} | ';' {
+  $$ = new EmptyStmtNode();
+  $$->setLocation(@$);
 };
+
+return_stmt : RETURN ';' {
+  $$ = new ReturnNode();
+  $$->setLocation(@$);
+
+} | RETURN expr ';' {
+  $$ = new ReturnNode($2);
+  $$->setLocation(@$);
+}
+
+block : '{' stmt_list '}'{
+  $$ = new BlockNode();
+  $$->setStmtList($2);
+};
+
 
 expr : INT_VAL {
   $$ = new Int64ValNode($1);
@@ -284,18 +306,18 @@ reference : reference '.' name {
   $$->setLocation(@$);
 }
 
-var_declaration : var_declaration ',' var_declaration_fragment {
+var_declare : var_declare ',' var_declare_fragment {
   $$ = $1;
   $$->setLocation(@$);
   $$->addVarDeclFragment($3);
-} | type var_declaration_fragment {
+} | type var_declare_fragment {
   $$ = new VarDeclarationNode();
   $$->setLocation(@$);
   $$->setDataType($1);
   $$->addVarDeclFragment($2);
 };
 
-var_declaration_fragment : ID '=' expr {
+var_declare_fragment : ID '=' expr {
   $$ = new VarDeclarationFragmentNode(*$1, $3);
   $$->setLocation(@$);
 } | ID {
@@ -326,51 +348,35 @@ type : INT32_TYPE {
 } | DOUBLE_TYPE {
   $$ = new DoubleTypeNode();
   $$->setLocation(@$);
+} | name {
+  $$ = new UserDefTypeNode();
+  $$->setName($1);
+  $$->setLocation(@$);
 };
 
-
-if_stmt : IF '(' expr ')' '{'
-            block
-          '}' ELSE '{'
-            block
-          '}' {
-  $$ = new IfNode($3, $6, $10);
-  $$->setLocation(@$);
-} | IF '(' expr ')' '{' block '}' ELSE  stmt {
-  $$ = new IfNode($3, $6, $9);
-  $$->setLocation(@$);
-} | IF '(' expr ')'  stmt ELSE '{' block '}' {
-  $$ = new IfNode($3, $5, $8);
-  $$->setLocation(@$);
-} | IF '(' expr ')'  stmt  ELSE stmt {
+if_stmt : IF '(' expr ')' stmt ELSE stmt {
   $$ = new IfNode($3, $5, $7);
-  $$->setLocation(@$);
-} | IF '(' expr ')' '{' block '}' %prec IFX {
-  $$ = new IfNode($3, $6, nullptr);
   $$->setLocation(@$);
 } | IF '(' expr ')'  stmt  %prec IFX {
   $$ = new IfNode($3, $5, nullptr);
   $$->setLocation(@$);
 };
 
-while_stmt : WHILE '(' expr ')' '{' block '}' {
-  $$ = new WhileNode($3, $6);
-  $$->setLocation(@$);
-} | WHILE '(' expr ')' stmt {
+while_stmt : WHILE '(' expr ')' stmt {
   $$ = new WhileNode($3, $5);
   $$->setLocation(@$);
 };
 
-function : DEF ID '(' func_param_list ')' ret_type '{' block '}' {
+function : DEF ID '(' func_param_list ')' ret_type block {
   $$ = $4;
   $$->setLocation(@$);
   $$->setName(*($2));
   $$->setReturnType($6);
-  $$->setBody($8);
-} | DEF ID '(' ')' ret_type '{' block '}' {
+  $$->setBody($7);
+} | DEF ID '(' ')' ret_type block {
   $$ = new FuncNode();
   $$->setLocation(@$);
-  $$->setBody($7);
+  $$->setBody($6);
   $$->setName(*$2);
   $$->setReturnType($5);
 };
@@ -430,7 +436,7 @@ class : CLASS ID '{' class_body_declar  '}' {
   $$->setName(*($2));
 };
 
- class_body_declar: class_body_declar var_declaration ';' {
+ class_body_declar: class_body_declar var_declare ';' {
   $$ = $1;
   $$->addVariable($2);
   $$->setLocation(@$);
