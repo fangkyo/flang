@@ -1,8 +1,15 @@
+package(
+		default_visibility = ["//visibility:public"],
+)
+
 cc_library(
     name = "test",
     srcs = ["test.cpp"],
-    deps = [
-        "#log4cxx",
-        "#gtest",
+    hdrs = ["test.h"],
+    linkopts = [
+        "-lgtest",
+        "-lgtest_main",
+        "-lpthread",
+        "-llog4cxx",
     ],
 )
