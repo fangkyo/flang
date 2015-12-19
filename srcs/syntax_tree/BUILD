@@ -1,5 +1,5 @@
 package(
-		default_visibility = ["//visibility:public"],
+    default_visibility = ["//visibility:public"],
 )
 
 cc_library(
@@ -8,16 +8,16 @@ cc_library(
         "ast_visitor.cpp",
         "program_node.cpp",
     ],
-		hdrs = [
-        "ast_visitor.h",
+    hdrs = [
         "ast_node.h",
+        "ast_visitor.h",
         "program_node.h",
     ],
-		linkopts = ["-lboost_system"],
+    linkopts = ["-lboost_system"],
     deps = [
-      	"//exception:exception",
-				"//base",
-#        "//symbol_table",
+        "//exception",
+        "//base",
+        #        "//symbol_table",
     ],
 )
 
@@ -33,19 +33,19 @@ cc_library(
 
 cc_library(
     name = "ast_node",
+    srcs = [
+        "ast_visitor.cpp",
+        "program_node.cpp",
+    ],
     hdrs = [
         "ast_node.h",
         "ast_visitor.h",
         "program_node.h",
     ],
-    srcs = [
-        "ast_visitor.cpp",
-        "program_node.cpp",
-    ],
-		linkopts = ["-lboost_system"],
+    linkopts = ["-lboost_system"],
     deps = [
-				"//base",
-      	"//exception",
+        "//base",
+        "//exception",
     ],
 )
 
@@ -54,9 +54,9 @@ cc_library(
     srcs = [
         "syntax_tree.cpp",
     ],
-		hdrs = ["syntax_tree.h"],
+    hdrs = ["syntax_tree.h"],
     deps = [
-				":ast_node",
+        ":ast_node",
     ],
 )
 
@@ -65,9 +65,9 @@ cc_library(
     srcs = [
         "program_node.cpp",
     ],
-		hdrs = ["program_node.h"],
-		linkopts = ["-lboost_system"],
-		deps = ["//base"],
+    hdrs = ["program_node.h"],
+    linkopts = ["-lboost_system"],
+    deps = ["//base"],
 )
 
 cc_library(
@@ -75,9 +75,9 @@ cc_library(
     srcs = [
         "block_node.cpp",
     ],
-		hdrs = ["block_node.h"],
-		linkopts = ["-lboost_system"],
-		deps = ["//base"],
+    hdrs = ["block_node.h"],
+    linkopts = ["-lboost_system"],
+    deps = ["//base"],
 )
 
 cc_library(
@@ -85,7 +85,7 @@ cc_library(
     srcs = [
         "print_node.cpp",
     ],
-		hdrs = ["print_node.h"],
+    hdrs = ["print_node.h"],
 )
 
 cc_library(
@@ -93,7 +93,7 @@ cc_library(
     srcs = [
         "unary_exp_node.cpp",
     ],
-		hdrs = ["unary_exp_node.h"],
+    hdrs = ["unary_exp_node.h"],
 )
 
 cc_library(
@@ -101,8 +101,8 @@ cc_library(
     srcs = [
         "binary_exp_node.cpp",
     ],
-		hdrs = ["binary_exp_node.h"],
-		deps = ["//base"],
+    hdrs = ["binary_exp_node.h"],
+    deps = ["//base"],
 )
 
 cc_library(
@@ -110,8 +110,8 @@ cc_library(
     srcs = [
         "assign_node.cpp",
     ],
-		hdrs = ["assign_node.h"],
-		deps = [":exp_node"],
+    hdrs = ["assign_node.h"],
+    deps = [":exp_node"],
 )
 
 cc_library(
@@ -119,8 +119,8 @@ cc_library(
     srcs = [
         "name_node.cpp",
     ],
-		hdrs = ["name_node.h"],
-		linkopts = ["-lboost_system"],
+    hdrs = ["name_node.h"],
+    linkopts = ["-lboost_system"],
 )
 
 cc_library(
@@ -128,7 +128,7 @@ cc_library(
     srcs = [
         "ctrl_node.cpp",
     ],
-		hdrs = ["ctrl_node.h"],
+    hdrs = ["ctrl_node.h"],
 )
 
 cc_library(
@@ -136,7 +136,7 @@ cc_library(
     srcs = [
         "new_node.cpp",
     ],
-		hdrs = ["new_node.h"],
+    hdrs = ["new_node.h"],
 )
 
 cc_library(
@@ -144,8 +144,8 @@ cc_library(
     srcs = [
         "var_decl_node.cpp",
     ],
-		hdrs = ["var_decl_node.h"],
-		linkopts = ["-lboost_system"],
+    hdrs = ["var_decl_node.h"],
+    linkopts = ["-lboost_system"],
     deps = [
         ":data_type_node",
     ],
@@ -156,11 +156,10 @@ cc_library(
     srcs = [
         "data_type_node.cpp",
     ],
-
     hdrs = [
         "data_type_node.h",
     ],
-		deps = [":ast_node"],
+    deps = [":ast_node"],
 )
 
 cc_library(
@@ -168,8 +167,8 @@ cc_library(
     srcs = [
         "func_node.cpp",
     ],
-		hdrs = ["func_node.h"],
-		linkopts = ["-lboost_system"],
+    hdrs = ["func_node.h"],
+    linkopts = ["-lboost_system"],
     deps = [
         ":var_decl_node",
     ],
@@ -180,8 +179,8 @@ cc_library(
     srcs = [
         "class_node.cpp",
     ],
-		hdrs = ["class_node.h"],
-		linkopts = ["-lboost_system"],
+    hdrs = ["class_node.h"],
+    linkopts = ["-lboost_system"],
     deps = [
         ":func_node",
         ":name_node",
@@ -194,8 +193,8 @@ cc_library(
     srcs = [
         "reference_node.cpp",
     ],
-		hdrs = ["reference_node.h"],
-		linkopts = ["-lboost_system"],
+    hdrs = ["reference_node.h"],
+    linkopts = ["-lboost_system"],
     deps = [
         ":ast_visitor",
     ],

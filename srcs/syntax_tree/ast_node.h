@@ -8,7 +8,7 @@
 #include "syntax_tree/ast_visitor.h"
 
 namespace flang {
- 
+
 class ASTVisitor;
 
 #define INHERIT_AST_NODE(Derived, Base) \
@@ -76,12 +76,12 @@ class ASTNode {
   virtual bool accept(ASTVisitor* visitor) {
     return traverse<ASTNode>(visitor);
   }
-  // @brief Transfer 'this' pointer to base class pointer type. 
+  // @brief Transfer 'this' pointer to base class pointer type.
   //
   // @return Base class type this pointer. Return nullptr if this class
   //     doesn't inherit any class.
   ASTNode* toBaseNode() { return nullptr; }
- 
+
  protected:
   /**
    * @brief Traverse this ast node.
@@ -97,7 +97,7 @@ class ASTNode {
     Derived* derived = dynamic_cast<Derived*>(this);
     if (!ASTNode::visitFromTop(visitor, derived)) {
       return false;
-    }  
+    }
     ASTNodeList child_nodes;
     if (getChildNodes(&child_nodes)) {
       for (auto* child : child_nodes) {
@@ -114,7 +114,7 @@ class ASTNode {
     if (visitor->isVisitFromTop()) {
       auto* base = derived->toBaseNode();
       if (base) {
-        if (!visitor->visit(base)) {
+        if (!visitFromTop(visitor, base)) {
           return false;
         }
       }
@@ -127,7 +127,7 @@ class ASTNode {
     if (visitor->isEndVisitFromTop()) {
       auto* base = derived->toBaseNode();
       if (base) {
-        if (!visitor->endVisit(base)) {
+        if (!endVisitFromTop(visitor, base)) {
           return false;
         }
       }
