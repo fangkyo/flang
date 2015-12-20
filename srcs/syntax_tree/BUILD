@@ -10,6 +10,7 @@ cc_library(
     ],
     hdrs = [
         "ast_node.h",
+        "ast_node_all.h",
         "ast_visitor.h",
         "program_node.h",
     ],

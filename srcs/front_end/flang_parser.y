@@ -67,9 +67,10 @@ using namespace log4cxx;
   StmtListNode* stmt_list_node;
   StmtNode* stmt_node;
   BlockNode* block_node;
-  ReferenceNode* refer_node;
   ImportListNode* import_list_node;
   ImportNode* import_node;
+  ParamListNode* param_list_node;
+  FieldAccessNode* field_access_node;
   ReturnNode* return_node;
 }
 
@@ -113,13 +114,14 @@ using namespace log4cxx;
 %type <if_node> if_stmt
 %type <while_node> while_stmt
 %type <func_node>  function func_param_list
-%type <call_node>  call param_list
+%type <call_node>  call
 %type <class_node> class  class_body_declar
 %type <assign_node> assignment
 %type <simple_name_node> simple_name
 %type <qualified_name_node> qualified_name
 %type <name_node> name
-%type <refer_node> reference
+%type <field_access_node> field_access 
+%type <param_list_node> param_list
 %type <import_list_node> import_list
 %type <import_node> import
 %type <return_node> return_stmt
@@ -145,10 +147,10 @@ import_list : import_list import {
   $$->setLocation(@$);
 };
 
-import : IMPORT name {
+import : IMPORT name '\n' {
   $$ = new ImportNode();
   $$->setPackage($1);
-} | IMPORT name AS simple_name {
+} | IMPORT name AS simple_name '\n' {
   $$ = new ImportNode();
   $$->setPackage($1);
   $$->setAlias($4);
@@ -216,7 +218,6 @@ block : '{' stmt_list '}'{
   $$->setStmtList($2);
 };
 
-
 expr : INT_VAL {
   $$ = new Int64ValNode($1);
   $$->setLocation(@$);
@@ -262,7 +263,10 @@ expr : INT_VAL {
 } | NEW name {
   $$ = new NewNode($2);
   $$->setLocation(@$);
-} | reference {
+} | field_access {
+  $$ = $1;
+  $$->setLocation(@$);
+} | call {
   $$ = $1;
   $$->setLocation(@$);
 };
@@ -288,23 +292,12 @@ simple_name : ID {
   $$->setLocation(@$);
 };
 
-reference : reference '.' name {
-  $$ = $1;
-  $$->addChildNode($3);
+field_access : expr '.' simple_name {
+  $$ = new FieldAccessNode();
   $$->setLocation(@$);
-} | reference '.' call {
-  $$ = $1;
-  $$->addChildNode($3);
-  $$->setLocation(@$);
-} | name {
-  $$ = new ReferenceNode();
-  $$->addChildNode($1);
-  $$->setLocation(@$);
-} | call {
-  $$ = new ReferenceNode();
-  $$->addChildNode($1);
-  $$->setLocation(@$);
-}
+  $$->setExpression($1);
+  $$->setName($3);
+};
 
 var_declare : var_declare ',' var_declare_fragment {
   $$ = $1;
@@ -325,7 +318,7 @@ var_declare_fragment : ID '=' expr {
   $$->setLocation(@$);
 };
 
-assignment : simple_name '=' expr {
+assignment : expr '=' expr {
   $$ = new AssignNode($1, $3);
   $$->setLocation(@$);
 }
@@ -409,19 +402,25 @@ func_param_list : func_param_list ',' type ID {
   $$->addParameter(var_decl_node);
 };
 
-call : name '(' param_list ')' {
-  $$ = $3;
+call : expr '.' name '(' param_list ')' {
+  $$ = new CallNode();
+  $$->setLocation(@$);
+  $$->setCaller($1);
+  $$->setName($3);
+  $$->setParamList($5);
+} |  name '(' param_list ')' {
+  $$ = new CallNode();
   $$->setLocation(@$);
   $$->setName($1);
+  $$->setParamList($3);
 };
 
 param_list : param_list ',' expr {
   $$ = $1;
-  $$->addParameter($3);
   $$->setLocation(@$);
-} | expr {
-  $$ = new CallNode();
-  $$->addParameter($1);
+  $$->addParameter($3);
+} | {
+  $$ = new ParamListNode();
   $$->setLocation(@$);
 };
 

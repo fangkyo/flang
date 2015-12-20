@@ -1,25 +1,9 @@
 #ifndef SYNTAX_TREE_H_
 #define SYNTAX_TREE_H_
 
-#include "syntax_tree/exp_node.h"
-#include "syntax_tree/name_node.h"
-#include "syntax_tree/print_node.h"
-#include "syntax_tree/ctrl_node.h"
-#include "syntax_tree/func_node.h"
-#include "syntax_tree/class_node.h"
-#include "syntax_tree/var_decl_node.h"
-#include "syntax_tree/stmt_node.h"
-#include "syntax_tree/assign_node.h"
-#include "syntax_tree/binary_exp_node.h"
-#include "syntax_tree/unary_exp_node.h"
-#include "syntax_tree/data_type_node.h"
-#include "syntax_tree/program_node.h"
-#include "syntax_tree/primitive_node.h"
-#include "syntax_tree/new_node.h"
-#include "syntax_tree/block_node.h"
-#include "syntax_tree/reference_node.h"
-
 namespace flang {
+
+#include "syntax_tree/ast_node.h"
 
 // Abstract syntax tree visitor
 class ASTVisitor;
@@ -30,11 +14,11 @@ class SyntaxTree {
  public:
   SyntaxTree() {}
   void accept(ASTVisitor*);
-  void setRoot(ProgramNode* root) { root_.reset(root); }
-  ProgramNode* getRoot() { return root_.get(); }
+  void setRoot(ASTNode* root) { root_.reset(root); }
+  ASTNode* getRoot() { return root_.get(); }
 
  private:
-  std::unique_ptr<ProgramNode> root_;
+  std::unique_ptr<ASTNode> root_;
 };
 
 }  // namespace flang

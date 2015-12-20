@@ -13,14 +13,16 @@ class ExpNode : public StmtNode {
  public:
   ~ExpNode() override {}
   virtual bool isConst() { return false; }
-  // DataType* getType() const { return data_type_; }
-  // void setType(DataType* data_type) { data_type_ = data_type; }
+ 
+  // @brief Whether this expression is a "L-Value" expression.
+  // @return Return true if this expression is a "L-Value" expression.
+  //     Otherwise return false.
+  virtual bool isLeftValue() const { return false; }
 
  protected:
   ExpNode(ASTNode::ASTNodeType node_type) :
       StmtNode(node_type) {}
   std::unique_ptr<Symbol> symbol_;
-  // DataType* data_type_;
 };
 
 
