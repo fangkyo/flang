@@ -12,10 +12,10 @@
 
 namespace flang {
 
-class VarDeclarationFragmentNode : public ASTNode {
+class VarDeclFragmentNode : public ASTNode {
  public:
-  VarDeclarationFragmentNode(const std::string& name, ExpNode* initializer);
-  ~VarDeclarationFragmentNode() override {}
+  VarDeclFragmentNode(const std::string& name, ExpNode* initializer);
+  ~VarDeclFragmentNode() override {}
 
   void setName(std::string name) { name_ = name; }
   const std::string& getName() { return name_; }
@@ -33,30 +33,30 @@ class VarDeclarationFragmentNode : public ASTNode {
   std::unique_ptr<ExpNode> initializer_;
 };
 
-class VarDeclarationNode : public StmtNode {
+class VarDeclNode : public StmtNode {
  public:
-  VarDeclarationNode();
-  ~VarDeclarationNode() override {}
+  VarDeclNode();
+  ~VarDeclNode() override {}
 
   void accept(ASTVisitor* visitor) override;
 
-  void addVarDeclFragment(VarDeclarationFragmentNode* var_decl_fragment) {
+  void addVarDeclFragment(VarDeclFragmentNode* var_decl_fragment) {
     var_decl_fragments_.push_back(var_decl_fragment);
     var_decl_fragment->setParent(this);
   }
-  const boost::ptr_vector<VarDeclarationFragmentNode>& getVarDeclFragmentList() {
+  const boost::ptr_vector<VarDeclFragmentNode>& getVarDeclFragmentList() {
     return var_decl_fragments_;
   }
 
-  DataTypeNode* getDataType() { return data_type_.get(); }
-  void setDataType(DataTypeNode* data_type) {
+  TypeNode* getDataType() { return data_type_.get(); }
+  void setDataType(TypeNode* data_type) {
     data_type_.reset(data_type);
     data_type_->setParent(this);
   }
 
  private:
-  std::unique_ptr<DataTypeNode> data_type_;
-  boost::ptr_vector<VarDeclarationFragmentNode> var_decl_fragments_;
+  std::unique_ptr<TypeNode> data_type_;
+  boost::ptr_vector<VarDeclFragmentNode> var_decl_fragments_;
 };
 
 }  // namespace flang

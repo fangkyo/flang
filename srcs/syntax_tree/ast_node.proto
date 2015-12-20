@@ -1,0 +1,8 @@
+syntax = "proto2";
+
+package flang
+
+message KeyVal {
+  optional string key = 1;
+  optional string val = 2;
+}

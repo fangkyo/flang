@@ -33,7 +33,6 @@ namespace flang {
 #include "flang_scanner.h"
 
 using namespace std;
-using namespace log4cxx;
 
 #undef yylex
 // Redefine the default yylex function used in parser
@@ -50,11 +49,11 @@ using namespace log4cxx;
   int   lineno; // line number
 
   ASTNode* ast_node;
-  VarDeclarationNode* var_decl_node;
-  VarDeclarationFragmentNode* var_decl_fragment_node;
+  VarDeclNode* var_decl_node;
+  VarDeclFragmentNode* var_decl_fragment_node;
   ProgramNode* program_node;
   ExpNode* exp_node;
-  DataTypeNode* data_type_node;
+  TypeNode* type_node;
   IfNode* if_node;
   WhileNode* while_node;
   FuncNode* func_node;
@@ -72,6 +71,10 @@ using namespace log4cxx;
   ParamListNode* param_list_node;
   FieldAccessNode* field_access_node;
   ReturnNode* return_node;
+  ClassBodyDeclNode* class_body_decl_node;
+  ConstructorNode* constructor_node;
+  DestructorNode* destructor_node;
+
 }
 
 %token <int64_val> INT_VAL
@@ -108,14 +111,14 @@ using namespace log4cxx;
 %type <stmt_node> stmt
 %type <stmt_list_node> stmt_list
 %type <exp_node> expr
-%type <var_decl_node> var_declare
-%type <var_decl_fragment_node> var_declare_fragment
-%type <data_type_node> type ret_type
+%type <var_decl_node> var_decl
+%type <var_decl_fragment_node> var_decl_fragment
+%type <type_node> type ret_type
 %type <if_node> if_stmt
 %type <while_node> while_stmt
 %type <func_node>  function func_param_list
 %type <call_node>  call
-%type <class_node> class  class_body_declar
+%type <class_node> class  class_body
 %type <assign_node> assignment
 %type <simple_name_node> simple_name
 %type <qualified_name_node> qualified_name
@@ -125,6 +128,9 @@ using namespace log4cxx;
 %type <import_list_node> import_list
 %type <import_node> import
 %type <return_node> return_stmt
+%type <class_body_decl_node> class_body_decl
+%type <constructor_node> constructor
+%type <destructor_node> destructor 
 
 %start program
 
@@ -178,7 +184,7 @@ stmt : expr ';' {
 } | BREAK ';' {
   $$ = new BreakNode();
   $$->setLocation(@$);
-} | var_declare ';' {
+} | var_decl ';' {
   $$ = $1;
   $$->setLocation(@$);
 } | if_stmt {
@@ -299,22 +305,22 @@ field_access : expr '.' simple_name {
   $$->setName($3);
 };
 
-var_declare : var_declare ',' var_declare_fragment {
+var_decl : var_decl ',' var_decl_fragment {
   $$ = $1;
   $$->setLocation(@$);
   $$->addVarDeclFragment($3);
-} | type var_declare_fragment {
-  $$ = new VarDeclarationNode();
+} | type var_decl_fragment {
+  $$ = new VarDeclNode();
   $$->setLocation(@$);
   $$->setDataType($1);
   $$->addVarDeclFragment($2);
 };
 
-var_declare_fragment : ID '=' expr {
-  $$ = new VarDeclarationFragmentNode(*$1, $3);
+var_decl_fragment : ID '=' expr {
+  $$ = new VarDeclFragmentNode(*$1, $3);
   $$->setLocation(@$);
 } | ID {
-  $$ = new VarDeclarationFragmentNode(*$1, nullptr);
+  $$ = new VarDeclFragmentNode(*$1, nullptr);
   $$->setLocation(@$);
 };
 
@@ -385,18 +391,18 @@ ret_type : type {
 func_param_list : func_param_list ',' type ID {
   $$ = $1;
   $$->setLocation(@$);
-  VarDeclarationNode* var_decl_node = new VarDeclarationNode();
-  VarDeclarationFragmentNode* var_decl_fragment_node = new
-      VarDeclarationFragmentNode(*($4), nullptr);
+  VarDeclNode* var_decl_node = new VarDeclNode();
+  VarDeclFragmentNode* var_decl_fragment_node = new
+      VarDeclFragmentNode(*($4), nullptr);
   var_decl_node->setDataType($3);
   var_decl_node->addVarDeclFragment(var_decl_fragment_node);
   $$->addParameter(var_decl_node);
 } | type ID {
   $$ = new FuncNode();
   $$->setLocation(@$);
-  VarDeclarationNode* var_decl_node = new VarDeclarationNode();
-  VarDeclarationFragmentNode* var_decl_fragment_node = new
-      VarDeclarationFragmentNode(*($2), nullptr);
+  VarDeclNode* var_decl_node = new VarDeclNode();
+  VarDeclFragmentNode* var_decl_fragment_node = new
+      VarDeclFragmentNode(*($2), nullptr);
   var_decl_node->setDataType($1);
   var_decl_node->addVarDeclFragment(var_decl_fragment_node);
   $$->addParameter(var_decl_node);
@@ -424,34 +430,49 @@ param_list : param_list ',' expr {
   $$->setLocation(@$);
 };
 
-class : CLASS ID '{' class_body_declar  '}' {
+class : CLASS ID '{' class_body  '}' {
   $$ = $4;
   $$->setName(*($2));
   $$->setLocation(@$);
-} | CLASS ID ':' name '{' class_body_declar '}' {
+} | CLASS ID ':' name '{' class_body '}' {
   $$ = $6;
   $$->setLocation(@$);
   $$->setSuperClass($4);
   $$->setName(*($2));
 };
 
- class_body_declar: class_body_declar var_declare ';' {
-  $$ = $1;
-  $$->addVariable($2);
-  $$->setLocation(@$);
-} | class_body_declar function {
+class_body : class_body class_body_decl {
   $$ = $1;
   $$->setLocation(@$);
-  // create a new class function to wrap a global function
-  // add the function to the class
-  $$->addFunction($2);
-} | class_body_declar class {
-  $$ = $1;
-  $$->setLocation(@$);
-  $$->addInnerClass($2);
+  $$->addDecl($2);
 } | {
   $$ = new ClassNode();
   $$->setLocation(@$);
+}
+
+class_body_decl : var_decl ';' {
+  $$ = $1;
+} | function {
+  $$ = $1;
+} | class {
+  $$ = $1;
+} | constructor {
+  $$ = $1;
+} | destructor {
+  $$ = $1;
+};
+
+constructor : THIS '(' func_param_list ')' block {
+  $$ = new ConstructorNode();
+  $$->setLocation(@$);
+  $$->setParamList($3);
+  $$->setBody($5);
+};
+
+destructor : '~' THIS '(' ')'  block {
+  $$ = new DestructorNode();
+  $$->setLocation(@$);
+  $$->setBody($5);
 };
 
 %%

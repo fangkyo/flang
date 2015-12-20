@@ -2,6 +2,15 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
+load("/third_party/grpc/grpc_proto", "proto_library")
+
+proto_library(
+  name = "ast_node_proto",
+  src = "ast_node.proto",
+  generate_cc = True,
+)
+
+
 cc_library(
     name = "ast_visitor",
     srcs = [
@@ -14,8 +23,11 @@ cc_library(
         "ast_visitor.h",
         "program_node.h",
     ],
-    linkopts = ["-lboost_system"],
+    linkopts = [
+      "-lboost_system"
+    ],
     deps = [
+        ":ast_node_proto",
         "//exception",
         "//base",
         #        "//symbol_table",

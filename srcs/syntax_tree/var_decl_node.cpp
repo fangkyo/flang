@@ -2,24 +2,24 @@
 
 namespace flang {
 
-VarDeclarationFragmentNode::VarDeclarationFragmentNode(
+VarDeclFragmentNode::VarDeclFragmentNode(
     const std::string& name, ExpNode* initializer) :
     ASTNode(ASTNode::VAR_DECL_FRAGMENT_NODE),
     name_(name), initializer_(initializer) {
   initializer_->setParent(this);
 }
 
-void VarDeclarationFragmentNode::accept(ASTVisitor* visitor) {
+void VarDeclFragmentNode::accept(ASTVisitor* visitor) {
   visitor->visit(this);
   initializer_->accept(visitor);
   visitor->endVisit(this);
 }
 
-VarDeclarationNode::VarDeclarationNode() : StmtNode(ASTNode::VAR_DECL_NODE) {
+VarDeclNode::VarDeclNode() : StmtNode(ASTNode::VAR_DECL_NODE) {
 
 }
 
-void VarDeclarationNode::accept(ASTVisitor* visitor) {
+void VarDeclNode::accept(ASTVisitor* visitor) {
   visitor->visit(this);
   for (auto& var_decl_fragment : var_decl_fragments_) {
     var_decl_fragment.accept(visitor);
