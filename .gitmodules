@@ -1,3 +1,0 @@
-[submodule "srcs/third_party/protobuf/upstream"]
-    path = srcs/third_party/protobuf/upstream
-    url = https://github.com/google/protobuf.git

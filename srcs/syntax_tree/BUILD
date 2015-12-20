@@ -2,14 +2,12 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
-load("/third_party/grpc/grpc_proto", "proto_library")
+load("/tools/build_rules/protobuf", "cc_proto_library")
 
-proto_library(
+cc_proto_library(
   name = "ast_node_proto",
-  src = "ast_node.proto",
-  generate_cc = True,
+  srcs = ["ast_node.proto"],
 )
-
 
 cc_library(
     name = "ast_visitor",
@@ -30,7 +28,6 @@ cc_library(
         ":ast_node_proto",
         "//exception",
         "//base",
-        #        "//symbol_table",
     ],
 )
 
