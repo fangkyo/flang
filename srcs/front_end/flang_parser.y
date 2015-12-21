@@ -83,7 +83,7 @@ using namespace std;
 %token <str_val> STR_VAL ID
 %token <double_val> DOUBLE_VAL
 
-%token <lineno> WHILE IF PRINT BREAK DEF CLASS RETURN THIS NEW
+%token <lineno> WHILE IF PRINT BREAK DEF CLASS RETURN THIS NEW CONTINUE
 %token <lineno> BOOL_TYPE CHAR_TYPE STR_TYPE INT32_TYPE INT64_TYPE TRUE FALSE
 %token <lineno> DOUBLE_TYPE
 %token <lineno> IMPORT AS
@@ -184,6 +184,9 @@ stmt : expr ';' {
 } | BREAK ';' {
   $$ = new BreakNode();
   $$->setLocation(@$);
+} | CONTINUE ';' {
+  $$ = new ContinueNode();
+  $$->setLocation(@$);
 } | var_decl ';' {
   $$ = $1;
   $$->setLocation(@$);
@@ -211,7 +214,7 @@ stmt : expr ';' {
 };
 
 return_stmt : RETURN ';' {
-  $$ = new ReturnNode();
+  $$= new ReturnNode();
   $$->setLocation(@$);
 
 } | RETURN expr ';' {

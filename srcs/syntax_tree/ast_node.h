@@ -6,7 +6,7 @@
 
 #include "front_end/location.hh"
 #include "syntax_tree/ast_visitor.h"
-//#include "syntax_tree/ast_node.pb.h"
+#include "syntax_tree/ast_node.pb.h"
 
 namespace flang {
 

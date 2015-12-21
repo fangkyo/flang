@@ -68,6 +68,10 @@ break {
   return Token::BREAK;
 }
 
+continue {
+  return Token::CONTINUE;
+}
+
 def {
   yylval->lineno = lineno();
   return Token::DEF;

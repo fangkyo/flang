@@ -1,113 +1,56 @@
-# -*- mode: python; -*- PYTHON-PREPROCESSING-REQUIRED
 
-def _GenDir(ctx):
-  if not ctx.attr.includes:
-    return ""
-  if not ctx.attr.includes[0]:
-    return ctx.label.package
-  if not ctx.label.package:
-    return ctx.attr.includes[0]
-  return ctx.label.package + '/' + ctx.attr.includes[0]
-
-def _CcOuts(srcs):
-  return [s[:-len(".proto")] +  ".pb.h" for s in srcs] + \
-         [s[:-len(".proto")] + ".pb.cc" for s in srcs]
-
-def _PyOuts(srcs):
-  return [s[:-len(".proto")] + "_pb2.py" for s in srcs]
-
-def _proto_gen_impl(ctx):
-  """General implementation for generating protos"""
-  srcs = ctx.files.srcs
-  deps = []
-  deps += ctx.files.srcs
-  gen_dir = "."
-  import_flags = ["-I."]
-
+def _impl(ctx):
+  outputs = ctx.outputs.outs
+  srcs = []
+  srcs += ctx.files.srcs
   for dep in ctx.attr.deps:
-    import_flags += dep.proto.import_flags
-    deps += dep.proto.deps
-
-  args = []
-  if ctx.attr.gen_cc:
-    args += ["--cpp_out=" + ctx.var["GENDIR"] + "/" + gen_dir]
-  if ctx.attr.gen_py:
-    args += ["--python_out=" + ctx.var["GENDIR"] + "/" + gen_dir]
-
-  arguments = args + import_flags + [s.path for s in srcs]
-
-  arguments = " ".join(arguments)
-  if args:
-    ctx.action(
-        inputs=srcs + deps,
-        outputs=ctx.outputs.outs,
-        command = "protoc " + arguments
-    )
-
+    srcs += dep.proto.srcs
+  
+  srcs_path = " ".join([src.path for src in ctx.files.srcs])
+  ctx.action(
+      inputs=srcs,
+      outputs=outputs,
+      command="protoc -I. --cpp_out=%s %s" %  (ctx.var["GENDIR"], srcs_path))
   return struct(
-      proto=struct(
-          srcs=srcs,
-          import_flags=import_flags,
-          deps=deps,
-      ),
+    proto = struct(
+      srcs = srcs 
+    ),
   )
+  
 
-_proto_gen = rule(
-    attrs = {
-        "srcs": attr.label_list(allow_files = True),
-        "deps": attr.label_list(providers = ["proto"]),
-        "gen_cc": attr.bool(),
-        "gen_py": attr.bool(),
-        "outs": attr.output_list(),
+def _get_proto_outputs(srcs):
+  res = []
+  for src in srcs:
+    cc_hdr = src[:-len(".proto")] + ".pb.h"
+    cc_src = src[:-len(".proto")] + ".pb.cc"
+    res.append(cc_hdr)
+    res.append(cc_src)
+  return res
+
+proto_filetype = FileType([".proto"])
+
+gen_proto = rule(
+    implementation=_impl,
+    attrs={
+        "srcs": attr.label_list(allow_files=proto_filetype, mandatory=True),
+        "deps": attr.label_list(providers=["proto"]),
+        "outs": attr.output_list(mandatory=True, non_empty=True)
     },
-    output_to_genfiles = True,
-    implementation = _proto_gen_impl,
+    output_to_genfiles=True,
 )
 
-def cc_proto_library(
-        name,
-        srcs=[],
-        deps=[],
-        **kargs):
-  """Bazel rule to create a C++ protobuf library from proto source files
-
-  NOTE: the rule is only an internal workaround to generate protos. The
-  interface may change and the rule may be removed when bazel has introduced
-  the native rule.
-
-  Args:
-    name: the name of the cc_proto_library.
-    srcs: the .proto files of the cc_proto_library.
-    deps: a list of dependency labels; must be cc_proto_library.
-    include: a string indicating the include path of the .proto files.
-    internal_bootstrap_hack: a flag indicate the cc_proto_library is used only
-        for bootstraping. When it is set to True, no files will be generated.
-        The rule will simply be a provider for .proto files, so that other
-        cc_proto_library can depend on it.
-    **kargs: other keyword arguments that are passed to cc_library.
-
-  """
-  outs = _CcOuts(srcs)
-  proto_pkg = _proto_gen(
+def cc_proto_library(name, srcs, deps=[], visibility=None):
+  outs = _get_proto_outputs(srcs)
+  proto_pkg = gen_proto(
       name=name + "_genproto",
       srcs=srcs,
-      deps=[s + "_genproto" for s in deps],
-      gen_cc=1,
       outs=outs,
-      visibility=["//visibility:public"],
-  )
+      deps=[d + "_genproto" for d in deps])
   native.cc_library(
       name=name,
       srcs=[proto_pkg.label()],
       hdrs=[proto_pkg.label()],
       linkopts=["-lprotobuf"],
-      deps=deps,
-      **kargs)
-
-def my_macro(name, srcs, hdrs, visibility=None):
-  native.cc_library(
-    name = name,
-    srcs = srcs,
-    hdrs = hdrs,
-    visibility = visibility,
+      deps = deps,
+      visibility=visibility,
   )

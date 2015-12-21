@@ -15,17 +15,21 @@ cc_library(
         "ast_visitor.cpp",
         "program_node.cpp",
     ],
+    data = [
+
+       "//syntax_tree:ast_node.pb.h",
+    ],
     hdrs = [
         "ast_node.h",
         "ast_node_all.h",
         "ast_visitor.h",
         "program_node.h",
+       "//syntax_tree:ast_node.pb.h",
     ],
     linkopts = [
-      "-lboost_system"
+        "-lboost_system"
     ],
     deps = [
-        ":ast_node_proto",
         "//exception",
         "//base",
     ],
@@ -56,6 +60,7 @@ cc_library(
     deps = [
         "//base",
         "//exception",
+        ":ast_node_proto",
     ],
 )
 
