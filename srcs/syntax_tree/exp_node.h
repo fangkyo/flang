@@ -16,7 +16,7 @@ class ExpNode : public StmtNode {
  public:
   ~ExpNode() override {}
   virtual bool isConst() { return false; }
- 
+
   // @brief Whether this expression is a "L-Value" expression.
   // @return Return true if this expression is a "L-Value" expression.
   //     Otherwise return false.

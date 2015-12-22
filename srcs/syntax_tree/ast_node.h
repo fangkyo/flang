@@ -26,6 +26,8 @@ class ASTNode {
   /** @ Ast node type. */
   enum ASTNodeType {
     PROGRAM_NODE, // Program node
+    IMPORT_NODE,
+    IMPORT_LIST_NODE,
     EMPTY_NODE, // Empty node
     VAR_DECL_NODE, // variable declaration node
     VAR_DECL_FRAGMENT_NODE, // variable declaration fragment node.
@@ -138,7 +140,7 @@ class ASTNode {
   }
 
  public:
-  ASTNodeType getNodeType() const { return node_type_; }
+  virtual ASTNodeType getNodeType() const { return node_type_; }
 
   // Parent's accessor
   void setParent(ASTNode* parent) { parent_ = parent; }

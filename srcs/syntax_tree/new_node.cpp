@@ -8,10 +8,4 @@ NewNode::NewNode(NameNode* class_name) :
   class_name_->setParent(this);
 }
 
-void NewNode::accept(ASTVisitor* visitor) {
-  visitor->visit(this);
-  class_name_->accept(visitor);
-  visitor->endVisit(this);
-}
-
 }  // namespace flang

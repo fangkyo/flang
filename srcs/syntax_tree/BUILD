@@ -22,6 +22,11 @@ cc_library(
         "class_node.cpp",
         "ctrl_node.cpp",
         "type_node.cpp",
+        "func_node.cpp",
+        "var_decl_node.cpp",
+        "new_node.cpp",
+        "print_node.cpp",
+        "import_node.cpp",
     ],
     hdrs = [
         "ast_node.h",
@@ -38,9 +43,16 @@ cc_library(
         "class_node.h",
         "ctrl_node.h",
         "type_node.h",
+        "primitive_node.h",
+        "func_node.h",
+        "var_decl_node.h",
+        "new_node.h",
+        "print_node.h",
+        "import_node.h",
     ],
     linkopts = [
-        "-lboost_system"
+        "-lboost_system",
+        "-llog4cxx",
     ],
     deps = [
         "//exception",

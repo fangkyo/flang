@@ -13,8 +13,8 @@ namespace flang {
 class ASTNode;
 class ProgramNode;
 class PrintNode;
-class VarDeclarationNode;
-class VarDeclarationFragmentNode;
+class VarDeclNode;
+class VarDeclFragmentNode;
 class SimpleNodeNode;
 class QualifiedNodeNode;
 class AssignNode;
@@ -65,8 +65,8 @@ class ASTVisitor {
   VISIT_METHOD(ASTNode)
   VISIT_METHOD(ProgramNode)
   //VISIT_METHOD(PrintNode)
-  //VISIT_METHOD(VarDeclarationNode)
-  //VISIT_METHOD(VarDeclarationFragmentNode)
+  //VISIT_METHOD(VarDeclNode)
+  //VISIT_METHOD(VarDeclFragmentNode)
   //VISIT_METHOD(SimpleNodeNode)
   //VISIT_METHOD(QualifiedNodeNode)
   //VISIT_METHOD(AssignNode)

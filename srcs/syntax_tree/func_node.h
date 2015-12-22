@@ -15,6 +15,7 @@
 namespace flang {
 
 class FuncNode : public StmtNode {
+ INHERIT_AST_NODE(FuncNode, StmtNode)
  public:
   FuncNode() : StmtNode(ASTNode::FUNC_NODE) {}
   ~FuncNode() override {}
@@ -28,8 +29,8 @@ class FuncNode : public StmtNode {
     body_->setParent(this);
   }
 
-  boost::ptr_vector<VarDeclarationNode>& getParameters() { return parameters_; }
-  void addParameter(VarDeclarationNode* param) {
+  boost::ptr_vector<VarDeclNode>& getParameters() { return parameters_; }
+  void addParameter(VarDeclNode* param) {
     parameters_.push_back(param);
     param->setParent(this);
   }
@@ -42,12 +43,13 @@ class FuncNode : public StmtNode {
 
  private:
   std::string name_;
-  boost::ptr_vector<VarDeclarationNode> parameters_;
+  boost::ptr_vector<VarDeclNode> parameters_;
   std::unique_ptr<TypeNode> return_type_;
   std::unique_ptr<ASTNode> body_;
 };
 
 class ReturnNode : public StmtNode {
+ INHERIT_AST_NODE(ReturnNode, StmtNode)
  public:
   ReturnNode(ExpNode* exp_node = nullptr);
   ~ReturnNode() override {}
@@ -65,6 +67,7 @@ class ReturnNode : public StmtNode {
 };
 
 class CallNode : public ExpNode {
+ INHERIT_AST_NODE(CallNode, ExpNode)
  public:
   CallNode();
   ~CallNode() override {}

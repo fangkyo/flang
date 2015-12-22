@@ -10,6 +10,8 @@
 namespace flang {
 
 class NewNode : public ExpNode {
+ INHERIT_AST_NODE(NewNode, ExpNode)
+
  public:
   NewNode(NameNode* class_name);
   ~NewNode() override {};
@@ -19,8 +21,6 @@ class NewNode : public ExpNode {
     class_name_.reset(class_name);
     class_name_->setParent(this);
   }
-
-  void accept(ASTVisitor* visitor) override;
 
  private:
   std::unique_ptr<NameNode> class_name_;

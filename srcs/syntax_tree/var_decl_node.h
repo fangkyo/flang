@@ -7,12 +7,13 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 
 #include "syntax_tree/stmt_node.h"
-#include "syntax_tree/data_type_node.h"
+#include "syntax_tree/type_node.h"
 #include "syntax_tree/exp_node.h"
 
 namespace flang {
 
 class VarDeclFragmentNode : public ASTNode {
+ INHERIT_AST_NODE(VarDeclFragmentNode, ASTNode)
  public:
   VarDeclFragmentNode(const std::string& name, ExpNode* initializer);
   ~VarDeclFragmentNode() override {}
@@ -26,19 +27,16 @@ class VarDeclFragmentNode : public ASTNode {
     initializer_->setParent(this);
   }
 
-  void accept(ASTVisitor* visitor) override;
-
  private:
   std::string name_;
   std::unique_ptr<ExpNode> initializer_;
 };
 
 class VarDeclNode : public StmtNode {
+ INHERIT_AST_NODE(VarDeclNode, StmtNode)
  public:
   VarDeclNode();
   ~VarDeclNode() override {}
-
-  void accept(ASTVisitor* visitor) override;
 
   void addVarDeclFragment(VarDeclFragmentNode* var_decl_fragment) {
     var_decl_fragments_.push_back(var_decl_fragment);
