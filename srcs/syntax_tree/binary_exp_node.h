@@ -3,12 +3,15 @@
 
 #include <memory>
 
+#include "syntax_tree/ast_node.h"
 #include "syntax_tree/exp_node.h"
 
 namespace flang {
 
 // Expression node with binary operator
 class BinaryExpNode : public ExpNode {
+ INHERIT_AST_NODE(BinaryExpNode, ExpNode)
+
  public:
   enum BinaryOpType {
     OP_ADD, // +
@@ -28,7 +31,6 @@ class BinaryExpNode : public ExpNode {
   BinaryExpNode(BinaryOpType op, ExpNode* left_exp, ExpNode* right_exp);
   ~BinaryExpNode() override {};
 
-  void accept(ASTVisitor* visitor) override;
   bool getChildNodes(ASTNodeList* child_nodes) override;
 
   BinaryOpType getOperator() { return operator_; }

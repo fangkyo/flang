@@ -6,8 +6,6 @@ namespace flang {
 BlockNode::BlockNode() : ASTNode(ASTNode::BLOCK_NODE) {
 }
 
-void BlockNode::accept(ASTVisitor* visitor) {
-}
 
 void BlockNode::addStatement(StmtNode* stmt_node) {
   stmt_node->setParent(this);

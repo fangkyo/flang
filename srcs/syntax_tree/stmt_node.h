@@ -7,6 +7,8 @@ namespace flang {
 
 // This node indicates a statement.
 class StmtNode : public ASTNode {
+ INHERIT_AST_NODE(StmtNode, ASTNode)
+
  public:
   ~StmtNode() override {}
 

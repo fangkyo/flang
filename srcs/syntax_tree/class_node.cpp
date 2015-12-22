@@ -5,32 +5,19 @@ using namespace std;
 
 namespace flang {
 
-ClassNode::~ClassNode() {
-  stdDeleteElements(inner_classes_);
-}
-
-void ClassNode::accept(ASTVisitor* visitor) {
-	visitor->traverse(this);
-}
-
-
 bool ClassNode::getChildNodes(ASTNodeList* child_nodes) {
-	child_nodes->push_back(super_class_.get());
-	for (auto& member_var: member_vars_) {
-		child_nodes->push_back(&member_var);
-	}
-	for (auto& member_func: member_funcs_) {
-		child_nodes->push_back(&member_func);
-	}
-	child_nodes.insert(
-			child_nodes.end(), inner_classes_.begin(), inner_classes_.end());
+	//child_nodes->push_back(super_class_.get());
+	//for (auto& member_var: member_vars_) {
+		//child_nodes->push_back(&member_var);
+	//}
+	//for (auto& member_func: member_funcs_) {
+		//child_nodes->push_back(&member_func);
+	//}
+	//child_nodes.insert(
+			//child_nodes.end(), inner_classes_.begin(), inner_classes_.end());
   return true;
 }
 
-void ClassNode::addInnerClass(ClassNode* class_node) {
-  CHECK(class_node);
-  inner_classes_.push_back(class_node);
-}
 // void ClassNode::acceptVars(Visitor& visitor) {
 
   // for (size_t i = 0; i < m_varList.size(); ++i) {

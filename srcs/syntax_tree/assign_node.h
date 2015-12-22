@@ -11,6 +11,8 @@ namespace flang {
 // assignment:
 //   destination '=' source
 class AssignNode : public ExpNode {
+ INHERIT_AST_NODE(AssignNode, ExpNode)
+
  public:
   enum AssignOpType {
     OP_ASSIGN,  // =
@@ -38,7 +40,7 @@ class AssignNode : public ExpNode {
   AssignOpType getOperator() { return operator_; }
   void setOperator(AssignOpType op) { operator_ = op; }
 
-  void accept(ASTVisitor* visitor) override;
+  bool getChildNodes(ASTNodeList* child_nodes) override;
 
  private:
   std::unique_ptr<ExpNode> left_side_;

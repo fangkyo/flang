@@ -13,10 +13,6 @@ BinaryExpNode::BinaryExpNode(
   right_side_->setParent(this);
 }
 
-void BinaryExpNode::accept(ASTVisitor* visitor) {
-  visitor->traverse(this);
-}
-
 bool BinaryExpNode::getChildNodes(ASTNodeList* child_nodes) {
   child_nodes->push_back(left_side_.get());
   child_nodes->push_back(right_side_.get());

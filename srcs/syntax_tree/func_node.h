@@ -6,7 +6,7 @@
 
 #include <boost/ptr_container/ptr_vector.hpp>
 
-#include "syntax_tree/data_type_node.h"
+#include "syntax_tree/type_node.h"
 #include "syntax_tree/exp_node.h"
 #include "syntax_tree/stmt_node.h"
 #include "syntax_tree/var_decl_node.h"
@@ -34,18 +34,16 @@ class FuncNode : public StmtNode {
     param->setParent(this);
   }
 
-  DataTypeNode* getReturnType() { return return_type_.get(); }
-  void setReturnType(DataTypeNode* type) {
+  TypeNode* getReturnType() { return return_type_.get(); }
+  void setReturnType(TypeNode* type) {
     return_type_.reset(type);
     return_type_->setParent(this);
   }
 
-  void accept(ASTVisitor* visitor) override;
-
  private:
   std::string name_;
   boost::ptr_vector<VarDeclarationNode> parameters_;
-  std::unique_ptr<DataTypeNode> return_type_;
+  std::unique_ptr<TypeNode> return_type_;
   std::unique_ptr<ASTNode> body_;
 };
 
@@ -61,7 +59,6 @@ class ReturnNode : public StmtNode {
       expression_->setParent(this);
     }
   }
-  void accept(ASTVisitor* visitor) override;
 
  private:
   std::unique_ptr<ExpNode> expression_;
@@ -71,8 +68,6 @@ class CallNode : public ExpNode {
  public:
   CallNode();
   ~CallNode() override {}
-
-  void accept(ASTVisitor* visitor) override;
 
   void setName(NameNode* name) {
     name_.reset(name);

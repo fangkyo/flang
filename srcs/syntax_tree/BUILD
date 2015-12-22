@@ -10,21 +10,34 @@ cc_proto_library(
 )
 
 cc_library(
-    name = "ast_visitor",
+    name = "ast_node",
     srcs = [
         "ast_visitor.cpp",
         "program_node.cpp",
-    ],
-    data = [
-
-       "//syntax_tree:ast_node.pb.h",
+        "binary_exp_node.cpp",
+        "unary_exp_node.cpp",
+        "assign_node.cpp",
+        "block_node.cpp",
+        "name_node.cpp",
+        "class_node.cpp",
+        "ctrl_node.cpp",
+        "type_node.cpp",
     ],
     hdrs = [
         "ast_node.h",
         "ast_node_all.h",
         "ast_visitor.h",
         "program_node.h",
-       "//syntax_tree:ast_node.pb.h",
+        "stmt_node.h",
+        "exp_node.h",
+        "binary_exp_node.h",
+        "unary_exp_node.h",
+        "assign_node.h",
+        "block_node.h",
+        "name_node.h",
+        "class_node.h",
+        "ctrl_node.h",
+        "type_node.h",
     ],
     linkopts = [
         "-lboost_system"
@@ -32,6 +45,8 @@ cc_library(
     deps = [
         "//exception",
         "//base",
+        "//symbol_table:symbol",
+        ":ast_node_proto",
     ],
 )
 
@@ -45,24 +60,6 @@ cc_library(
 #		],
 #)
 
-cc_library(
-    name = "ast_node",
-    srcs = [
-        "ast_visitor.cpp",
-        "program_node.cpp",
-    ],
-    hdrs = [
-        "ast_node.h",
-        "ast_visitor.h",
-        "program_node.h",
-    ],
-    linkopts = ["-lboost_system"],
-    deps = [
-        "//base",
-        "//exception",
-        ":ast_node_proto",
-    ],
-)
 
 cc_library(
     name = "syntax_tree",

@@ -10,6 +10,8 @@ namespace flang {
 
 // Expression node with unary operator
 class UnaryExpNode : public ExpNode {
+ INHERIT_AST_NODE(UnaryExpNode, ExpNode)
+
  public:
   enum UnaryOpType {
     OP_INC, // ++
@@ -22,7 +24,6 @@ class UnaryExpNode : public ExpNode {
   UnaryExpNode(UnaryOpType op, ExpNode* exp_node);
   ~UnaryExpNode() override {}
 
-  void accept(ASTVisitor* visitor) override;
   bool getChildNodes(ASTNodeList* child_nodes) override;
 
   // Accessor of operator

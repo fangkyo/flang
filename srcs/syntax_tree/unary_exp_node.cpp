@@ -8,10 +8,6 @@ UnaryExpNode::UnaryExpNode(UnaryOpType op, ExpNode* operand) :
   operand_->setParent(this);
 }
 
-void UnaryExpNode::accept(ASTVisitor* visitor) {
-  visitor->traverse(this);
-}
-
 bool UnaryExpNode::getChildNodes(ASTNodeList* child_nodes) {
   child_nodes->push_back(operand_.get());
   return true;

@@ -3,6 +3,7 @@
 
 #include <memory>
 
+#include "syntax_tree/ast_node.h"
 #include "symbol_table/symbol.h"
 #include "syntax_tree/stmt_node.h"
 
@@ -10,6 +11,8 @@ namespace flang {
 
 // Expression node
 class ExpNode : public StmtNode {
+ INHERIT_AST_NODE(ExpNode, StmtNode)
+
  public:
   ~ExpNode() override {}
   virtual bool isConst() { return false; }

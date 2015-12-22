@@ -270,7 +270,7 @@ expr : INT_VAL {
 } | '(' expr ')' {
   $$ = $2;
   $$->setLocation(@$);
-} | NEW name {
+} | NEW call {
   $$ = new NewNode($2);
   $$->setLocation(@$);
 } | field_access {
@@ -289,10 +289,10 @@ name : simple_name {
   $$->setLocation(@$);
 };
 
-qualified_name : qualified_name '$' simple_name {
+qualified_name : qualified_name '.' simple_name {
   $$ = new QualifiedNameNode($1, $3);
   $$->setLocation(@$);
-} | simple_name '$' simple_name {
+} | simple_name '.' simple_name {
   $$ = new QualifiedNameNode($1, $3);
   $$->setLocation(@$);
 }

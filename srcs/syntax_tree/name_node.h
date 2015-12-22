@@ -12,6 +12,8 @@ namespace flang{
 // Name:
 //     Name.SimpleName
 class NameNode : public ExpNode {
+ INHERIT_AST_NODE(NameNode, ExpNode)
+
  public:
   ~NameNode() override {}
   virtual std::string getFullName() = 0;
@@ -23,6 +25,8 @@ class NameNode : public ExpNode {
 };
 
 class SimpleNameNode : public NameNode {
+ INHERIT_AST_NODE(SimpleNameNode, NameNode)
+
  public:
   SimpleNameNode(const std::string name);
   ~SimpleNameNode() override {}
@@ -37,14 +41,12 @@ class SimpleNameNode : public NameNode {
 
 // Name.SimpleName
 class QualifiedNameNode : public NameNode {
+ INHERIT_AST_NODE(QualifiedNameNode, NameNode)
+
  public:
   QualifiedNameNode(NameNode* qualifier, SimpleNameNode* name);
   ~QualifiedNameNode() override {}
 
-  void accept(ASTVisitor* visitor) override;
-
-  // void setName(SimpleNameNode* name) { name_.reset(name); }
-  // SimpleNameNode* getName() { return name_.get(); }
   std::string getName() const override { return ""; }
 
   void setQualifier(NameNode* qualifier) { qualifier_.reset(qualifier); }

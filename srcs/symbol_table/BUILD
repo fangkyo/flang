@@ -2,6 +2,14 @@ package(
 		default_visibility = ["//visibility:public"],
 )
 
+load("/tools/build_rules/protobuf", "cc_proto_library")
+
+cc_proto_library(
+    name = "symbol_proto",
+    srcs = ["symbol.proto"],
+    deps = ["//syntax_tree:ast_node_proto"]
+)
+
 cc_library(
     name = "symbol",
     srcs = [

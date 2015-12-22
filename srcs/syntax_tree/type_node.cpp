@@ -2,7 +2,7 @@
 
 namespace flang {
 
-UserDefTypeNode::UserDefTypeNode(NameNode* name) : name_(name) {}
+UserDefTypeNode::UserDefTypeNode(NameNode* name) : TypeNode(ASTNode::USER_DEF_TYPE_NODE), name_(name) {}
 
 //ArrayTypeNode::ArrayTypeNode(DataTypeNode* data_type_node) :
   //DataTypeNode(ASTNode::ARRAY_TYPE_NODE),

@@ -8,16 +8,18 @@
 namespace flang {
 
 class BlockNode : public ASTNode {
+ INHERIT_AST_NODE(BlockNode, ASTNode)
+
  public:
   BlockNode();
   ~BlockNode() override {}
-
-  void accept(ASTVisitor* visitor) override;
 
   const boost::ptr_vector<StmtNode>& getStatementList() {
     return stmt_list_;
   }
   void addStatement(StmtNode* stmt_node);
+
+  //bool getChildNodes(ASTNodeList*) override;
 
  private:
   boost::ptr_vector<StmtNode> stmt_list_;

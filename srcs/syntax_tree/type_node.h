@@ -5,6 +5,7 @@
 #include <string>
 
 #include "syntax_tree/ast_node.h"
+#include "syntax_tree/name_node.h"
 
 namespace flang {
 
@@ -63,14 +64,13 @@ class DoubleTypeNode : public TypeNode {
 
 // User defined type node, such as class and enum.
 class UserDefTypeNode : public TypeNode {
-
  INHERIT_AST_NODE(UserDefTypeNode, TypeNode)
 
  public:
   UserDefTypeNode(NameNode* name);
   ~UserDefTypeNode() override {}
 
-  NameNode* getName() { return name_; }
+  NameNode* getName() { return name_.get(); }
   void setName(NameNode* name) { name_.reset(name); }
 
  private:

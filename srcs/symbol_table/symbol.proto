@@ -1,0 +1,8 @@
+import "syntax_tree/ast_node.proto";
+
+package flang;
+
+message A {
+  optional ASTNodeType type = 1;
+
+}

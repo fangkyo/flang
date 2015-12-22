@@ -15,7 +15,7 @@ class ASTVisitor;
 #define INHERIT_AST_NODE(Derived, Base) \
     public: \
      Base* toBaseNode() { return dynamic_cast<Base*>(this); } \
-     bool accept(ASTVisitor* visitor) { \
+     bool accept(ASTVisitor* visitor) override { \
        return traverse<Derived>(visitor); \
      }
 
@@ -68,6 +68,7 @@ class ASTNode {
     ARRAY_TYPE_NODE,
     REFERENCE_NODE,
     CONTINUE_NODE,
+    USER_DEF_TYPE_NODE,
   };
 
   ASTNode(ASTNodeType node_type) :

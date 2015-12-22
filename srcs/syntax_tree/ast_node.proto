@@ -46,5 +46,6 @@ message ASTNodeType {
     CLASS_TYPE_NODE = 40;
     ARRAY_TYPE_NODE = 41;
     CONTINUE_NODE = 42;
+    USER_DEF_TYPE_NODE = 43;
   }
 }
