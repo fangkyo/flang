@@ -9,6 +9,7 @@
 namespace flang {
 
 class IfNode : public StmtNode {
+ INHERIT_AST_NODE(IfNode, StmtNode)
  public:
   IfNode(ExpNode* test_node, ASTNode* if_node, ASTNode* else_node);
   ~IfNode() override {}
@@ -31,8 +32,6 @@ class IfNode : public StmtNode {
   }
   ASTNode* getElseNode() { return else_node_.get(); }
 
-  void accept(ASTVisitor* visitor) override;
-
  private:
   std::unique_ptr<ExpNode> test_node_;
   std::unique_ptr<ASTNode> if_node_;
@@ -40,6 +39,7 @@ class IfNode : public StmtNode {
 };
 
 class WhileNode : public StmtNode {
+ INHERIT_AST_NODE(WhileNode, StmtNode)
  public:
   WhileNode(ExpNode* test_node, ASTNode* body_node);
   ~WhileNode() override {}
@@ -56,27 +56,23 @@ class WhileNode : public StmtNode {
   }
   ASTNode* getBodyNode() { return body_node_.get(); }
 
-  void accept(ASTVisitor* visitor) override;
-
  private:
   std::unique_ptr<ExpNode> test_node_;
   std::unique_ptr<ASTNode> body_node_;
 };
 
 class BreakNode : public StmtNode {
+ INHERIT_AST_NODE(BreakNode, StmtNode)
  public:
   BreakNode();
   ~BreakNode() override {}
-
-  void accept(ASTVisitor* visitor) override;
 };
 
 class ContinueNode : public StmtNode {
+ INHERIT_AST_NODE(ContinueNode, StmtNode)
  public:
   ContinueNode();
   ~ContinueNode() override {}
-
-  void accept(ASTVisitor* visitor) override;
 };
 
 }  // namespace flang
