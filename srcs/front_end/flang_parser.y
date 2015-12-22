@@ -102,6 +102,7 @@ using namespace std;
 %left GE LE '>' '<'
 %left '+' '-'
 %left '*' '/'
+%left '.'
 
 %right '!'
 
@@ -411,13 +412,13 @@ func_param_list : func_param_list ',' type ID {
   $$->addParameter(var_decl_node);
 };
 
-call : expr '.' name '(' param_list ')' {
+call : expr '.' simple_name '(' param_list ')' {
   $$ = new CallNode();
   $$->setLocation(@$);
   $$->setCaller($1);
   $$->setName($3);
   $$->setParamList($5);
-} |  name '(' param_list ')' {
+} |  simple_name '(' param_list ')' {
   $$ = new CallNode();
   $$->setLocation(@$);
   $$->setName($1);
