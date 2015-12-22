@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 
 #include <log4cxx/basicconfigurator.h>
 #include <log4cxx/consoleappender.h>
@@ -9,8 +10,8 @@
 #include <log4cxx/propertyconfigurator.h>
 #include <tclap/CmdLine.h>
 
-#include "flang_parser.h"
-#include "flang_scanner.h"
+#include "front_end/flang_parser.h"
+#include "front_end/flang_scanner.h"
 #include "syntax_tree/syntax_tree.h"
 
 int main(int argc, char* argv[]){
@@ -37,6 +38,8 @@ int main(int argc, char* argv[]){
 
   log4cxx::LoggerPtr logger(log4cxx::Logger::getLogger("flang"));
   LOG4CXX_INFO(logger, "start to parse program and build abstract syntax tree");
+
+
 /*   flang::SyntaxTree syntax_tree; */
   // std::ifstream file_stream(filename);
   // flang::FlangScanner scanner(&file_stream);
