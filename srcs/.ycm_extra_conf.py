@@ -39,11 +39,7 @@ flags = [
 '-Wextra',
 '-Werror',
 '-Wno-c++98-compat',
-<<<<<<< HEAD
 '-Wno-c++11-extensions',
-=======
-'-Wno-c++11-extension',
->>>>>>> 4eaf7d6add784aaa72cfd19b9d9d08c0c8aca542
 '-Wno-long-long',
 '-Wno-variadic-macros',
 '-fexceptions',

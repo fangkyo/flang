@@ -35,7 +35,7 @@ public:
 
   bool hasSuperClass() { return super_class_ == nullptr; }
 
-	bool getChildNodes(ASTNodeList* child_nodes) override;
+  bool getChildNodes(ASTNodeList* child_nodes) override;
 
  private:
   std::string name_;

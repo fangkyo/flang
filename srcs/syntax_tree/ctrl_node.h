@@ -66,10 +66,6 @@ class BreakNode : public StmtNode {
  public:
   BreakNode();
   ~BreakNode() override {}
-<<<<<<< HEAD
-
-=======
->>>>>>> 4eaf7d6add784aaa72cfd19b9d9d08c0c8aca542
 };
 
 class ContinueNode : public StmtNode {
@@ -77,10 +73,6 @@ class ContinueNode : public StmtNode {
  public:
   ContinueNode();
   ~ContinueNode() override {}
-<<<<<<< HEAD
-
-=======
->>>>>>> 4eaf7d6add784aaa72cfd19b9d9d08c0c8aca542
 };
 
 }  // namespace flang
