@@ -123,14 +123,14 @@ using namespace std;
 %type <simple_name_node> simple_name
 %type <qualified_name_node> qualified_name
 %type <name_node> name
-%type <field_access_node> field_access 
+%type <field_access_node> field_access
 %type <param_list_node> param_list
 %type <import_list_node> import_list
 %type <import_node> import
 %type <return_node> return_stmt
 %type <class_body_decl_node> class_body_decl
 %type <constructor_node> constructor
-%type <destructor_node> destructor 
+%type <destructor_node> destructor
 
 %start program
 
