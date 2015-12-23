@@ -61,11 +61,11 @@ cc_library(
     ],
 )
 
-#cc_test(
-#    name = "flang_scanner_test",
-#    srcs = ["flang_scanner_test.cpp"],
-#    deps = [
-#        ":flang_scanner",
-#        "//test:test",
-#    ]
-#)
+cc_test(
+    name = "flang_scanner_test",
+    srcs = ["flang_scanner_test.cpp"],
+    deps = [
+        ":flang_scanner",
+        "//test:test",
+    ]
+)

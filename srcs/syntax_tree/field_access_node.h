@@ -15,11 +15,11 @@ class FieldAccessNode : public ExpNode {
   ~FieldAccessNode() override {}
 
   void setExpression(ExpNode* expr);
-  void setFieldName(NameNode* name);
+  void setFieldName(SimpleNameNode* name);
 
  private:
   std::unique_ptr<ExpNode> expr_;
-  std::unique_ptr<NameNode> field_name_;
+  std::unique_ptr<SimpleNameNode> field_name_;
 };
 
 }  // namespace flang

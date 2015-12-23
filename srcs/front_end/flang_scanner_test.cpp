@@ -52,7 +52,7 @@ TEST_F(FlangScannerTest, testScanInteger) {
   FlangParser::semantic_type yylval;
   FlangParser::location_type yylloc;
   ASSERT_EQ(FlangParser::token_type::INT_VAL, scanner.yylex(&yylval, &yylloc));
-  EXPECT_EQ(1123, yylval.int64_val);
+  EXPECT_EQ(1123L, yylval.int_val);
   position begin1(nullptr, 1, 1);
   EXPECT_EQ(begin1, yylloc.begin);
   position end1(nullptr, 1, 5);
