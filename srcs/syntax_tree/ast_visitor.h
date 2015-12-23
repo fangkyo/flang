@@ -34,8 +34,7 @@ class SimpleNameNode;
 class ReferenceNode;
 
 // Primitive value node
-class Int32ValNode;
-class Int64ValNode;
+class IntValNode;
 class CharValNode;
 class StringValNode;
 class BoolValNode;

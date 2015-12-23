@@ -23,7 +23,7 @@ class PrimitiveNode : public ExpNode {
 
 // 32 bits integer value node
 class IntValNode : public PrimitiveNode<int64_t> {
- INHERIT_AST_NODE(Int32ValNode, PrimitiveNode<int64_t>, INT_VAL_NODE)
+ INHERIT_AST_NODE(IntValNode, PrimitiveNode<int64_t>, INT_VAL_NODE)
  public:
   IntValNode(int64_t value) : PrimitiveNode(value) {}
 };

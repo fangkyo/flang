@@ -42,7 +42,7 @@ using namespace std;
 }
 
 %union {
-  int64_t int64_val; // integer value
+  int64_t int_val; // integer value
   char  char_val; // char value
   bool  bool_val; // bool value
   std::string*   str_val; // string value
@@ -78,7 +78,7 @@ using namespace std;
 
 }
 
-%token <int64_val> INT_VAL
+%token <int_val> INT_VAL
 %token <char_val> CHAR_VAL
 %token <bool_val> BOOL_VAL
 %token <str_val> STR_VAL ID
@@ -230,7 +230,7 @@ block : '{' stmt_list '}'{
 };
 
 expr : INT_VAL {
-  $$ = new Int64ValNode($1);
+  $$ = new IntValNode($1);
   $$->setLocation(@$);
 } | TRUE {
   $$ = new BoolValNode(true);

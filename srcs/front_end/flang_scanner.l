@@ -173,7 +173,7 @@ as {
 
 {integer} {
   try {
-    yylval->int64_val = boost::lexical_cast<int64_t>(yytext);
+    yylval->int_val = boost::lexical_cast<int64_t>(yytext);
   } catch (const boost::bad_lexical_cast&) {
     throw new IntegerCastError(yytext, *yylloc);
   }
