@@ -58,6 +58,7 @@ using namespace std;
   IfNode* if_node;
   WhileNode* while_node;
   FuncNode* func_node;
+  ParamDeclListNode* param_decl_list_node;
   CallNode* call_node;
   ClassNode* class_node;
   AssignNode* assign_node;
@@ -117,7 +118,8 @@ using namespace std;
 %type <type_node> type ret_type
 %type <if_node> if_stmt
 %type <while_node> while_stmt
-%type <func_node>  function func_param_list
+%type <func_node>  function
+%type <param_decl_list_node> func_param_decl_list
 %type <call_node>  call
 %type <class_node> class  class_body
 %type <assign_node> assignment
@@ -305,7 +307,7 @@ field_access : expr '.' simple_name {
   $$ = new FieldAccessNode();
   $$->setLocation(@$);
   $$->setExpression($1);
-  $$->setName($3);
+  $$->setFieldName($3);
 };
 
 var_decl : var_decl ',' var_decl_fragment {
@@ -351,8 +353,7 @@ type : INT32_TYPE {
   $$ = new DoubleTypeNode();
   $$->setLocation(@$);
 } | name {
-  $$ = new UserDefTypeNode();
-  $$->setName($1);
+  $$ = new UserDefTypeNode($1);
   $$->setLocation(@$);
 };
 
@@ -369,10 +370,11 @@ while_stmt : WHILE '(' expr ')' stmt {
   $$->setLocation(@$);
 };
 
-function : DEF ID '(' func_param_list ')' ret_type block {
-  $$ = $4;
+function : DEF ID '(' func_param_decl_list ')' ret_type block {
+  $$ = new FuncNode();
   $$->setLocation(@$);
   $$->setName(*($2));
+  $$->setParamDeclList($4);
   $$->setReturnType($6);
   $$->setBody($7);
 } | DEF ID '(' ')' ret_type block {
@@ -391,7 +393,7 @@ ret_type : type {
   $$->setLocation(@$);
 };
 
-func_param_list : func_param_list ',' type ID {
+func_param_decl_list : func_param_decl_list ',' type ID {
   $$ = $1;
   $$->setLocation(@$);
   VarDeclNode* var_decl_node = new VarDeclNode();
@@ -399,16 +401,16 @@ func_param_list : func_param_list ',' type ID {
       VarDeclFragmentNode(*($4), nullptr);
   var_decl_node->setDataType($3);
   var_decl_node->addVarDeclFragment(var_decl_fragment_node);
-  $$->addParameter(var_decl_node);
+  $$->addDeclaration(var_decl_node);
 } | type ID {
-  $$ = new FuncNode();
+  $$ = new ParamDeclListNode();
   $$->setLocation(@$);
   VarDeclNode* var_decl_node = new VarDeclNode();
   VarDeclFragmentNode* var_decl_fragment_node = new
       VarDeclFragmentNode(*($2), nullptr);
   var_decl_node->setDataType($1);
   var_decl_node->addVarDeclFragment(var_decl_fragment_node);
-  $$->addParameter(var_decl_node);
+  $$->addDeclaration(var_decl_node);
 };
 
 call : expr '.' simple_name '(' param_list ')' {
@@ -465,10 +467,10 @@ class_body_decl : var_decl ';' {
   $$ = $1;
 };
 
-constructor : THIS '(' func_param_list ')' block {
+constructor : THIS '(' func_param_decl_list ')' block {
   $$ = new ConstructorNode();
   $$->setLocation(@$);
-  $$->setParamList($3);
+  $$->setParamDeclList($3);
   $$->setBody($5);
 };
 

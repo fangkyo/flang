@@ -14,10 +14,10 @@ void stdDeleteElements(C& container) {
   }
 }
 
-template <typename T>
-void ptrVectorToVector(const boost::ptr_vector<T>& pv, std::vector<T*>* v) {
+template <typename T, typename U>
+void ptrVectorToVector(const boost::ptr_vector<T>& pv, std::vector<U*>* v) {
   for (auto& t : pv) {
-    v->push_back(const_cast<T*>(&t));
+    v->push_back(const_cast<U*>(dynamic_cast<const U*>(&t)));
   }
 }
 

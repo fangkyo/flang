@@ -20,10 +20,30 @@ class ParamListNode : public ASTNode {
   ParamListNode() : ASTNode(ASTNode::PARAM_LIST_NODE) {}
   ~ParamListNode() override {}
 
-  void addParameter(VarDeclNode* param);
+  void addParameter(ExpNode* param);
+  const boost::ptr_vector<ExpNode>& getParamList() const {
+    return param_list_;
+  }
  private:
-  boost::ptr_vector<VarDeclNode> param_list_;
+  boost::ptr_vector<ExpNode> param_list_;
 };
+
+class ParamDeclListNode : public ASTNode {
+ INHERIT_AST_NODE(ParamDeclListNode, ASTNode)
+ public:
+  ParamDeclListNode() : ASTNode(ASTNode::PARAM_DECL_LIST_NODE) {}
+
+  void addDeclaration(VarDeclNode* decl) {
+    decl->setParent(this);
+    decl_list_.push_back(decl);
+  }
+  const boost::ptr_vector<VarDeclNode>& getDeclList() const {
+    return decl_list_;
+  }
+
+ private:
+  boost::ptr_vector<VarDeclNode> decl_list_;
+} ;
 
 class FuncNode : public StmtNode {
  INHERIT_AST_NODE(FuncNode, StmtNode)
@@ -40,10 +60,19 @@ class FuncNode : public StmtNode {
     body_->setParent(this);
   }
 
-  boost::ptr_vector<VarDeclNode>& getParameters() { return parameters_; }
-  void addParameter(VarDeclNode* param) {
-    parameters_.push_back(param);
-    param->setParent(this);
+  // boost::ptr_vector<VarDeclNode>& getParameters() { return parameters_; }
+  // void addParameter(VarDeclNode* param) {
+    // parameters_.push_back(param);
+    // param->setParent(this);
+  // }
+
+  void setParamDeclList(ParamDeclListNode* param_decl_list) {
+    param_decl_list->setParent(this);
+    param_decl_list_.reset(param_decl_list);
+  }
+
+  ParamDeclListNode* getParamDeclList() const {
+    return param_decl_list_.get();
   }
 
   TypeNode* getReturnType() { return return_type_.get(); }
@@ -52,9 +81,10 @@ class FuncNode : public StmtNode {
     return_type_->setParent(this);
   }
 
- private:
+ protected:
   std::string name_;
-  boost::ptr_vector<VarDeclNode> parameters_;
+  // boost::ptr_vector<VarDeclNode> parameters_;
+  std::unique_ptr<ParamDeclListNode> param_decl_list_;
   std::unique_ptr<TypeNode> return_type_;
   std::unique_ptr<ASTNode> body_;
 };
@@ -83,21 +113,35 @@ class CallNode : public ExpNode {
   CallNode();
   ~CallNode() override {}
 
-  void setName(NameNode* name) {
-    name_.reset(name);
-    name_->setParent(this);
+  void setCaller(ExpNode* caller) {
+    caller->setParent(this);
+    caller_.reset(caller);
   }
-  NameNode* getName() const { return name_.get(); }
 
-  void addParameter(ExpNode* param) {
-    parameters_.push_back(param);
-    param->setParent(this);
+  void setName(SimpleNameNode* name) {
+    name->setParent(this);
+    name_.reset(name);
   }
-  boost::ptr_vector<ExpNode>& getParameters() { return parameters_; }
+
+  SimpleNameNode* getName() {
+    return name_.get();
+  }
+
+  void setParamList(ParamListNode* param_list) {
+    param_list->setParent(this);
+    param_list_.reset(param_list);
+  }
+
+  ParamListNode* getParamList() {
+    return param_list_.get();
+  }
+
+  bool getChildNodes(ASTNodeList* child_nodes) override;
 
  private:
-  boost::ptr_vector<ExpNode> parameters_;
-  std::unique_ptr<NameNode> name_;
+  std::unique_ptr<ParamListNode> param_list_;
+  std::unique_ptr<ExpNode> caller_;
+  std::unique_ptr<SimpleNameNode> name_;
 };
 
 }  // namespace flang

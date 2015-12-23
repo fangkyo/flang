@@ -67,7 +67,7 @@ class UserDefTypeNode : public TypeNode {
  INHERIT_AST_NODE(UserDefTypeNode, TypeNode)
 
  public:
-  UserDefTypeNode(NameNode* name);
+  explicit UserDefTypeNode(NameNode* name);
   ~UserDefTypeNode() override {}
 
   NameNode* getName() { return name_.get(); }

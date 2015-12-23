@@ -25,12 +25,13 @@ class ASTNode {
     PROGRAM_NODE, // Program node
     IMPORT_NODE,
     IMPORT_LIST_NODE,
-    EMPTY_NODE, // Empty node
+    EMPTY_STMT_NODE, // Empty node
     VAR_DECL_NODE, // variable declaration node
     VAR_DECL_FRAGMENT_NODE, // variable declaration fragment node.
     STMT_NODE, // Statement node
     STMT_LIST_NODE,
     FUNC_NODE, // Function definition node
+    PARAM_DECL_LIST_NODE,
     CALL_NODE, // call function node
     CLASS_NODE, // Class definition node
     CLASS_BODY_NODE,

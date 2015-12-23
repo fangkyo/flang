@@ -1,28 +1,33 @@
 #ifndef BLOCK_NODE_H_
 #define BLOCK_NODE_H_
 
+#include <memory>
+
 #include "syntax_tree/stmt_node.h"
 
 #include <boost/ptr_container/ptr_vector.hpp>
 
 namespace flang {
 
-class BlockNode : public ASTNode {
- INHERIT_AST_NODE(BlockNode, ASTNode)
+class BlockNode : public StmtNode {
+ INHERIT_AST_NODE(BlockNode, StmtNode)
 
  public:
   BlockNode();
   ~BlockNode() override {}
 
-  const boost::ptr_vector<StmtNode>& getStatementList() {
-    return stmt_list_;
+  StmtListNode* getStatementList() {
+    return stmt_list_.get();
   }
-  void addStatement(StmtNode* stmt_node);
+  void setStmtList(StmtListNode* stmt_list) {
+    stmt_list_.reset(stmt_list);
+  }
 
-  //bool getChildNodes(ASTNodeList*) override;
+  bool getChildNodes(ASTNodeList*) override;
 
  private:
-  boost::ptr_vector<StmtNode> stmt_list_;
+  // boost::ptr_vector<StmtNode> stmt_list_;
+  std::unique_ptr<StmtListNode> stmt_list_;
 };
 
 }  // namespace flang

@@ -8,23 +8,31 @@
 
 #include "syntax_tree/exp_node.h"
 #include "syntax_tree/name_node.h"
+#include "syntax_tree/func_node.h"
 
 namespace flang {
 
-class ConstructorNode : public StmtNode {
- INHERIT_AST_NODE(ConstructorNode, StmtNode)
+class ConstructorNode : public FuncNode {
+ INHERIT_AST_NODE(ConstructorNode, FuncNode)
 
  public:
-  ConstructorNode() : StmtNode(ASTNode::CONSTRUCTOR_NODE) {}
+  ConstructorNode() {}
   virtual ~ConstructorNode() {}
+
+  ASTNodeType getNodeType() const override {
+    return ASTNode::CONSTRUCTOR_NODE;
+  }
 };
 
-class DestructorNode : public StmtNode {
+class DestructorNode : public FuncNode {
  INHERIT_AST_NODE(DestructorNode, StmtNode)
 
  public:
-  DestructorNode() : StmtNode(ASTNode::DESTRUCTOR_NODE) {}
+  DestructorNode() {}
   virtual ~DestructorNode() {}
+  ASTNodeType getNodeType() const override {
+    return ASTNode::DESTRUCTOR_NODE;
+  }
 };
 
 class ClassBodyNode : public ASTNode {

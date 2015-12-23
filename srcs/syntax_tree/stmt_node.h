@@ -19,6 +19,13 @@ class StmtNode : public ASTNode {
     ASTNode(node_type) {}
 };
 
+class EmptyStmtNode : public StmtNode {
+ INHERIT_AST_NODE(EmptyStmtNode, StmtNode)
+ public:
+  EmptyStmtNode() : StmtNode(ASTNode::EMPTY_STMT_NODE) {}
+  ~EmptyStmtNode() override {}
+};
+
 class StmtListNode : public ASTNode {
  INHERIT_AST_NODE(StmtListNode, ASTNode)
  public:
