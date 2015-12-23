@@ -10,9 +10,9 @@
 namespace flang {
 
 class ImportNode : public StmtNode {
- INHERIT_AST_NODE(ImportNode, StmtNode)
+ INHERIT_AST_NODE(ImportNode, StmtNode, IMPORT_NODE)
  public:
-  ImportNode() : StmtNode(ASTNode::IMPORT_NODE) {}
+  ImportNode() {}
   ~ImportNode() override {}
 
   void setPackage(NameNode* package) {
@@ -29,9 +29,9 @@ class ImportNode : public StmtNode {
 };
 
 class ImportListNode : public ASTNode {
- INHERIT_AST_NODE(ImportListNode, ASTNode)
+ INHERIT_AST_NODE(ImportListNode, ASTNode, IMPORT_LIST_NODE)
  public:
-  ImportListNode() : ASTNode(ASTNode::IMPORT_LIST_NODE) {}
+  ImportListNode() {}
   virtual ~ImportListNode() {}
 
   void addImport(ImportNode* import);

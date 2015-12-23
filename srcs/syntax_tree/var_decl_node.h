@@ -13,7 +13,7 @@
 namespace flang {
 
 class VarDeclFragmentNode : public ASTNode {
- INHERIT_AST_NODE(VarDeclFragmentNode, ASTNode)
+ INHERIT_AST_NODE(VarDeclFragmentNode, ASTNode, VAR_DECL_FRAGMENT_NODE)
  public:
   VarDeclFragmentNode(const std::string& name, ExpNode* initializer);
   ~VarDeclFragmentNode() override {}
@@ -33,9 +33,9 @@ class VarDeclFragmentNode : public ASTNode {
 };
 
 class VarDeclNode : public StmtNode {
- INHERIT_AST_NODE(VarDeclNode, StmtNode)
+ INHERIT_AST_NODE(VarDeclNode, StmtNode, VAR_DECL_NODE)
  public:
-  VarDeclNode();
+  VarDeclNode() {}
   ~VarDeclNode() override {}
 
   void addVarDeclFragment(VarDeclFragmentNode* var_decl_fragment) {

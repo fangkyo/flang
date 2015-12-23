@@ -10,7 +10,7 @@
 namespace flang {
 
 class NewNode : public ExpNode {
- INHERIT_AST_NODE(NewNode, ExpNode)
+ INHERIT_AST_NODE(NewNode, ExpNode, NEW_NODE)
 
  public:
   NewNode(CallNode* constructor);

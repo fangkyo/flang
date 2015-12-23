@@ -8,14 +8,11 @@ void ParamListNode::addParameter(ExpNode* param) {
 }
 
 
-ReturnNode::ReturnNode(ExpNode* exp_node)
-  : StmtNode(ASTNode::RETURN_NODE), expression_(exp_node) {
+ReturnNode::ReturnNode(ExpNode* exp_node) :
+    expression_(exp_node) {
   if (expression_) {
     expression_->setParent(this);
   }
-}
-
-CallNode::CallNode() : ExpNode(ASTNode::CALL_NODE) {
 }
 
 bool CallNode::getChildNodes(ASTNodeList* child_nodes) {

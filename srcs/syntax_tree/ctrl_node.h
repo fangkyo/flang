@@ -9,7 +9,7 @@
 namespace flang {
 
 class IfNode : public StmtNode {
- INHERIT_AST_NODE(IfNode, StmtNode)
+ INHERIT_AST_NODE(IfNode, StmtNode, IF_NODE)
  public:
   IfNode(ExpNode* test_node, ASTNode* if_node, ASTNode* else_node);
   ~IfNode() override {}
@@ -39,7 +39,7 @@ class IfNode : public StmtNode {
 };
 
 class WhileNode : public StmtNode {
- INHERIT_AST_NODE(WhileNode, StmtNode)
+ INHERIT_AST_NODE(WhileNode, StmtNode, WHILE_NODE)
  public:
   WhileNode(ExpNode* test_node, ASTNode* body_node);
   ~WhileNode() override {}
@@ -62,16 +62,16 @@ class WhileNode : public StmtNode {
 };
 
 class BreakNode : public StmtNode {
- INHERIT_AST_NODE(BreakNode, StmtNode)
+ INHERIT_AST_NODE(BreakNode, StmtNode, BREAK_NODE)
  public:
-  BreakNode();
+  BreakNode() {}
   ~BreakNode() override {}
 };
 
 class ContinueNode : public StmtNode {
- INHERIT_AST_NODE(ContinueNode, StmtNode)
+ INHERIT_AST_NODE(ContinueNode, StmtNode, CONTINUE_NODE)
  public:
-  ContinueNode();
+  ContinueNode() {}
   ~ContinueNode() override {}
 };
 

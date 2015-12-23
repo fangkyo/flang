@@ -12,7 +12,7 @@ namespace flang{
 // Name:
 //     Name.SimpleName
 class NameNode : public ExpNode {
- INHERIT_AST_NODE(NameNode, ExpNode)
+ INHERIT_AST_NODE(NameNode, ExpNode, NAME_NODE)
 
  public:
   ~NameNode() override {}
@@ -21,11 +21,11 @@ class NameNode : public ExpNode {
   static const char SEPARATOR = '$';
 
  protected:
-  NameNode(ASTNode::ASTNodeType node_type) : ExpNode(node_type) {}
+  NameNode() {}
 };
 
 class SimpleNameNode : public NameNode {
- INHERIT_AST_NODE(SimpleNameNode, NameNode)
+ INHERIT_AST_NODE(SimpleNameNode, NameNode, SIMPLE_NAME_NODE)
 
  public:
   SimpleNameNode(const std::string name);
@@ -41,7 +41,7 @@ class SimpleNameNode : public NameNode {
 
 // Name.SimpleName
 class QualifiedNameNode : public NameNode {
- INHERIT_AST_NODE(QualifiedNameNode, NameNode)
+ INHERIT_AST_NODE(QualifiedNameNode, NameNode, QUALIFIED_NAME_NODE)
 
  public:
   QualifiedNameNode(NameNode* qualifier, SimpleNameNode* name);

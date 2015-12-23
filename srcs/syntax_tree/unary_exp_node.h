@@ -10,7 +10,7 @@ namespace flang {
 
 // Expression node with unary operator
 class UnaryExpNode : public ExpNode {
- INHERIT_AST_NODE(UnaryExpNode, ExpNode)
+ INHERIT_AST_NODE(UnaryExpNode, ExpNode, UNARY_EXP_NODE)
 
  public:
   enum UnaryOpType {

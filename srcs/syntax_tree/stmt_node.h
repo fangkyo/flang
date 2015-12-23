@@ -9,32 +9,40 @@ namespace flang {
 
 // This node indicates a statement.
 class StmtNode : public ASTNode {
- INHERIT_AST_NODE(StmtNode, ASTNode)
+ INHERIT_AST_NODE(StmtNode, ASTNode, STMT_NODE)
 
  public:
   ~StmtNode() override {}
 
  protected:
-  StmtNode(ASTNode::ASTNodeType node_type) :
-    ASTNode(node_type) {}
+  StmtNode() {}
 };
 
 class EmptyStmtNode : public StmtNode {
- INHERIT_AST_NODE(EmptyStmtNode, StmtNode)
+ INHERIT_AST_NODE(EmptyStmtNode, StmtNode, EMPTY_STMT_NODE)
+
  public:
-  EmptyStmtNode() : StmtNode(ASTNode::EMPTY_STMT_NODE) {}
+  EmptyStmtNode() {}
   ~EmptyStmtNode() override {}
+
 };
 
 class StmtListNode : public ASTNode {
- INHERIT_AST_NODE(StmtListNode, ASTNode)
+ INHERIT_AST_NODE(StmtListNode, ASTNode, STMT_LIST_NODE)
+
  public:
-  StmtListNode() : ASTNode(ASTNode::STMT_LIST_NODE) {}
+  StmtListNode() {}
   ~StmtListNode() override {}
 
   void addStatement(StmtNode* stmt) {
     stmt_list_.push_back(stmt);
   }
+
+  const boost::ptr_vector<StmtNode>& getStmtList() const {
+    return stmt_list_;
+  }
+
+  bool getChildNodes(ASTNodeList* child_nodes) override;
 
  private:
   boost::ptr_vector<StmtNode> stmt_list_;

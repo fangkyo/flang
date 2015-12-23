@@ -15,9 +15,9 @@
 namespace flang {
 
 class ParamListNode : public ASTNode {
- INHERIT_AST_NODE(ParamListNode, ASTNode)
+ INHERIT_AST_NODE(ParamListNode, ASTNode, PARAM_LIST_NODE)
  public:
-  ParamListNode() : ASTNode(ASTNode::PARAM_LIST_NODE) {}
+  ParamListNode() {}
   ~ParamListNode() override {}
 
   void addParameter(ExpNode* param);
@@ -29,9 +29,9 @@ class ParamListNode : public ASTNode {
 };
 
 class ParamDeclListNode : public ASTNode {
- INHERIT_AST_NODE(ParamDeclListNode, ASTNode)
+ INHERIT_AST_NODE(ParamDeclListNode, ASTNode, PARAM_DECL_LIST_NODE)
  public:
-  ParamDeclListNode() : ASTNode(ASTNode::PARAM_DECL_LIST_NODE) {}
+  ParamDeclListNode() {}
 
   void addDeclaration(VarDeclNode* decl) {
     decl->setParent(this);
@@ -46,9 +46,9 @@ class ParamDeclListNode : public ASTNode {
 } ;
 
 class FuncNode : public StmtNode {
- INHERIT_AST_NODE(FuncNode, StmtNode)
+ INHERIT_AST_NODE(FuncNode, StmtNode, FUNC_NODE)
  public:
-  FuncNode() : StmtNode(ASTNode::FUNC_NODE) {}
+  FuncNode() {}
   ~FuncNode() override {}
 
   const std::string& getName() { return name_; }
@@ -59,12 +59,6 @@ class FuncNode : public StmtNode {
     body_.reset(body);
     body_->setParent(this);
   }
-
-  // boost::ptr_vector<VarDeclNode>& getParameters() { return parameters_; }
-  // void addParameter(VarDeclNode* param) {
-    // parameters_.push_back(param);
-    // param->setParent(this);
-  // }
 
   void setParamDeclList(ParamDeclListNode* param_decl_list) {
     param_decl_list->setParent(this);
@@ -83,14 +77,13 @@ class FuncNode : public StmtNode {
 
  protected:
   std::string name_;
-  // boost::ptr_vector<VarDeclNode> parameters_;
   std::unique_ptr<ParamDeclListNode> param_decl_list_;
   std::unique_ptr<TypeNode> return_type_;
   std::unique_ptr<ASTNode> body_;
 };
 
 class ReturnNode : public StmtNode {
- INHERIT_AST_NODE(ReturnNode, StmtNode)
+ INHERIT_AST_NODE(ReturnNode, StmtNode, RETURN_NODE)
  public:
   ReturnNode(ExpNode* exp_node = nullptr);
   ~ReturnNode() override {}
@@ -108,9 +101,9 @@ class ReturnNode : public StmtNode {
 };
 
 class CallNode : public ExpNode {
- INHERIT_AST_NODE(CallNode, ExpNode)
+ INHERIT_AST_NODE(CallNode, ExpNode, CALL_NODE)
  public:
-  CallNode();
+  CallNode() {}
   ~CallNode() override {}
 
   void setCaller(ExpNode* caller) {

@@ -14,6 +14,7 @@ cc_library(
     srcs = [
         "ast_visitor.cpp",
         "program_node.cpp",
+        "stmt_node.cpp",
         "binary_exp_node.cpp",
         "unary_exp_node.cpp",
         "assign_node.cpp",

@@ -10,10 +10,10 @@
 namespace flang {
 
 class BlockNode : public StmtNode {
- INHERIT_AST_NODE(BlockNode, StmtNode)
+ INHERIT_AST_NODE(BlockNode, StmtNode, BLOCK_NODE)
 
  public:
-  BlockNode();
+  BlockNode() {}
   ~BlockNode() override {}
 
   StmtListNode* getStatementList() {
@@ -26,7 +26,6 @@ class BlockNode : public StmtNode {
   bool getChildNodes(ASTNodeList*) override;
 
  private:
-  // boost::ptr_vector<StmtNode> stmt_list_;
   std::unique_ptr<StmtListNode> stmt_list_;
 };
 

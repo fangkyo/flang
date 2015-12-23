@@ -10,7 +10,7 @@ namespace flang {
 
 // Expression node with binary operator
 class BinaryExpNode : public ExpNode {
- INHERIT_AST_NODE(BinaryExpNode, ExpNode)
+ INHERIT_AST_NODE(BinaryExpNode, ExpNode, BINARY_EXP_NODE)
 
  public:
   enum BinaryOpType {

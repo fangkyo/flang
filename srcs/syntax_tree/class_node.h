@@ -13,32 +13,25 @@
 namespace flang {
 
 class ConstructorNode : public FuncNode {
- INHERIT_AST_NODE(ConstructorNode, FuncNode)
+ INHERIT_AST_NODE(ConstructorNode, FuncNode, CONSTRUCTOR_NODE)
 
  public:
   ConstructorNode() {}
   virtual ~ConstructorNode() {}
-
-  ASTNodeType getNodeType() const override {
-    return ASTNode::CONSTRUCTOR_NODE;
-  }
 };
 
 class DestructorNode : public FuncNode {
- INHERIT_AST_NODE(DestructorNode, StmtNode)
+ INHERIT_AST_NODE(DestructorNode, StmtNode, DESTRUCTOR_NODE)
 
  public:
   DestructorNode() {}
   virtual ~DestructorNode() {}
-  ASTNodeType getNodeType() const override {
-    return ASTNode::DESTRUCTOR_NODE;
-  }
 };
 
 class ClassBodyNode : public ASTNode {
- INHERIT_AST_NODE(ClassBodyNode, ASTNode)
+ INHERIT_AST_NODE(ClassBodyNode, ASTNode, CLASS_BODY_NODE)
  public:
-  ClassBodyNode() : ASTNode(ASTNode::CLASS_BODY_NODE) {}
+  ClassBodyNode() {}
   ~ClassBodyNode() override {}
 
   void addDeclaration(StmtNode* decl);
@@ -49,10 +42,10 @@ class ClassBodyNode : public ASTNode {
 };
 
 class ClassNode : public StmtNode {
- INHERIT_AST_NODE(ClassNode, StmtNode)
+ INHERIT_AST_NODE(ClassNode, StmtNode, CLASS_NODE)
 
 public:
-  ClassNode() : StmtNode(ASTNode::CLASS_NODE) {}
+  ClassNode() {}
   ~ClassNode() override {}
 
   void setName(const std::string &name) { name_ = name; }

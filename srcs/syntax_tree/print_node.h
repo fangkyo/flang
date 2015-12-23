@@ -9,7 +9,7 @@
 namespace flang {
 
 class PrintNode : public StmtNode {
- INHERIT_AST_NODE(PrintNode, StmtNode)
+ INHERIT_AST_NODE(PrintNode, StmtNode, PRINT_NODE)
 
  public:
   PrintNode(ExpNode* exp_node);

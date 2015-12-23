@@ -12,10 +12,10 @@ namespace flang {
 // This class represents the program of a file, which is the root
 // of a syntax tree.
 class ProgramNode : public ASTNode {
- INHERIT_AST_NODE(ProgramNode, ASTNode)
+ INHERIT_AST_NODE(ProgramNode, ASTNode, PROGRAM_NODE)
 
  public:
-  ProgramNode();
+  ProgramNode() {}
   ~ProgramNode() override {}
 
   void setImportList(ImportListNode* import_list);

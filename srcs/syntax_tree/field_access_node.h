@@ -9,9 +9,9 @@
 namespace flang {
 
 class FieldAccessNode : public ExpNode {
- INHERIT_AST_NODE(FieldAccessNode, ExpNode)
+ INHERIT_AST_NODE(FieldAccessNode, ExpNode, FIELD_ACCESS_NODE)
  public:
-  FieldAccessNode() : ExpNode(ASTNode::FIELD_ACCESS_NODE) {}
+  FieldAccessNode() {}
   ~FieldAccessNode() override {}
 
   void setExpression(ExpNode* expr);

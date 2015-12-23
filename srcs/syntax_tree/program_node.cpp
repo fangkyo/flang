@@ -3,9 +3,6 @@
 
 namespace flang {
 
-ProgramNode::ProgramNode() : ASTNode(ASTNode::PROGRAM_NODE) {
-}
-
 void ProgramNode::setImportList(ImportListNode* import_list) {
   import_list_.reset(import_list);
 }

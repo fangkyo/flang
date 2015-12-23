@@ -3,7 +3,7 @@
 namespace flang {
 
 UserDefTypeNode::UserDefTypeNode(NameNode* name) :
-  TypeNode(ASTNode::USER_DEF_TYPE_NODE), name_(name) {}
+    name_(name) {}
 
 
 bool UserDefTypeNode::getChildNodes(ASTNodeList* child_nodes) {

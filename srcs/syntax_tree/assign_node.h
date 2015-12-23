@@ -11,7 +11,7 @@ namespace flang {
 // assignment:
 //   destination '=' source
 class AssignNode : public ExpNode {
- INHERIT_AST_NODE(AssignNode, ExpNode)
+ INHERIT_AST_NODE(AssignNode, ExpNode, ASSIGN_NODE)
 
  public:
   enum AssignOpType {

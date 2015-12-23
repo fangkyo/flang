@@ -11,7 +11,7 @@ namespace flang {
 
 // Expression node
 class ExpNode : public StmtNode {
- INHERIT_AST_NODE(ExpNode, StmtNode)
+ INHERIT_AST_NODE(ExpNode, StmtNode, EXP_NODE)
 
  public:
   ~ExpNode() override {}
@@ -23,8 +23,7 @@ class ExpNode : public StmtNode {
   virtual bool isLeftValue() const { return false; }
 
  protected:
-  ExpNode(ASTNode::ASTNodeType node_type) :
-      StmtNode(node_type) {}
+  ExpNode() {}
   std::unique_ptr<Symbol> symbol_;
 };
 

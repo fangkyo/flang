@@ -10,61 +10,67 @@
 namespace flang {
 
 class TypeNode : public ASTNode {
- INHERIT_AST_NODE(TypeNode, ASTNode)
+ INHERIT_AST_NODE(TypeNode, ASTNode, TYPE_NODE)
 
  public:
-  TypeNode(ASTNode::ASTNodeType node_type) : ASTNode(node_type) {}
   ~TypeNode() override {}
 
   virtual bool isPrimitive() { return true; }
 };
 
 class Int32TypeNode : public TypeNode {
+ INHERIT_AST_NODE(Int32TypeNode, TypeNode, INT32_TYPE_NODE)
  public:
-  Int32TypeNode() : TypeNode(ASTNode::INT32_TYPE_NODE) {}
+  Int32TypeNode() {}
   ~Int32TypeNode() override {}
 };
 
 class Int64TypeNode : public TypeNode {
+ INHERIT_AST_NODE(Int32TypeNode, TypeNode, INT64_TYPE_NODE)
  public:
-  Int64TypeNode() : TypeNode(ASTNode::INT64_TYPE_NODE) {}
+  Int64TypeNode() {}
   ~Int64TypeNode() override {}
 };
 
 class CharTypeNode : public TypeNode {
+ INHERIT_AST_NODE(Int32TypeNode, TypeNode, CHAR_TYPE_NODE)
  public:
-  CharTypeNode() : TypeNode(ASTNode::CHAR_TYPE_NODE) {}
+  CharTypeNode() {}
   ~CharTypeNode() override {}
 
 };
 
 class BoolTypeNode : public TypeNode {
+ INHERIT_AST_NODE(Int32TypeNode, TypeNode, BOOL_TYPE_NODE)
  public:
-  BoolTypeNode() : TypeNode(ASTNode::BOOL_TYPE_NODE) {}
+  BoolTypeNode() {}
   ~BoolTypeNode() override {}
 };
 
 class StringTypeNode : public TypeNode {
+ INHERIT_AST_NODE(Int32TypeNode, TypeNode, STRING_TYPE_NODE)
  public:
-  StringTypeNode() : TypeNode(ASTNode::STRING_TYPE_NODE) {}
+  StringTypeNode() {}
   ~StringTypeNode() override {}
 };
 
 class VoidTypeNode : public TypeNode {
+ INHERIT_AST_NODE(Int32TypeNode, TypeNode, VOID_TYPE_NODE)
  public:
-  VoidTypeNode() : TypeNode(ASTNode::VOID_TYPE_NODE) {}
+  VoidTypeNode() {}
   ~VoidTypeNode() override {}
 };
 
 class DoubleTypeNode : public TypeNode {
+ INHERIT_AST_NODE(Int32TypeNode, TypeNode, DOUBLE_TYPE_NODE)
  public:
-  DoubleTypeNode() : TypeNode(ASTNode::DOUBLE_TYPE_NODE) {}
+  DoubleTypeNode() {}
   ~DoubleTypeNode() override {}
 };
 
 // User defined type node, such as class and enum.
 class UserDefTypeNode : public TypeNode {
- INHERIT_AST_NODE(UserDefTypeNode, TypeNode)
+ INHERIT_AST_NODE(UserDefTypeNode, TypeNode, USER_DEF_TYPE_NODE)
 
  public:
   explicit UserDefTypeNode(NameNode* name);
