@@ -1,5 +1,4 @@
 #include "syntax_tree/ast_visitor.h"
-#include "syntax_tree/ast_node.h"
 
 namespace flang {
 

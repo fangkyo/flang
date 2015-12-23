@@ -11,27 +11,37 @@
 namespace flang {
 
 class ASTNode;
+class StmtNode;
+class StmtListNode;
 class ProgramNode;
 class PrintNode;
+class ExpNode;
 class VarDeclNode;
 class VarDeclFragmentNode;
-class SimpleNodeNode;
-class QualifiedNodeNode;
 class AssignNode;
 class IfNode;
 class WhileNode;
 class BreakNode;
+class ContinueNode;
 class FuncNode;
+class ParamListNode;
+class ParamDeclListNode;
 class ClassNode;
+class ClassBodyNode;
+class ConstructorNode;
+class DestructorNode;
 class ReturnNode;
 class CallNode;
 class NewNode;
 class UnaryExpNode;
 class BinaryExpNode;
 class BlockNode;
+class NameNode;
 class QualifiedNameNode;
 class SimpleNameNode;
-class ReferenceNode;
+class ImportNode;
+class ImportListNode;
+class FieldAccessNode;
 
 // Primitive value node
 class IntValNode;
@@ -40,17 +50,18 @@ class StringValNode;
 class BoolValNode;
 class DoubleValNode;
 
-// Data type node
-class QualifiedTypeNode;
-class ArrayTypeNode;
-class ContinueNode;
+// Type node
+class TypeNode;
+class Int32TypeNode;
+class Int64TypeNode;
+class StringTypeNode;
+class CharTypeNode;
+class BoolTypeNode;
+class DoubleTypeNode;
+class VoidTypeNode;
+class UserDefTypeNode;
 
-/**
- * @brief This struct is used for passing inherit attributes between visitor
- * functions.
- */
-struct ASTVisitorContext {
-};
+
 
 #define VISIT_METHOD(ASTNodeClass) \
     virtual bool visit(ASTNodeClass*) { return true; } \
@@ -62,36 +73,50 @@ class ASTVisitor {
   virtual ~ASTVisitor() {}
 
   VISIT_METHOD(ASTNode)
+  VISIT_METHOD(StmtNode)
+  VISIT_METHOD(StmtListNode)
   VISIT_METHOD(ProgramNode)
-  //VISIT_METHOD(PrintNode)
-  //VISIT_METHOD(VarDeclNode)
-  //VISIT_METHOD(VarDeclFragmentNode)
-  //VISIT_METHOD(SimpleNodeNode)
-  //VISIT_METHOD(QualifiedNodeNode)
-  //VISIT_METHOD(AssignNode)
-  //VISIT_METHOD(IfNode)
-  //VISIT_METHOD(WhileNode)
-  //VISIT_METHOD(BreakNode)
-  //VISIT_METHOD(FuncNode)
-  //VISIT_METHOD(ClassNode)
-  //VISIT_METHOD(ReturnNode)
-  //VISIT_METHOD(CallNode)
-  //VISIT_METHOD(NewNode)
-  //VISIT_METHOD(BinaryExpNode)
-  //VISIT_METHOD(UnaryExpNode)
-  //VISIT_METHOD(BlockNode)
-  //VISIT_METHOD(SimpleNameNode)
-  //VISIT_METHOD(QualifiedNameNode)
-  //VISIT_METHOD(Int32ValNode)
-  //VISIT_METHOD(Int64ValNode)
-  //VISIT_METHOD(CharValNode)
-  //VISIT_METHOD(StringValNode)
-  //VISIT_METHOD(BoolValNode)
-  //VISIT_METHOD(DoubleValNode)
-  //VISIT_METHOD(QualifiedTypeNode)
-  //VISIT_METHOD(ArrayTypeNode)
-  //VISIT_METHOD(ReferenceNode)
-  //VISIT_METHOD(ContinueNode)
+  VISIT_METHOD(PrintNode)
+  VISIT_METHOD(VarDeclNode)
+  VISIT_METHOD(VarDeclFragmentNode)
+  VISIT_METHOD(AssignNode)
+  VISIT_METHOD(IfNode)
+  VISIT_METHOD(WhileNode)
+  VISIT_METHOD(BreakNode)
+  VISIT_METHOD(ContinueNode)
+  VISIT_METHOD(FuncNode)
+  VISIT_METHOD(ClassNode)
+  VISIT_METHOD(ReturnNode)
+  VISIT_METHOD(CallNode)
+  VISIT_METHOD(NewNode)
+  VISIT_METHOD(ExpNode)
+  VISIT_METHOD(BinaryExpNode)
+  VISIT_METHOD(UnaryExpNode)
+  VISIT_METHOD(BlockNode)
+  VISIT_METHOD(SimpleNameNode)
+  VISIT_METHOD(QualifiedNameNode)
+  VISIT_METHOD(IntValNode)
+  VISIT_METHOD(CharValNode)
+  VISIT_METHOD(StringValNode)
+  VISIT_METHOD(BoolValNode)
+  VISIT_METHOD(DoubleValNode)
+  VISIT_METHOD(ImportNode)
+  VISIT_METHOD(ImportListNode)
+  VISIT_METHOD(ConstructorNode)
+  VISIT_METHOD(DestructorNode)
+  VISIT_METHOD(ClassBodyNode)
+  VISIT_METHOD(ParamListNode)
+  VISIT_METHOD(ParamDeclListNode)
+  VISIT_METHOD(FieldAccessNode)
+  VISIT_METHOD(TypeNode)
+  VISIT_METHOD(Int32TypeNode)
+  VISIT_METHOD(Int64TypeNode)
+  VISIT_METHOD(StringTypeNode)
+  VISIT_METHOD(CharTypeNode)
+  VISIT_METHOD(BoolTypeNode)
+  VISIT_METHOD(DoubleTypeNode)
+  VISIT_METHOD(VoidTypeNode)
+  VISIT_METHOD(UserDefTypeNode)
 
   //void setSymbolTable(SymbolTable* symbol_table) {
     //symbol_table_ = symbol_table;
@@ -108,10 +133,6 @@ class ASTVisitor {
   void emitException(Exception* e) {
     exceptions_.push_back(e);
   }
-
-  //void resetContext(ASTVisitorContext* context) {
-    //context_.reset(context);
-  //}
 
   bool isVisitFromTop() {
     return visit_from_top_;

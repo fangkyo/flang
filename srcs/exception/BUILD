@@ -1,19 +1,28 @@
 package(
-		default_visibility = ["//visibility:public"],
+    default_visibility = ["//visibility:public"],
 )
 
 cc_library(
     name = "exception",
     srcs = ["exception.cpp"],
-		hdrs = [
-				"exception.h",
-				"//front_end:location.hh",
-				"//front_end:position.hh",
-		],
-		linkopts = ["-lboost_system"],
-		data = [
-				"//front_end:flang_parser_src",
-		],
+    hdrs = [
+        "exception.h",
+        "//front_end:location.hh",
+        "//front_end:position.hh",
+    ],
+    data = [
+        "//front_end:flang_parser_src",
+    ],
+    linkopts = ["-lboost_system"],
+)
+
+cc_library(
+    name = "exception_manager",
+    srcs = ["exception_manager.cpp"],
+    hdrs = ["exception_manager.h"],
+    deps = [
+        ":exception",
+    ]
 )
 
 #cc_test(

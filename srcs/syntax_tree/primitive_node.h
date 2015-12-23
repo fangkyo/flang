@@ -10,7 +10,7 @@ namespace flang {
 // The base class of primitive value node (e.g. string, int, etc.).
 template <class T>
 class PrimitiveNode : public ExpNode {
- INHERIT_AST_NODE(PrimitiveNode, ExpNode, PRIMITIVE_NODE)
+ INHERIT_AST_NODE(PrimitiveNode<T>, ExpNode, PRIMITIVE_NODE)
 
  public:
   void setValue(const T& value) { value_ = value; }
