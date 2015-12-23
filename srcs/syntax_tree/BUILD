@@ -27,6 +27,7 @@ cc_library(
         "new_node.cpp",
         "print_node.cpp",
         "import_node.cpp",
+        "field_access_node.cpp",
     ],
     hdrs = [
         "ast_node.h",
@@ -49,6 +50,7 @@ cc_library(
         "new_node.h",
         "print_node.h",
         "import_node.h",
+        "field_access_node.h",
     ],
     linkopts = [
         "-lboost_system",
@@ -62,22 +64,9 @@ cc_library(
     ],
 )
 
-#cc_library(
-#		name = "ast_node",
-#		hdrs = glob(["*_node.h"]),
-#		srcs = glob(["*_node.cpp"]),
-#		deps = [
-#			":ast_visitor",
-#			"//symbol_table:symbol",
-#		],
-#)
-
-
 cc_library(
     name = "syntax_tree",
-    srcs = [
-        "syntax_tree.cpp",
-    ],
+    srcs = ["syntax_tree.cpp"],
     hdrs = ["syntax_tree.h"],
     deps = [
         ":ast_node",

@@ -169,14 +169,13 @@ as {
 "\n" {
   yylloc->lines(yyleng);
   yylloc->step();
-  return Token::LF;
 }
 
 {integer} {
   try {
     yylval->int64_val = boost::lexical_cast<int64_t>(yytext);
   } catch (const boost::bad_lexical_cast&) {
-		throw new IntegerCastError(yytext, *yylloc);
+    throw new IntegerCastError(yytext, *yylloc);
   }
   return Token::INT_VAL;
 }
@@ -185,7 +184,7 @@ as {
   try {
     yylval->double_val = boost::lexical_cast<double>(yytext);
   } catch (const boost::bad_lexical_cast&) {
-		throw new DoubleCastError(yytext, *yylloc);
+    throw new DoubleCastError(yytext, *yylloc);
   }
 
 }

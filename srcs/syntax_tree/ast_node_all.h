@@ -1,6 +1,7 @@
 #ifndef AST_NODE_ALL_
 #define AST_NODE_ALL_
 
+#include "syntax_tree/ast_node.h"
 #include "syntax_tree/exp_node.h"
 #include "syntax_tree/name_node.h"
 #include "syntax_tree/print_node.h"
@@ -17,6 +18,7 @@
 #include "syntax_tree/primitive_node.h"
 #include "syntax_tree/new_node.h"
 #include "syntax_tree/block_node.h"
-#include "syntax_tree/reference_node.h"
+#include "syntax_tree/import_node.h"
+#include "syntax_tree/field_access_node.h"
 
 #endif

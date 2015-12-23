@@ -73,6 +73,8 @@ class UserDefTypeNode : public TypeNode {
   NameNode* getName() { return name_.get(); }
   void setName(NameNode* name) { name_.reset(name); }
 
+  bool getChildNodes(ASTNodeList* child_nodes) override;
+
  private:
   std::unique_ptr<NameNode> name_;
 };

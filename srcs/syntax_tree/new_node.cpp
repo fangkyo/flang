@@ -2,10 +2,10 @@
 
 namespace flang {
 
-NewNode::NewNode(NameNode* class_name) :
+NewNode::NewNode(CallNode* constructor) :
     ExpNode(ASTNode::NEW_EXP_NODE),
-    class_name_(class_name) {
-  class_name_->setParent(this);
+    constructor_(constructor) {
+  constructor_->setParent(this);
 }
 
 }  // namespace flang

@@ -1,5 +1,5 @@
 package(
-		default_visibility = ["//visibility:public"],
+    default_visibility = ["//visibility:public"],
 )
 
 genrule(
@@ -15,9 +15,9 @@ genrule(
     outs = [
         "flang_parser.h",
         "flang_parser.cpp",
-				"location.hh",
-				"position.hh",
-				"stack.hh",
+        "location.hh",
+        "position.hh",
+        "stack.hh",
     ],
     cmd = "bison -L c++ --defines=$(location flang_parser.h) -o $(location flang_parser.cpp) $(location flang_parser.y)",
 )
@@ -25,21 +25,24 @@ genrule(
 cc_library(
     name = "flang_scanner",
     srcs = ["flang_scanner.cpp"],
-		hdrs = [
-				"flang_scanner.h",
-				"flang_parser.h",
-				"location.hh",
-				"position.hh",
-				"stack.hh",
-		],
-		data = [
+    hdrs = [
+        "flang_parser.h",
+        "flang_scanner.h",
+        "location.hh",
+        "position.hh",
+        "stack.hh",
+    ],
+    copts = [
+        "-Wno-sign-compare",
+    ],
+    data = [
         ":flang_parser_src",
         ":flang_scanner_src",
-		],
-		deps = [
-				"//syntax_tree",
-				"//exception"
-		],
+    ],
+    deps = [
+        "//exception",
+        "//syntax_tree",
+    ],
 )
 
 cc_library(
@@ -49,10 +52,13 @@ cc_library(
     linkopts = [
         "-llog4cxx",
     ],
+    copts = [
+        "-Wno-sign-compare",
+    ],
     deps = [
         ":flang_scanner",
         "//syntax_tree",
-    ]
+    ],
 )
 
 #cc_test(

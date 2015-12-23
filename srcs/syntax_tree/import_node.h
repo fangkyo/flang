@@ -13,14 +13,19 @@ class ImportNode : public StmtNode {
  INHERIT_AST_NODE(ImportNode, StmtNode)
  public:
   ImportNode() : StmtNode(ASTNode::IMPORT_NODE) {}
-  virtual ~ImportNode() {}
+  ~ImportNode() override {}
 
   void setPackage(NameNode* package) {
     package_name_.reset(package);
   }
 
+  void setAlias(SimpleNameNode* alias) {
+    alias_.reset(alias);
+  }
+
  private:
   std::unique_ptr<NameNode> package_name_;
+  std::unique_ptr<SimpleNameNode> alias_;
 };
 
 class ImportListNode : public ASTNode {

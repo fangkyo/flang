@@ -8,6 +8,7 @@
 
 %code requires{
 
+#include "syntax_tree/ast_node_all.h"
 #include "syntax_tree/syntax_tree.h"
 
 namespace flang {
@@ -30,7 +31,7 @@ namespace flang {
 #include <log4cxx/logger.h>
 
 #include "exception/exception.h"
-#include "flang_scanner.h"
+#include "front_end/flang_scanner.h"
 
 using namespace std;
 
@@ -71,7 +72,6 @@ using namespace std;
   ParamListNode* param_list_node;
   FieldAccessNode* field_access_node;
   ReturnNode* return_node;
-  ClassBodyDeclNode* class_body_decl_node;
   ConstructorNode* constructor_node;
   DestructorNode* destructor_node;
 
@@ -109,7 +109,7 @@ using namespace std;
 %nonassoc UMINUS
 %type <program_node> program
 %type <block_node> block
-%type <stmt_node> stmt
+%type <stmt_node> stmt class_body_decl
 %type <stmt_list_node> stmt_list
 %type <exp_node> expr
 %type <var_decl_node> var_decl
@@ -129,7 +129,6 @@ using namespace std;
 %type <import_list_node> import_list
 %type <import_node> import
 %type <return_node> return_stmt
-%type <class_body_decl_node> class_body_decl
 %type <constructor_node> constructor
 %type <destructor_node> destructor
 
@@ -141,7 +140,7 @@ program : import_list stmt_list {
   $$ = new ProgramNode();
   $$->setLocation(@$);
   $$->setImportList($1);
-  $$->setStmtList($1);
+  $$->setStmtList($2);
   syntax_tree->setRoot($$);
 };
 
@@ -150,23 +149,23 @@ import_list : import_list import {
   $$->setLocation(@$);
   $$->addImport($2);
 } | {
-  $$ = new ImportList();
+  $$ = new ImportListNode();
   $$->setLocation(@$);
 };
 
 import : IMPORT name '\n' {
   $$ = new ImportNode();
-  $$->setPackage($1);
+  $$->setPackage($2);
 } | IMPORT name AS simple_name '\n' {
   $$ = new ImportNode();
-  $$->setPackage($1);
+  $$->setPackage($2);
   $$->setAlias($4);
 };
 
 stmt_list : stmt_list  stmt {
   $$ = $1;
   $$->setLocation(@$);
-  $$->addStatement(stmt);
+  $$->addStatement($2);
 } | {
   $$ = new StmtListNode();
   $$->setLocation(@$);
@@ -448,7 +447,7 @@ class : CLASS ID '{' class_body  '}' {
 class_body : class_body class_body_decl {
   $$ = $1;
   $$->setLocation(@$);
-  $$->addDecl($2);
+  $$->addBodyDecl($2);
 } | {
   $$ = new ClassNode();
   $$->setLocation(@$);

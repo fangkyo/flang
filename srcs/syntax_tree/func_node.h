@@ -14,6 +14,17 @@
 
 namespace flang {
 
+class ParamListNode : public ASTNode {
+ INHERIT_AST_NODE(ParamListNode, ASTNode)
+ public:
+  ParamListNode() : ASTNode(ASTNode::PARAM_LIST_NODE) {}
+  ~ParamListNode() override {}
+
+  void addParameter(VarDeclNode* param);
+ private:
+  boost::ptr_vector<VarDeclNode> param_list_;
+};
+
 class FuncNode : public StmtNode {
  INHERIT_AST_NODE(FuncNode, StmtNode)
  public:

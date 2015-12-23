@@ -6,11 +6,8 @@
 
 #include "front_end/location.hh"
 #include "syntax_tree/ast_visitor.h"
-#include "syntax_tree/ast_node.pb.h"
 
 namespace flang {
-
-class ASTVisitor;
 
 #define INHERIT_AST_NODE(Derived, Base) \
     public: \
@@ -32,9 +29,13 @@ class ASTNode {
     VAR_DECL_NODE, // variable declaration node
     VAR_DECL_FRAGMENT_NODE, // variable declaration fragment node.
     STMT_NODE, // Statement node
+    STMT_LIST_NODE,
     FUNC_NODE, // Function definition node
     CALL_NODE, // call function node
     CLASS_NODE, // Class definition node
+    CLASS_BODY_NODE,
+    CONSTRUCTOR_NODE,
+    DESTRUCTOR_NODE,
     BLOCK_NODE, // Code block node
     IF_NODE, // If statement node
     WHILE_NODE, // While statement node
@@ -68,9 +69,10 @@ class ASTNode {
     COMPOSITE_TYPE_NODE,
     CLASS_TYPE_NODE,
     ARRAY_TYPE_NODE,
-    REFERENCE_NODE,
     CONTINUE_NODE,
     USER_DEF_TYPE_NODE,
+    FIELD_ACCESS_NODE,
+    PARAM_LIST_NODE,
   };
 
   ASTNode(ASTNodeType node_type) :

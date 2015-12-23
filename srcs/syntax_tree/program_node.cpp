@@ -6,21 +6,18 @@ namespace flang {
 ProgramNode::ProgramNode() : ASTNode(ASTNode::PROGRAM_NODE) {
 }
 
-void ProgramNode::addChildNode(ASTNode* child_node) {
-  CHECK(child_node);
-  child_node->setParent(this);
-  child_nodes_.push_back(child_node);
+void ProgramNode::setImportList(ImportListNode* import_list) {
+  import_list_.reset(import_list);
+}
+
+void ProgramNode::setStmtList(StmtListNode* stmt_list) {
+  stmt_list_.reset(stmt_list);
 }
 
 bool ProgramNode::getChildNodes(ASTNodeList* child_nodes) {
-  if (child_nodes_.size() > 0) {
-    for (auto& child: child_nodes_) {
-      child_nodes->push_back(&child);
-    }
-    return true;
-  } else {
-    return false;
-  }
+  child_nodes->push_back(import_list_.get());
+  child_nodes->push_back(stmt_list_.get());
+  return true;
 }
 
 } // namespace flang

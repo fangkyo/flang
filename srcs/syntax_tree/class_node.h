@@ -11,6 +11,35 @@
 
 namespace flang {
 
+class ConstructorNode : public StmtNode {
+ INHERIT_AST_NODE(ConstructorNode, StmtNode)
+
+ public:
+  ConstructorNode() : StmtNode(ASTNode::CONSTRUCTOR_NODE) {}
+  virtual ~ConstructorNode() {}
+};
+
+class DestructorNode : public StmtNode {
+ INHERIT_AST_NODE(DestructorNode, StmtNode)
+
+ public:
+  DestructorNode() : StmtNode(ASTNode::DESTRUCTOR_NODE) {}
+  virtual ~DestructorNode() {}
+};
+
+class ClassBodyNode : public ASTNode {
+ INHERIT_AST_NODE(ClassBodyNode, ASTNode)
+ public:
+  ClassBodyNode() : ASTNode(ASTNode::CLASS_BODY_NODE) {}
+  ~ClassBodyNode() override {}
+
+  void addDeclaration(StmtNode* decl);
+  bool getChildNodes(ASTNodeList* child_nodes) override;
+
+ private:
+  boost::ptr_vector<ASTNode> decl_list_;
+};
+
 class ClassNode : public StmtNode {
  INHERIT_AST_NODE(ClassNode, StmtNode)
 
@@ -24,26 +53,20 @@ public:
   void setSuperClass(NameNode* super_class) { super_class_.reset(super_class); }
   NameNode* getSuperClass() { return super_class_.get(); }
 
-  // Add member variable declaration
-  //void addVariable(VarDeclarationNode* member_var) {
-    //member_var->setParent(this);
-    //member_vars_.push_back(member_var);
-  //}
-  //const boost::ptr_vector<VarDeclarationNode>& getVarDeclar() {
-    //return member_vars_;
-  //}
-
+  void setBody(ClassBodyNode* body) {
+    body_.reset(body);
+  }
+  ClassBodyNode* getBody() {
+    return body_.get();
+  }
+  void addBodyDecl(StmtNode* declaration);
   bool hasSuperClass() { return super_class_ == nullptr; }
-
   bool getChildNodes(ASTNodeList* child_nodes) override;
 
  private:
   std::string name_;
   std::unique_ptr<NameNode> super_class_;
-  boost::ptr_vector<ASTNode> body_decls_;
-  //boost::ptr_vector<VarDeclarationNode> member_vars_;
-  //boost::ptr_vector<FuncNode> member_funcs_;
-  //std::vector<ClassNode*> inner_classes_;
+  std::unique_ptr<ClassBodyNode> body_;
 };
 
 }  // namespace flang

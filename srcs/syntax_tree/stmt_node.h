@@ -1,6 +1,8 @@
 #ifndef SYNTAX_TREE_STMT_NODE_H_
 #define SYNTAX_TREE_STMT_NODE_H_
 
+#include <boost/ptr_container/ptr_vector.hpp>
+
 #include "syntax_tree/ast_node.h"
 
 namespace flang {
@@ -15,6 +17,20 @@ class StmtNode : public ASTNode {
  protected:
   StmtNode(ASTNode::ASTNodeType node_type) :
     ASTNode(node_type) {}
+};
+
+class StmtListNode : public ASTNode {
+ INHERIT_AST_NODE(StmtListNode, ASTNode)
+ public:
+  StmtListNode() : ASTNode(ASTNode::STMT_LIST_NODE) {}
+  ~StmtListNode() override {}
+
+  void addStatement(StmtNode* stmt) {
+    stmt_list_.push_back(stmt);
+  }
+
+ private:
+  boost::ptr_vector<StmtNode> stmt_list_;
 };
 
 } // namespace flang
