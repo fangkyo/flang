@@ -24,18 +24,18 @@ class Exception {
 
   enum Type {
     WARNING,
-    ERROR
+    ERROR,
+    EXCEPTION,
   };
-  virtual Exception::Type getType() const = 0;
+  virtual Exception::Type getType() const { return EXCEPTION; }
 
   const location& getLocation() const { return location_; }
   void setLocation(const location& loc) { location_ = loc; }
 
  protected:
-  virtual const char* getName() const = 0;
+  virtual const char* getName() const { return ""; }
 
  private:
-  static boost::format format_;
   std::string message_;
   location location_;
 };

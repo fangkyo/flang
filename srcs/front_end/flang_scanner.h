@@ -1,8 +1,11 @@
 #ifndef FLANG_SCANNER_H_
 #define FLANG_SCANNER_H_
 
+#include <iostream>
 #include <istream>
 #include <string>
+
+#include <log4cxx/logger.h>
 
 #if ! defined(yyFlexLexerOnce)
 #include <FlexLexer.h>
@@ -42,7 +45,7 @@ class IntegerCastError : public Error {
       Error(loc) {
     boost::format fmt(
         "%1% can't be parsed to integer, out of range [%2%, %3%].");
-    fmt % text % INT64_MAX % INT64_MAX;
+    fmt % text % INT64_MIN % INT64_MAX;
     setMessage(fmt.str());
   }
 };
@@ -59,6 +62,8 @@ class DoubleCastError : public Error {
   }
 };
 
+class ExceptionManager;
+
 /**
  * @brief The flang lex scanner which scans the source file and turns it into
  *        tokens.
@@ -67,17 +72,22 @@ class DoubleCastError : public Error {
  */
 class FlangScanner : public yyFlexLexer{
  public:
-  FlangScanner(std::istream *in)
-      : yyFlexLexer(in) {}
+  FlangScanner(std::istream *in, ExceptionManager* except_manager = nullptr)
+      : yyFlexLexer(in), except_manager_(except_manager) {}
   /**
    * The scan function which is passed in the value struct given by FlangParser
    * and defined by %union section in flang_parser.y.
+   *
    * @param[in] yyval The yylval in C version scanner.
+   * @param[in] yylloc The location information of token.
+   * @return FlangParser token.
    */
   int yylex(FlangParser::semantic_type* yylval,
             FlangParser::location_type* yylloc);
 
  private:
+  static log4cxx::LoggerPtr logger_;
+  ExceptionManager* except_manager_;
 };
 
 }  // namespace flang

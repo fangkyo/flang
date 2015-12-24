@@ -1,6 +1,8 @@
 #include <sstream>
+#include <exception>
 
-#include "flang_scanner.h"
+#include "exception/exception_manager.h"
+#include "front_end/flang_scanner.h"
 #include "test/test.h"
 
 namespace flang {
@@ -13,7 +15,6 @@ TEST_F(FlangScannerTest, testScanID) {
   FlangScanner scanner(&is_stream);
   FlangParser::semantic_type yylval;
   FlangParser::location_type yylloc;
-  yylloc.step();
   ASSERT_EQ(FlangParser::token_type::ID, scanner.yylex(&yylval, &yylloc));
   delete yylval.str_val;
   position begin1(nullptr, 1, 1);
@@ -48,16 +49,24 @@ TEST_F(FlangScannerTest, testScanID) {
 
 TEST_F(FlangScannerTest, testScanInteger) {
   std::istringstream is_stream("1123   43435345435349999999999999");
-  FlangScanner scanner(&is_stream);
+  ExceptionManager except_manager;
+  FlangScanner scanner(&is_stream, &except_manager);
   FlangParser::semantic_type yylval;
-  FlangParser::location_type yylloc;
+  std::string filename = "hello.txt";
+  FlangParser::location_type yylloc(&filename);
+
   ASSERT_EQ(FlangParser::token_type::INT_VAL, scanner.yylex(&yylval, &yylloc));
   EXPECT_EQ(1123L, yylval.int_val);
-  position begin1(nullptr, 1, 1);
+  position begin1(&filename, 1, 1);
   EXPECT_EQ(begin1, yylloc.begin);
-  position end1(nullptr, 1, 5);
+  position end1(&filename, 1, 5);
   EXPECT_EQ(end1, yylloc.end);
-  EXPECT_THROW(scanner.yylex(&yylval, &yylloc), IntegerCastError*);
+
+  scanner.yylex(&yylval, &yylloc);
+  EXPECT_EQ(1, except_manager.getExceptionList().size());
+  for (auto& except : except_manager.getExceptionList()) {
+    LOG_ERROR(except.getMessage());
+  }
 }
 
 }  // namespace flang

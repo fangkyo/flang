@@ -35,12 +35,16 @@ cc_library(
     copts = [
         "-Wno-sign-compare",
     ],
+    linkopts = [
+        "-llog4cxx",
+    ],
     data = [
         ":flang_parser_src",
         ":flang_scanner_src",
     ],
     deps = [
         "//exception",
+        "//exception:exception_manager",
         "//syntax_tree",
     ],
 )
@@ -64,8 +68,12 @@ cc_library(
 cc_test(
     name = "flang_scanner_test",
     srcs = ["flang_scanner_test.cpp"],
+    size = "small",
+    linkopts = [
+        "-lbacktrace",
+    ],
     deps = [
         ":flang_scanner",
-        "//test:test",
+        "//test",
     ]
 )

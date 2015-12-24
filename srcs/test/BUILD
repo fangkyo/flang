@@ -13,3 +13,11 @@ cc_library(
         "-llog4cxx",
     ],
 )
+
+cc_test(
+    name = "backtrace_test",
+    srcs = ["backtrace_test.cpp"],
+    linkopts = [
+        "-lbacktrace",
+    ]
+)

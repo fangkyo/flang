@@ -10,6 +10,7 @@
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 
+#include "exception/exception_manager.h"
 #include "front_end/flang_parser.h"
 #include "front_end/flang_scanner.h"
 #include "syntax_tree/syntax_tree.h"
@@ -17,6 +18,8 @@
 /* typedef to make the returns for the tokens shorter */
 typedef flang::FlangParser::token Token;
 
+// static
+log4cxx::LoggerPtr flang::FlangScanner::logger_(log4cxx::Logger::getLogger("flang.scanner"));
 
 /* The following paragraph suffices to track locations accurately. Each time
  * yylex is invoked, the begin position is moved onto the end position. */
@@ -49,22 +52,18 @@ char '.'
 
 
 while {
-  yylval->lineno = lineno();
   return Token::WHILE;
 }
 
 if {
-  yylval->lineno = lineno();
   return Token::IF;
 }
 
 else {
-  yylval->lineno = lineno();
   return Token::ELSE;
 }
 
 break {
-  yylval->lineno = lineno();
   return Token::BREAK;
 }
 
@@ -73,92 +72,74 @@ continue {
 }
 
 def {
-  yylval->lineno = lineno();
   return Token::DEF;
 }
 
 class {
-  yylval->lineno = lineno();
   return Token::CLASS;
 }
 
 print {
-  yylval->lineno = lineno();
   return Token::PRINT;
 }
 
 return {
-  yylval->lineno = lineno();
   return Token::RETURN;
 }
 
 this {
-  yylval->lineno = lineno();
   return Token::THIS;
 }
 
 new {
-  yylval->lineno = lineno();
   return Token::NEW;
 }
 
 int32 {
-  yylval->lineno = lineno();
   return Token::INT32_TYPE;
 }
 
 int64 {
-  yylval->lineno = lineno();
   return Token::INT64_TYPE;
 }
 
 bool {
-  yylval->lineno = lineno();
   return Token::BOOL_TYPE;
 }
 
 char {
-  yylval->lineno = lineno();
   return Token::CHAR_TYPE;
 }
 
 string {
-  yylval->lineno = lineno();
   return Token::STR_TYPE;
 }
 
 double {
-  yylval->lineno = lineno();
   return Token::DOUBLE_TYPE;
 }
 
 true {
-  yylval->lineno = lineno();
   return Token::TRUE;
 }
 
 false {
-  yylval->lineno = lineno();
   return Token::FALSE;
 }
 
 or {
-  yylval->lineno = lineno();
   return Token::OR;
 }
 
 and {
-  yylval->lineno = lineno();
   return Token::AND;
 }
 
 import {
-  yylval->lineno = lineno();
   return Token::IMPORT;
 }
 
 as {
-  yylval->lineno = lineno();
   return Token::AS;
 }
 
@@ -166,8 +147,10 @@ as {
   yylloc->step();
 }
 
-"\n" {
-  yylloc->lines(yyleng);
+[\n]+ {
+  // Reset yylloc to the first column of next line
+  yylloc->lines(YYLeng());
+  yylloc->end.column = 1;
   yylloc->step();
 }
 
@@ -175,7 +158,10 @@ as {
   try {
     yylval->int_val = boost::lexical_cast<int64_t>(yytext);
   } catch (const boost::bad_lexical_cast&) {
-    throw new IntegerCastError(yytext, *yylloc);
+    if (except_manager_) {
+      except_manager_->addException(new IntegerCastError(yytext, *yylloc));
+    }
+    yylval->int_val = 0;
   }
   return Token::INT_VAL;
 }
@@ -184,13 +170,15 @@ as {
   try {
     yylval->double_val = boost::lexical_cast<double>(yytext);
   } catch (const boost::bad_lexical_cast&) {
-    throw new DoubleCastError(yytext, *yylloc);
+    if (except_manager_) {
+      except_manager_->addException(new DoubleCastError(yytext, *yylloc));
+    }
+    yylval->double_val = 0.0;
   }
-
+  return Token::DOUBLE_VAL;
 }
 
 {op} {
-  yylval->lineno = lineno();
   return *yytext;
 }
 
@@ -210,22 +198,18 @@ as {
 }
 
 "<=" {
-  yylval->lineno = lineno();
   return Token::LE;
 }
 
 ">=" {
-  yylval->lineno = lineno();
   return Token::GE;
 }
 
 "==" {
-  yylval->lineno = lineno();
   return Token::EQ;
 }
 
 "!=" {
-  yylval->lineno = lineno();
   return Token::NE;
 }
 
