@@ -19,8 +19,6 @@ void Exception::setMessage(const std::string& message) {
   message_ = boost::str(
       fmt % getName() % *(location_.begin.filename) %
       location_.begin.line % location_.begin.column % message);
-  //std::cout << getName() << std::endl;
-  //std::cout << *(location_.begin.filename) << std::endl;
 }
 
 Warning::Warning(const location& loc) :
@@ -29,6 +27,11 @@ Warning::Warning(const location& loc) :
 
 Error::Error(const location& loc) :
     Exception(loc) {
+}
+
+FrontEndError::FrontEndError(const std::string& msg, const location& loc) :
+    Error(loc) {
+  setMessage(msg);
 }
 
 }  // namespace flang

@@ -21,9 +21,17 @@ typedef flang::FlangParser::token Token;
 // static
 log4cxx::LoggerPtr flang::FlangScanner::logger_(log4cxx::Logger::getLogger("flang.scanner"));
 
+
+void flang::FlangScanner::LexerError(const char* msg) {
+  throw new flang::FlexError(msg, *loc_);
+}
+
+
 /* The following paragraph suffices to track locations accurately. Each time
  * yylex is invoked, the begin position is moved onto the end position. */
-#define YY_USER_ACTION  yylloc->columns(yyleng);
+#define YY_USER_ACTION \
+  yylloc->columns(yyleng); \
+  this->loc_ = yylloc;
 
 %}
 
@@ -150,7 +158,6 @@ as {
 [\n]+ {
   // Reset yylloc to the first column of next line
   yylloc->lines(YYLeng());
-  yylloc->end.column = 1;
   yylloc->step();
 }
 
@@ -158,9 +165,7 @@ as {
   try {
     yylval->int_val = boost::lexical_cast<int64_t>(yytext);
   } catch (const boost::bad_lexical_cast&) {
-    if (except_manager_) {
-      except_manager_->addException(new IntegerCastError(yytext, *yylloc));
-    }
+    throw new IntegerCastError(yytext, *yylloc);
     yylval->int_val = 0;
   }
   return Token::INT_VAL;
@@ -170,9 +175,7 @@ as {
   try {
     yylval->double_val = boost::lexical_cast<double>(yytext);
   } catch (const boost::bad_lexical_cast&) {
-    if (except_manager_) {
-      except_manager_->addException(new DoubleCastError(yytext, *yylloc));
-    }
+    throw new DoubleCastError(yytext, *yylloc);
     yylval->double_val = 0.0;
   }
   return Token::DOUBLE_VAL;
@@ -214,7 +217,9 @@ as {
 }
 
 . {
-  printf("Unknown char at line %d : %c\n", lineno(), yytext[0]);
+  boost::format fmt("Unknow char '%1%'.");
+  std::string error = boost::str(fmt % yytext[0]);
+  LexerError(error.c_str());
 };
 
 %%

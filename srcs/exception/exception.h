@@ -35,7 +35,6 @@ class Exception {
  protected:
   virtual const char* getName() const { return ""; }
 
- private:
   std::string message_;
   location location_;
 };
@@ -68,7 +67,12 @@ class Error : public Exception {
   const char* getName() const override { return "Error"; };
 };
 
-}
+class FrontEndError : public Error {
+ public:
+  FrontEndError(const std::string& msg, const location& loc);
+};
+
+} // namespace flang
 
 #endif
 

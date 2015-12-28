@@ -48,9 +48,9 @@ TEST_F(FlangScannerTest, testScanID) {
 }
 
 TEST_F(FlangScannerTest, testScanInteger) {
-  std::istringstream is_stream("1123   43435345435349999999999999");
-  ExceptionManager except_manager;
-  FlangScanner scanner(&is_stream, &except_manager);
+  std::istringstream is_stream(
+      "1123   43435345435349999999999999");
+  FlangScanner scanner(&is_stream);
   FlangParser::semantic_type yylval;
   std::string filename = "hello.txt";
   FlangParser::location_type yylloc(&filename);
@@ -62,11 +62,17 @@ TEST_F(FlangScannerTest, testScanInteger) {
   position end1(&filename, 1, 5);
   EXPECT_EQ(end1, yylloc.end);
 
-  scanner.yylex(&yylval, &yylloc);
-  EXPECT_EQ(1, except_manager.getExceptionList().size());
-  for (auto& except : except_manager.getExceptionList()) {
-    LOG_ERROR(except.getMessage());
-  }
+  EXPECT_THROW(scanner.yylex(&yylval, &yylloc), IntegerCastError*);
 }
 
+TEST_F(FlangScannerTest, testScanDouble) {
+  std::istringstream is_stream("3.8");
+  FlangScanner scanner(&is_stream);
+  FlangParser::semantic_type yylval;
+  std::string filename = "hello.txt";
+  FlangParser::location_type yylloc(&filename);
+
+  EXPECT_EQ(FlangParser::token_type::DOUBLE_VAL, scanner.yylex(&yylval, &yylloc));
+  EXPECT_EQ(3.8, yylval.double_val);
+}
 }  // namespace flang

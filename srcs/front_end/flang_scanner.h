@@ -62,6 +62,13 @@ class DoubleCastError : public Error {
   }
 };
 
+class FlexError : public FrontEndError {
+ public:
+  FlexError(const std::string& msg, const location& loc) :
+      FrontEndError(msg, loc) {
+  }
+};
+
 class ExceptionManager;
 
 /**
@@ -73,7 +80,7 @@ class ExceptionManager;
 class FlangScanner : public yyFlexLexer{
  public:
   FlangScanner(std::istream *in, ExceptionManager* except_manager = nullptr)
-      : yyFlexLexer(in), except_manager_(except_manager) {}
+      : yyFlexLexer(in), except_manager_(except_manager), loc_(nullptr) {}
   /**
    * The scan function which is passed in the value struct given by FlangParser
    * and defined by %union section in flang_parser.y.
@@ -85,9 +92,12 @@ class FlangScanner : public yyFlexLexer{
   int yylex(FlangParser::semantic_type* yylval,
             FlangParser::location_type* yylloc);
 
+  void LexerError(const char* msg) override;
+
  private:
   static log4cxx::LoggerPtr logger_;
   ExceptionManager* except_manager_;
+  FlangParser::location_type* loc_;
 };
 
 }  // namespace flang
