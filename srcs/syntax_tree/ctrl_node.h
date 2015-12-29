@@ -3,6 +3,7 @@
 
 #include <memory>
 
+#include "base/check.h"
 #include "syntax_tree/stmt_node.h"
 #include "syntax_tree/exp_node.h"
 
@@ -12,26 +13,31 @@ class IfNode : public StmtNode {
  INHERIT_AST_NODE(IfNode, StmtNode, IF_NODE)
  public:
   IfNode(ExpNode* test_node, ASTNode* if_node, ASTNode* else_node);
+  IfNode(ExpNode* test_node, ASTNode* if_node);
   ~IfNode() override {}
 
   void setTestNode(ExpNode* test_node) {
+    CHECK(test_node);
     test_node_.reset(test_node);
     test_node_->setParent(this);
   }
   ExpNode* getTestNode() { return test_node_.get(); }
 
   void setIfNode(ASTNode* if_node) {
+    CHECK(if_node);
     if_node_.reset(if_node);
     if_node_->setParent(this);
   }
   ASTNode* getIfNode() { return if_node_.get(); }
 
   void setElseNode(ASTNode* else_node) {
+    CHECK(else_node);
     else_node_.reset(else_node);
     else_node_->setParent(this);
   }
   ASTNode* getElseNode() { return else_node_.get(); }
 
+  bool getChildNodes(ASTNodeList* child_nodes) override;
  private:
   std::unique_ptr<ExpNode> test_node_;
   std::unique_ptr<ASTNode> if_node_;
@@ -41,24 +47,27 @@ class IfNode : public StmtNode {
 class WhileNode : public StmtNode {
  INHERIT_AST_NODE(WhileNode, StmtNode, WHILE_NODE)
  public:
-  WhileNode(ExpNode* test_node, ASTNode* body_node);
+  WhileNode(ExpNode* test_node, StmtNode* body_node);
   ~WhileNode() override {}
 
   void setTestNode(ExpNode* test_node) {
+    CHECK(test_node);
     test_node_.reset(test_node);
     test_node_->setParent(this);
   }
   ExpNode* getTestNode() { return test_node_.get(); }
 
-  void setBodyNode(ASTNode* body_node) {
+  void setBodyNode(StmtNode* body_node) {
+    CHECK(body_node);
     body_node_.reset(body_node);
     body_node_->setParent(this);
   }
-  ASTNode* getBodyNode() { return body_node_.get(); }
+  StmtNode* getBodyNode() { return body_node_.get(); }
 
+  bool getChildNodes(ASTNodeList* child_nodes) override;
  private:
   std::unique_ptr<ExpNode> test_node_;
-  std::unique_ptr<ASTNode> body_node_;
+  std::unique_ptr<StmtNode> body_node_;
 };
 
 class BreakNode : public StmtNode {

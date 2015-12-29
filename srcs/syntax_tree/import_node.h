@@ -3,6 +3,7 @@
 
 #include <boost/ptr_container/ptr_vector.hpp>
 
+#include "base/check.h"
 #include "syntax_tree/ast_node.h"
 #include "syntax_tree/stmt_node.h"
 #include "syntax_tree/name_node.h"
@@ -16,12 +17,18 @@ class ImportNode : public StmtNode {
   ~ImportNode() override {}
 
   void setPackage(NameNode* package) {
+    CHECK(package);
     package_name_.reset(package);
+    package_name_->setParent(this);
   }
 
   void setAlias(SimpleNameNode* alias) {
+    CHECK(alias);
     alias_.reset(alias);
+    alias_->setParent(this);
   }
+
+  bool getChildNodes(ASTNodeList* child_nodes) override;
 
  private:
   std::unique_ptr<NameNode> package_name_;
@@ -35,6 +42,7 @@ class ImportListNode : public ASTNode {
   virtual ~ImportListNode() {}
 
   void addImport(ImportNode* import);
+  bool getChildNodes(ASTNodeList* child_nodes) override;
 
  private:
   boost::ptr_vector<ImportNode> import_list_;

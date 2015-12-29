@@ -24,6 +24,8 @@ class ParamListNode : public ASTNode {
   const boost::ptr_vector<ExpNode>& getParamList() const {
     return param_list_;
   }
+
+  bool getChildNodes(ASTNodeList* child_nodes) override;
  private:
   boost::ptr_vector<ExpNode> param_list_;
 };
@@ -41,6 +43,7 @@ class ParamDeclListNode : public ASTNode {
     return decl_list_;
   }
 
+  bool getChildNodes(ASTNodeList* child_nodes) override;
  private:
   boost::ptr_vector<VarDeclNode> decl_list_;
 } ;
@@ -75,6 +78,8 @@ class FuncNode : public StmtNode {
     return_type_->setParent(this);
   }
 
+  bool getChildNodes(ASTNodeList* child_nodes) override;
+
  protected:
   std::string name_;
   std::unique_ptr<ParamDeclListNode> param_decl_list_;
@@ -85,16 +90,17 @@ class FuncNode : public StmtNode {
 class ReturnNode : public StmtNode {
  INHERIT_AST_NODE(ReturnNode, StmtNode, RETURN_NODE)
  public:
-  ReturnNode(ExpNode* exp_node = nullptr);
+  ReturnNode(ExpNode* expr);
   ~ReturnNode() override {}
 
   ExpNode* getExpression() { return expression_.get(); }
   void setExpression(ExpNode* exp_node) {
+    CHECK(exp_node);
     expression_.reset(exp_node);
-    if (expression_) {
-      expression_->setParent(this);
-    }
+    expression_->setParent(this);
   }
+
+  bool getChildNodes(ASTNodeList* child_nodes) override;
 
  private:
   std::unique_ptr<ExpNode> expression_;

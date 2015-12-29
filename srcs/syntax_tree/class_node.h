@@ -48,13 +48,20 @@ public:
   ClassNode() {}
   ~ClassNode() override {}
 
-  void setName(const std::string &name) { name_ = name; }
+  void setName(const std::string &name) {
+    CHECK(name.length());
+    name_ = name;
+  }
   const std::string &getName() { return name_; }
 
-  void setSuperClass(NameNode* super_class) { super_class_.reset(super_class); }
+  void setSuperClass(NameNode* super_class) {
+    CHECK(super_class);
+    super_class_.reset(super_class);
+  }
   NameNode* getSuperClass() { return super_class_.get(); }
 
   void setBody(ClassBodyNode* body) {
+    CHECK(body);
     body_.reset(body);
   }
   ClassBodyNode* getBody() {

@@ -5,11 +5,9 @@ namespace flang {
 
 BinaryExpNode::BinaryExpNode(
     BinaryOpType op, ExpNode* left_exp, ExpNode* right_exp) :
-    operator_(op), left_side_(left_exp), right_side_(right_exp) {
-  CHECK_MSG(left_exp, "Left expression can't be null");
-  CHECK_MSG(right_exp, "Right expression can't be null");
-  left_side_->setParent(this);
-  right_side_->setParent(this);
+    operator_(op) {
+  setLeftSide(left_exp);
+  setRightSide(right_exp);
 }
 
 bool BinaryExpNode::getChildNodes(ASTNodeList* child_nodes) {

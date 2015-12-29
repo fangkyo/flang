@@ -3,8 +3,8 @@
 namespace flang {
 
 UnaryExpNode::UnaryExpNode(UnaryOpType op, ExpNode* operand) :
-    operator_(op), operand_(operand) {
-  operand_->setParent(this);
+    operator_(op) {
+  setOperand(operand);
 }
 
 bool UnaryExpNode::getChildNodes(ASTNodeList* child_nodes) {

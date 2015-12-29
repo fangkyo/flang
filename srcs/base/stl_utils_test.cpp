@@ -15,7 +15,7 @@ TEST_F(STLUtilsTest, testPtrVectorToVector) {
   pv.push_back(new std::string("c"));
 
   std::vector<std::string*> v;
-  ptrVectorToVector(pv, &v);
+  ASSERT_TRUE(ptrVectorToVector(pv, &v));
   ASSERT_EQ(pv.size(), v.size());
 }
 

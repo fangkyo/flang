@@ -119,7 +119,7 @@ using namespace std;
 %type <if_node> if_stmt
 %type <while_node> while_stmt
 %type <func_node>  function
-%type <param_decl_list_node> func_param_decl_list
+%type <param_decl_list_node> param_decl_list
 %type <call_node>  call
 %type <class_node> class  class_body
 %type <assign_node> assignment
@@ -158,10 +158,12 @@ import_list : import_list import {
 import : IMPORT name '\n' {
   $$ = new ImportNode();
   $$->setPackage($2);
+  $$->setLocation(@$);
 } | IMPORT name AS simple_name '\n' {
   $$ = new ImportNode();
   $$->setPackage($2);
   $$->setAlias($4);
+  $$->setLocation(@$);
 };
 
 stmt_list : stmt_list  stmt {
@@ -370,7 +372,7 @@ while_stmt : WHILE '(' expr ')' stmt {
   $$->setLocation(@$);
 };
 
-function : DEF ID '(' func_param_decl_list ')' ret_type block {
+function : DEF ID '(' param_decl_list ')' ret_type block {
   $$ = new FuncNode();
   $$->setLocation(@$);
   $$->setName(*($2));
@@ -393,7 +395,7 @@ ret_type : type {
   $$->setLocation(@$);
 };
 
-func_param_decl_list : func_param_decl_list ',' type ID {
+param_decl_list : param_decl_list ',' type ID {
   $$ = $1;
   $$->setLocation(@$);
   VarDeclNode* var_decl_node = new VarDeclNode();
@@ -457,17 +459,22 @@ class_body : class_body class_body_decl {
 
 class_body_decl : var_decl ';' {
   $$ = $1;
+  $$->setLocation(@$);
 } | function {
   $$ = $1;
+  $$->setLocation(@$);
 } | class {
   $$ = $1;
+  $$->setLocation(@$);
 } | constructor {
   $$ = $1;
+  $$->setLocation(@$);
 } | destructor {
   $$ = $1;
+  $$->setLocation(@$);
 };
 
-constructor : THIS '(' func_param_decl_list ')' block {
+constructor : THIS '(' param_decl_list ')' block {
   $$ = new ConstructorNode();
   $$->setLocation(@$);
   $$->setParamDeclList($3);

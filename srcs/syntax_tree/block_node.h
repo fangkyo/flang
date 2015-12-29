@@ -20,7 +20,9 @@ class BlockNode : public StmtNode {
     return stmt_list_.get();
   }
   void setStmtList(StmtListNode* stmt_list) {
+    CHECK(stmt_list);
     stmt_list_.reset(stmt_list);
+    stmt_list_->setParent(this);
   }
 
   bool getChildNodes(ASTNodeList*) override;

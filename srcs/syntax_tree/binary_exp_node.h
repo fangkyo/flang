@@ -38,12 +38,14 @@ class BinaryExpNode : public ExpNode {
 
   ExpNode* getLeftSide() { return left_side_.get(); }
   void setLeftSide(ExpNode* exp_node) {
+    CHECK(exp_node);
     left_side_.reset(exp_node);
     left_side_->setParent(this);
   }
 
   ExpNode* getRightSide() { return right_side_.get(); }
   void setRightSide(ExpNode* exp_node) {
+    CHECK(exp_node);
     right_side_.reset(exp_node);
     right_side_->setParent(this);
   }

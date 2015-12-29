@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "base/check.h"
 #include "syntax_tree/exp_node.h"
 
 namespace flang{
@@ -49,11 +50,16 @@ class QualifiedNameNode : public NameNode {
 
   std::string getName() const override { return ""; }
 
-  void setQualifier(NameNode* qualifier) { qualifier_.reset(qualifier); }
+  void setQualifier(NameNode* qualifier) {
+    CHECK(qualifier);
+    qualifier_.reset(qualifier);
+    qualifier_->setParent(this);
+  }
   NameNode* getQualifier() { return qualifier_.get(); }
 
   std::string getFullName() override;
 
+  bool getChildNodes(ASTNodeList* child_nodes) override;
  private:
   std::unique_ptr<NameNode> qualifier_;
   std::unique_ptr<SimpleNameNode> name_;

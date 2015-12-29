@@ -2,7 +2,14 @@
 
 namespace flang {
 
-PrintNode::PrintNode(ExpNode* exp_node) :
-    exp_node_(exp_node) {}
+PrintNode::PrintNode(ExpNode* expr) {
+  setExpression(expr);
+}
+
+bool PrintNode::getChildNodes(ASTNodeList* child_nodes) {
+  CHECK(expr_);
+  child_nodes->push_back(expr_.get());
+  return true;
+}
 
 }  // namespace flang

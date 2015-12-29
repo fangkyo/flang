@@ -36,6 +36,7 @@ class StmtListNode : public ASTNode {
 
   void addStatement(StmtNode* stmt) {
     stmt_list_.push_back(stmt);
+    stmt->setParent(this);
   }
 
   const boost::ptr_vector<StmtNode>& getStmtList() const {

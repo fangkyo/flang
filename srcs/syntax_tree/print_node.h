@@ -14,14 +14,17 @@ class PrintNode : public StmtNode {
  public:
   PrintNode(ExpNode* exp_node);
 
-  ExpNode* getExpNode() { return exp_node_.get(); }
-  void setExpNode(ExpNode* exp_node) {
-    exp_node_.reset(exp_node);
-    exp_node_->setParent(this);
+  ExpNode* getExpression() { return expr_.get(); }
+  void setExpression(ExpNode* expr) {
+    CHECK(expr);
+    expr_.reset(expr);
+    expr_->setParent(this);
   }
 
+  bool getChildNodes(ASTNodeList*) override;
+
  private:
-  std::unique_ptr<ExpNode> exp_node_;
+  std::unique_ptr<ExpNode> expr_;
 };
 
 }  // namespace flang

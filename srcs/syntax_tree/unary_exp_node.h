@@ -32,6 +32,7 @@ class UnaryExpNode : public ExpNode {
 
   // Accessor of operand
   void setOperand(ExpNode* operand) {
+    CHECK(operand);
     operand_.reset(operand);
     operand_->setParent(this);
   }
