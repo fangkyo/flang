@@ -43,6 +43,7 @@ cc_library(
         ":flang_scanner_src",
     ],
     deps = [
+        "//base",
         "//exception",
         "//exception:exception_manager",
         "//syntax_tree",
@@ -61,6 +62,7 @@ cc_library(
     ],
     deps = [
         ":flang_scanner",
+        "//base",
         "//syntax_tree",
     ],
 )
@@ -74,6 +76,7 @@ cc_test(
     ],
     deps = [
         ":flang_scanner",
+        "//base",
         "//test",
     ]
 )

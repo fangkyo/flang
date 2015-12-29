@@ -5,9 +5,17 @@ package(
 cc_library(
     name = "base",
     hdrs = [
+        "base.h",
         "check.h",
         "stl_utils.h",
     ],
+    srcs = [
+        "base.cpp",
+    ],
+    copts = ["-DBACKWARD_HAS_BFD=1"],
+    deps = [
+        "//third_party:backward_cpp",
+    ]
 )
 
 cc_test(

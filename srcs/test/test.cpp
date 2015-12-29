@@ -2,6 +2,7 @@
 #include <log4cxx/consoleappender.h>
 #include <log4cxx/patternlayout.h>
 
+#include "base/base.h"
 #include "test/test.h"
 
 namespace flang {
@@ -15,6 +16,7 @@ void Test::SetUpTestCase() {
       new log4cxx::PatternLayout("%d{HH:mm:ss} %-5p [%l] %m%n"));
   log4cxx::ConsoleAppenderPtr appender(new log4cxx::ConsoleAppender(layout));
   log4cxx::BasicConfigurator::configure(appender);
+  flang::initProgram();
 }
 
 }

@@ -10,11 +10,13 @@
 #include <log4cxx/propertyconfigurator.h>
 #include <tclap/CmdLine.h>
 
+#include "base/base.h"
 #include "front_end/flang_parser.h"
 #include "front_end/flang_scanner.h"
 #include "syntax_tree/syntax_tree.h"
 
 int main(int argc, char* argv[]){
+  flang::initProgram();
   TCLAP::CmdLine cmd("Flang compiler.", ' ', "1.0");
   TCLAP::ValueArg<std::string> file_arg(
       "f","src_file","Source file.",true,"","string");

@@ -12,6 +12,7 @@ cc_binary(
         "-llog4cxx",
     ],
     deps = [
+        "//base",
         "//front_end:flang_parser",
         "//front_end:flang_scanner",
         "//exception:exception",

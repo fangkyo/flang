@@ -1,5 +1,5 @@
 package(
-		default_visibility = ["//visibility:public"],
+  default_visibility = ["//visibility:public"],
 )
 
 cc_library(
@@ -12,12 +12,7 @@ cc_library(
         "-lpthread",
         "-llog4cxx",
     ],
-)
-
-cc_test(
-    name = "backtrace_test",
-    srcs = ["backtrace_test.cpp"],
-    linkopts = [
-        "-lbacktrace",
-    ]
+    deps = [
+        "//base",
+    ],
 )
