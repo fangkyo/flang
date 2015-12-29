@@ -91,6 +91,7 @@ class ReturnNode : public StmtNode {
  INHERIT_AST_NODE(ReturnNode, StmtNode, RETURN_NODE)
  public:
   ReturnNode(ExpNode* expr);
+  ReturnNode();
   ~ReturnNode() override {}
 
   ExpNode* getExpression() { return expression_.get(); }

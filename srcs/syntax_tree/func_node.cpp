@@ -28,6 +28,8 @@ bool FuncNode::getChildNodes(ASTNodeList* child_nodes) {
   return true;
 }
 
+ReturnNode::ReturnNode() {}
+
 ReturnNode::ReturnNode(ExpNode* exp_node) {
   setExpression(exp_node);
 }
