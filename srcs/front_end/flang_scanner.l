@@ -44,18 +44,18 @@ void flang::FlangScanner::LexerError(const char* msg) {
 %option yyclass="FlangScanner"
 
 integer [0-9]+
-double [0-9]*.[0-9]+
-op [-+*/%(){}<>.;=!,:$]
+double [0-9]*\.[0-9]+
+op [-+*/%(){}<>.;=!,:$~]
 identifier [a-zA-Z_][a-zA-Z0-9_]*
 string \"[^"]*\"
 char '.'
 
 %%
 
- /* code to place at the beginning of yylex() */
 %{
-    // reset location
-    yylloc->step();
+  // Code to place at the beginning of yylex().
+  // Reset location.
+  yylloc->step();
 %}
 
 
@@ -182,7 +182,7 @@ as {
 }
 
 {op} {
-  return *yytext;
+  return yytext[0];
 }
 
 {string} {
@@ -191,7 +191,7 @@ as {
 }
 
 {char} {
-  yylval->char_val = *yytext;
+  yylval->char_val = yytext[1];
   return Token::CHAR_VAL;
 }
 

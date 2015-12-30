@@ -72,7 +72,22 @@ TEST_F(FlangScannerTest, testScanDouble) {
   std::string filename = "hello.txt";
   FlangParser::location_type yylloc(&filename);
 
-  EXPECT_EQ(FlangParser::token_type::DOUBLE_VAL, scanner.yylex(&yylval, &yylloc));
+  EXPECT_EQ(
+      FlangParser::token_type::DOUBLE_VAL, scanner.yylex(&yylval, &yylloc));
   EXPECT_EQ(3.8, yylval.double_val);
 }
+
+TEST_F(FlangScannerTest, testOp) {
+  std::istringstream is_stream(" +8");
+  FlangScanner scanner(&is_stream);
+  FlangParser::semantic_type yylval;
+  std::string filename = "hello.txt";
+  FlangParser::location_type yylloc(&filename);
+  // EXPECT_EQ(FlangParser::token_type::INT_VAL, scanner.yylex(&yylval, &yylloc));
+  // EXPECT_EQ(3, yylval.int_val);
+  EXPECT_EQ('+', scanner.yylex(&yylval, &yylloc));
+  EXPECT_EQ(FlangParser::token_type::INT_VAL, scanner.yylex(&yylval, &yylloc)); 
+  /* EXPECT_EQ(8, yylval.int_val); */
+}
+
 }  // namespace flang
