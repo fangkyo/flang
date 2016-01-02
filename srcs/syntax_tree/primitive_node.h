@@ -14,7 +14,7 @@ class PrimitiveNode : public ExpNode {
 
  public:
   void setValue(const T& value) { value_ = value; }
-  const T& value() { return value_; }
+  const T& getValue() const { return value_; }
 
  protected:
   PrimitiveNode(const T& value) : value_(value) {}

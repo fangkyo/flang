@@ -1,5 +1,5 @@
-#ifndef AST_VISITOR_H_
-#define AST_VISITOR_H_
+#ifndef SYNTAX_TREE_AST_VISITOR_H_
+#define SYNTAX_TREE_AST_VISITOR_H_
 
 #include <vector>
 
@@ -134,12 +134,18 @@ class ASTVisitor {
     exceptions_.push_back(e);
   }
 
-  bool isVisitFromTop() {
+  bool isVisitFromTop() const {
     return visit_from_top_;
   }
+  void setVisitFromTop(bool value) {
+    visit_from_top_ = value;
+  }
 
-  bool isEndVisitFromTop() {
+  bool isEndVisitFromTop() const {
     return end_visit_from_top_;
+  }
+  void setEndVisitFromTop(bool value) {
+    end_visit_from_top_ = value;
   }
 
  protected:

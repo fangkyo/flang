@@ -67,7 +67,6 @@ public:
   ClassBodyNode* getBody() {
     return body_.get();
   }
-  void addBodyDecl(StmtNode* declaration);
   bool hasSuperClass() { return super_class_ == nullptr; }
   bool getChildNodes(ASTNodeList* child_nodes) override;
 

@@ -16,7 +16,7 @@ namespace flang {
 }
 }
 
-%parse-param {FlangScanner& scanner}
+%parse-param {FlangScanner* scanner}
 %parse-param {SyntaxTree* syntax_tree}
 %parse-param {std::string* filename}
 %initial-action {
@@ -37,7 +37,7 @@ using namespace std;
 
 #undef yylex
 // Redefine the default yylex function used in parser
-#define yylex scanner.yylex
+#define yylex scanner->yylex
 
 }
 
@@ -61,6 +61,7 @@ using namespace std;
   ParamDeclListNode* param_decl_list_node;
   CallNode* call_node;
   ClassNode* class_node;
+  ClassBodyNode* class_body_node;
   AssignNode* assign_node;
   NameNode* name_node;
   QualifiedNameNode* qualified_name_node;
@@ -121,7 +122,8 @@ using namespace std;
 %type <func_node>  function
 %type <param_decl_list_node> param_decl_list
 %type <call_node>  call
-%type <class_node> class  class_body
+%type <class_node> class
+%type <class_body_node> class_body
 %type <assign_node> assignment
 %type <simple_name_node> simple_name
 %type <qualified_name_node> qualified_name
@@ -155,15 +157,15 @@ import_list : import_list import {
   $$->setLocation(@$);
 };
 
-import : IMPORT name '\n' {
+import : IMPORT name {
   $$ = new ImportNode();
-  $$->setPackage($2);
   $$->setLocation(@$);
-} | IMPORT name AS simple_name '\n' {
+  $$->setPackageName($2);
+} | IMPORT name AS simple_name {
   $$ = new ImportNode();
-  $$->setPackage($2);
+  $$->setLocation(@$);
+  $$->setPackageName($2);
   $$->setAlias($4);
-  $$->setLocation(@$);
 };
 
 stmt_list : stmt_list  stmt {
@@ -173,8 +175,7 @@ stmt_list : stmt_list  stmt {
 } | {
   $$ = new StmtListNode();
   $$->setLocation(@$);
-}
-
+};
 
 stmt : expr ';' {
   $$ = $1;
@@ -220,11 +221,10 @@ stmt : expr ';' {
 return_stmt : RETURN ';' {
   $$= new ReturnNode();
   $$->setLocation(@$);
-
 } | RETURN expr ';' {
   $$ = new ReturnNode($2);
   $$->setLocation(@$);
-}
+};
 
 block : '{' stmt_list '}'{
   $$ = new BlockNode();
@@ -279,10 +279,14 @@ expr : INT_VAL {
 } | field_access {
   $$ = $1;
   $$->setLocation(@$);
-} | call {
-  $$ = $1;
+} | simple_name {
+  $$ = new VarNode($1);
   $$->setLocation(@$);
 };
+/* | call { */
+  /* $$ = $1; */
+  /* $$->setLocation(@$); */
+/* }; */
 
 name : simple_name {
   $$ = $1;
@@ -293,12 +297,15 @@ name : simple_name {
 };
 
 qualified_name : qualified_name '.' simple_name {
-  $$ = new QualifiedNameNode($1, $3);
+  $$ = $1;
   $$->setLocation(@$);
+  $$->addSimpleName($3);
 } | simple_name '.' simple_name {
-  $$ = new QualifiedNameNode($1, $3);
+  $$ = new QualifiedNameNode();
   $$->setLocation(@$);
-}
+  $$->addSimpleName($1);
+  $$->addSimpleName($3);
+};
 
 simple_name : ID {
   $$ = new SimpleNameNode(*$1);
@@ -334,7 +341,7 @@ var_decl_fragment : ID '=' expr {
 assignment : expr '=' expr {
   $$ = new AssignNode($1, $3);
   $$->setLocation(@$);
-}
+};
 
 type : INT32_TYPE {
   $$ = new Int32TypeNode();
@@ -438,24 +445,26 @@ param_list : param_list ',' expr {
 };
 
 class : CLASS ID '{' class_body  '}' {
-  $$ = $4;
-  $$->setName(*($2));
+  $$ = new ClassNode();
   $$->setLocation(@$);
+  $$->setName(*($2));
+  $$->setBody($4);
 } | CLASS ID ':' name '{' class_body '}' {
-  $$ = $6;
+  $$ = new ClassNode();
   $$->setLocation(@$);
   $$->setSuperClass($4);
   $$->setName(*($2));
+  $$->setBody($6);
 };
 
 class_body : class_body class_body_decl {
   $$ = $1;
   $$->setLocation(@$);
-  $$->addBodyDecl($2);
+  $$->addDeclaration($2);
 } | {
-  $$ = new ClassNode();
+  $$ = new ClassBodyNode();
   $$->setLocation(@$);
-}
+};
 
 class_body_decl : var_decl ';' {
   $$ = $1;

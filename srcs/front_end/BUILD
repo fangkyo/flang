@@ -71,12 +71,18 @@ cc_test(
     name = "flang_scanner_test",
     srcs = ["flang_scanner_test.cpp"],
     size = "small",
-    linkopts = [
-        "-lbacktrace",
-    ],
     deps = [
         ":flang_scanner",
-        "//base",
+        "//test",
+    ]
+)
+
+cc_test(
+    name = "flang_parser_test",
+    srcs = ["flang_parser_test.cpp"],
+    size = "small",
+    deps = [
+        ":flang_parser",
         "//test",
     ]
 )

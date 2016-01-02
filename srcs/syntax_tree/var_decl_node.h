@@ -9,6 +9,7 @@
 #include "syntax_tree/stmt_node.h"
 #include "syntax_tree/type_node.h"
 #include "syntax_tree/exp_node.h"
+#include "syntax_tree/name_node.h"
 
 namespace flang {
 
@@ -55,6 +56,27 @@ class VarDeclNode : public StmtNode {
  private:
   std::unique_ptr<TypeNode> data_type_;
   boost::ptr_vector<VarDeclFragmentNode> var_decl_fragments_;
+};
+
+class VarNode : public ExpNode {
+ INHERIT_AST_NODE(VarNode, ExpNode, VAR_NODE)
+ public:
+  VarNode(SimpleNameNode* node);
+  ~VarNode() override {}
+
+  void setName(SimpleNameNode* name) {
+    CHECK(name);
+    name_.reset(name);
+    name_->setParent(this);
+  }
+  SimpleNameNode* getName() const {
+    return name_.get();
+  }
+
+  bool getChildNodes(ASTNodeList* child_nodes) override;
+
+ private:
+  std::unique_ptr<SimpleNameNode> name_;
 };
 
 }  // namespace flang

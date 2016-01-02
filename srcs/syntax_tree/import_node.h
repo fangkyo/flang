@@ -16,16 +16,24 @@ class ImportNode : public StmtNode {
   ImportNode() {}
   ~ImportNode() override {}
 
-  void setPackage(NameNode* package) {
-    CHECK(package);
-    package_name_.reset(package);
+  void setPackageName(NameNode* pkg_name) {
+    CHECK(pkg_name);
+    package_name_.reset(pkg_name);
     package_name_->setParent(this);
+  }
+
+  NameNode* getPackageName() const {
+    return package_name_.get();
   }
 
   void setAlias(SimpleNameNode* alias) {
     CHECK(alias);
     alias_.reset(alias);
     alias_->setParent(this);
+  }
+
+  SimpleNameNode* getAlias() const {
+    return alias_.get();
   }
 
   bool getChildNodes(ASTNodeList* child_nodes) override;
@@ -42,6 +50,9 @@ class ImportListNode : public ASTNode {
   virtual ~ImportListNode() {}
 
   void addImport(ImportNode* import);
+  const boost::ptr_vector<ImportNode>& getImportList() const {
+    return import_list_;
+  }
   bool getChildNodes(ASTNodeList* child_nodes) override;
 
  private:

@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+#include <boost/ptr_container/ptr_vector.hpp>
+
 #include "base/check.h"
 #include "syntax_tree/exp_node.h"
 
@@ -17,9 +19,7 @@ class NameNode : public ExpNode {
 
  public:
   ~NameNode() override {}
-  virtual std::string getFullName() = 0;
-  virtual std::string getName() const = 0;
-  static const char SEPARATOR = '$';
+  virtual std::string toString() const = 0;
 
  protected:
   NameNode() {}
@@ -33,8 +33,7 @@ class SimpleNameNode : public NameNode {
   ~SimpleNameNode() override {}
 
   void setName(const std::string& name) { name_ = name; }
-  std::string getName() const override { return name_; }
-  std::string getFullName() override { return name_; }
+  std::string toString() const override { return name_; }
 
  private:
   std::string name_;
@@ -45,24 +44,33 @@ class QualifiedNameNode : public NameNode {
  INHERIT_AST_NODE(QualifiedNameNode, NameNode, QUALIFIED_NAME_NODE)
 
  public:
-  QualifiedNameNode(NameNode* qualifier, SimpleNameNode* name);
+  // QualifiedNameNode(NameNode* qualifier, SimpleNameNode* name);
+  QualifiedNameNode() {}
   ~QualifiedNameNode() override {}
+  static const char SEPARATOR = '.';
 
-  std::string getName() const override { return ""; }
+  std::string toString() const override;
 
-  void setQualifier(NameNode* qualifier) {
-    CHECK(qualifier);
-    qualifier_.reset(qualifier);
-    qualifier_->setParent(this);
+  // void setQualifier(NameNode* qualifier) {
+    // CHECK(qualifier);
+    // qualifier_.reset(qualifier);
+    // qualifier_->setParent(this);
+  // }
+  // NameNode* getQualifier() { return qualifier_.get(); }
+
+  void addSimpleName(SimpleNameNode* name) {
+    CHECK(name);
+    name_list_.push_back(name);
   }
-  NameNode* getQualifier() { return qualifier_.get(); }
 
-  std::string getFullName() override;
+  const boost::ptr_vector<SimpleNameNode>& getSimpleNameList() {
+    return name_list_;
+  }
 
   bool getChildNodes(ASTNodeList* child_nodes) override;
+
  private:
-  std::unique_ptr<NameNode> qualifier_;
-  std::unique_ptr<SimpleNameNode> name_;
+  boost::ptr_vector<SimpleNameNode> name_list_;
 };
 
 }  // namespace flang

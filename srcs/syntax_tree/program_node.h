@@ -19,7 +19,13 @@ class ProgramNode : public ASTNode {
   ~ProgramNode() override {}
 
   void setImportList(ImportListNode* import_list);
+  ImportListNode* getImportList() const {
+    return import_list_.get();
+  }
   void setStmtList(StmtListNode* stmt_list);
+  StmtListNode* getStmtList() const {
+    return stmt_list_.get();
+  }
   bool getChildNodes(ASTNodeList* child_nodes) override;
 
  private:

@@ -8,4 +8,14 @@ VarDeclFragmentNode::VarDeclFragmentNode(
   initializer_->setParent(this);
 }
 
+VarNode::VarNode(SimpleNameNode* node) {
+  setName(node);
+}
+
+bool VarNode::getChildNodes(ASTNodeList* child_nodes) {
+  CHECK(name_);
+  child_nodes->push_back(name_.get());
+  return true;
+}
+
 }  // namespace flang

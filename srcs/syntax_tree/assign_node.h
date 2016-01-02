@@ -22,22 +22,23 @@ class AssignNode : public ExpNode {
     OP_DIV_ASSIGN, // /=
   };
 
-  AssignNode(ExpNode* left_side, ExpNode* right_side);
+  AssignNode(ExpNode* left_side, ExpNode* right_side,
+             AssignOpType op = AssignOpType::OP_ASSIGN);
   ~AssignNode() override {}
 
   void setLeftSide(ExpNode* exp_node) {
     left_side_.reset(exp_node);
     left_side_->setParent(this);
   }
-  ExpNode* getLeftSide() { return left_side_.get(); }
+  ExpNode* getLeftSide() const { return left_side_.get(); }
 
   void setRightSide(ExpNode* exp_node) {
     right_side_.reset(exp_node);
     right_side_->setParent(this);
   }
-  ExpNode* getRightSide() { return right_side_.get(); }
+  ExpNode* getRightSide() const { return right_side_.get(); }
 
-  AssignOpType getOperator() { return operator_; }
+  AssignOpType getOperator() const { return operator_; }
   void setOperator(AssignOpType op) { operator_ = op; }
 
   bool getChildNodes(ASTNodeList* child_nodes) override;

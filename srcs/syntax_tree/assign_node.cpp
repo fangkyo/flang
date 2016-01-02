@@ -2,9 +2,11 @@
 
 namespace flang {
 
-AssignNode::AssignNode(ExpNode* left_side, ExpNode* right_side) :
-      left_side_(left_side),
-      right_side_(right_side) {
+AssignNode::AssignNode(
+    ExpNode* left_side, ExpNode* right_side, AssignOpType op) :
+    left_side_(left_side),
+    right_side_(right_side),
+    operator_(op) {
   left_side_->setParent(this);
   right_side_->setParent(this);
 }

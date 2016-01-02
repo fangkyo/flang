@@ -90,20 +90,15 @@ class ASTNode {
 
  public:
   virtual ASTNodeType getNodeType() const = 0;
-  std::string getNodeTypeName() {
+  std::string getNodeTypeName() const {
     return ASTNodeType_Name(getNodeType());
   }
 
-  // Parent's accessor
   void setParent(ASTNode* parent) { parent_ = parent; }
   ASTNode* getParent() const { return parent_; }
 
   //void setSymbol(Symbol* symbol) { symbol_.reset(symbol); }
   //Symbol* getSymbol() const { return symbol_.get(); }
-
-  // Lineno's accessor
-  void setLineNum(int32_t line_num) { line_num_ = line_num; }
-  int32_t getLineNum() const { return line_num_; }
 
   void setLocation(const location& loc) { location_ = loc; }
   const location& getLocation() { return location_; }
@@ -118,11 +113,11 @@ class ASTNode {
   virtual bool getChildNodes(ASTNodeList*) { return false; };
 
  protected:
+  /** Parent ast node. */
   ASTNode* parent_;
-  //std::unique_ptr<Symbol> symbol_;
-  int32_t line_num_;
   /** The location of this AST node in the source file. */
   location location_;
+  //std::unique_ptr<Symbol> symbol_;
 };
 
 }  // namespace flang
