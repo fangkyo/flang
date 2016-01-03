@@ -150,7 +150,11 @@ TEST_F(FlangParserTest, testNew) {
   for (auto& stmt : stmt_list->getStmtList()) {
     ASSERT_EQ(ASTNodeType::NEW_NODE, stmt.getNodeType())
         << stmt.getNodeTypeName();
-    dynamic_cast<NewNode*>(&stmt);
+    const NewNode* new_node = dynamic_cast<const NewNode*>(&stmt);
+    ASSERT_NE(nullptr, new_node);
+    auto* constructor = new_node->getConstructor();
+    ASSERT_NE(nullptr, constructor->getName());
+    ASSERT_EQ("A", constructor->getName()->toString());
     break;
   }
 }

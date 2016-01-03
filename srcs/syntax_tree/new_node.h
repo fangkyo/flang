@@ -16,6 +16,9 @@ class NewNode : public ExpNode {
   NewNode(CallNode* constructor);
   ~NewNode() override {};
 
+  void setConstructor(CallNode* constructor);
+  CallNode* getConstructor() const { return constructor_.get();}
+
  private:
   std::unique_ptr<CallNode> constructor_;
 };

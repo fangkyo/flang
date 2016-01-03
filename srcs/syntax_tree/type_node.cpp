@@ -2,10 +2,6 @@
 
 namespace flang {
 
-UserDefTypeNode::UserDefTypeNode(NameNode* name) :
-    name_(name) {}
-
-
 bool UserDefTypeNode::getChildNodes(ASTNodeList* child_nodes) {
   child_nodes->push_back(name_.get());
   return true;

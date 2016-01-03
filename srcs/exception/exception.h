@@ -70,6 +70,7 @@ class Error : public Exception {
 class FrontEndError : public Error {
  public:
   FrontEndError(const std::string& msg, const location& loc);
+  FrontEndError(const location& loc);
 };
 
 } // namespace flang

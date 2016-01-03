@@ -34,4 +34,8 @@ FrontEndError::FrontEndError(const std::string& msg, const location& loc) :
   setMessage(msg);
 }
 
+FrontEndError::FrontEndError(const location& loc) :
+    Error(loc) {
+}
+
 }  // namespace flang

@@ -73,11 +73,19 @@ class UserDefTypeNode : public TypeNode {
  INHERIT_AST_NODE(UserDefTypeNode, TypeNode, USER_DEF_TYPE_NODE)
 
  public:
-  explicit UserDefTypeNode(NameNode* name);
+  UserDefTypeNode() {}
+  UserDefTypeNode(NameNode* name) {
+    setName(name);
+  }
   ~UserDefTypeNode() override {}
+  bool isPrimitive() override { return false; }
 
-  NameNode* getName() { return name_.get(); }
-  void setName(NameNode* name) { name_.reset(name); }
+  NameNode* getName() const { return name_.get(); }
+  void setName(NameNode* name) {
+    CHECK(name);
+    name_.reset(name);
+    name_->setParent(this);
+  }
 
   bool getChildNodes(ASTNodeList* child_nodes) override;
 

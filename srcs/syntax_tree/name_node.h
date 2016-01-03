@@ -19,7 +19,6 @@ class NameNode : public ExpNode {
 
  public:
   ~NameNode() override {}
-  virtual std::string toString() const = 0;
 
  protected:
   NameNode() {}
@@ -44,19 +43,11 @@ class QualifiedNameNode : public NameNode {
  INHERIT_AST_NODE(QualifiedNameNode, NameNode, QUALIFIED_NAME_NODE)
 
  public:
-  // QualifiedNameNode(NameNode* qualifier, SimpleNameNode* name);
   QualifiedNameNode() {}
   ~QualifiedNameNode() override {}
   static const char SEPARATOR = '.';
 
   std::string toString() const override;
-
-  // void setQualifier(NameNode* qualifier) {
-    // CHECK(qualifier);
-    // qualifier_.reset(qualifier);
-    // qualifier_->setParent(this);
-  // }
-  // NameNode* getQualifier() { return qualifier_.get(); }
 
   void addSimpleName(SimpleNameNode* name) {
     CHECK(name);

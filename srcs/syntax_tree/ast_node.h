@@ -112,6 +112,8 @@ class ASTNode {
    */
   virtual bool getChildNodes(ASTNodeList*) { return false; };
 
+  virtual std::string toString() const { return getNodeTypeName(); }
+
  protected:
   /** Parent ast node. */
   ASTNode* parent_;

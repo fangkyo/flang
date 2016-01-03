@@ -2,8 +2,13 @@
 
 namespace flang {
 
-NewNode::NewNode(CallNode* constructor) :
-    constructor_(constructor) {
+NewNode::NewNode(CallNode* constructor) {
+  setConstructor(constructor);
+}
+
+void NewNode::setConstructor(CallNode* constructor) {
+  CHECK(constructor);
+  constructor_.reset(constructor);
   constructor_->setParent(this);
 }
 

@@ -76,7 +76,7 @@ using namespace std;
   ReturnNode* return_node;
   ConstructorNode* constructor_node;
   DestructorNode* destructor_node;
-
+  UserDefTypeNode* user_def_type_node;
 }
 
 %token <int_val> INT_VAL
@@ -135,6 +135,7 @@ using namespace std;
 %type <return_node> return_stmt
 %type <constructor_node> constructor
 %type <destructor_node> destructor
+%type <user_def_type_node> user_def_type
 
 %start program
 
@@ -279,9 +280,6 @@ expr : INT_VAL {
 } | field_access {
   $$ = $1;
   $$->setLocation(@$);
-} | simple_name {
-  $$ = new VarNode($1);
-  $$->setLocation(@$);
 };
 /* | call { */
   /* $$ = $1; */
@@ -317,6 +315,10 @@ field_access : expr '.' simple_name {
   $$->setLocation(@$);
   $$->setExpression($1);
   $$->setFieldName($3);
+} | simple_name {
+  $$ = new FieldAccessNode();
+  $$->setLocation(@$);
+  $$->setFieldName($1);
 };
 
 var_decl : var_decl ',' var_decl_fragment {
@@ -361,9 +363,16 @@ type : INT32_TYPE {
 } | DOUBLE_TYPE {
   $$ = new DoubleTypeNode();
   $$->setLocation(@$);
-} | name {
-  $$ = new UserDefTypeNode($1);
+} | user_def_type {
+  $$ = $1;
   $$->setLocation(@$);
+};
+
+user_def_type : field_access {
+  $$ = new UserDefTypeNode();
+  $$->setLocation(@$);
+  std::unique_ptr<FieldAccessNode> field_access($1);
+  $$->setName(field_access->toNameNode());
 };
 
 if_stmt : IF '(' expr ')' stmt ELSE stmt {
