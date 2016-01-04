@@ -165,4 +165,40 @@ TEST_F(FlangParserTest, testInstantiate) {
   }
 }
 
+TEST_F(FlangParserTest, testCall) {
+  std::string src = "a.b(1, 5).c(3);";
+  ss_.str(src);
+  parser_->parse();
+  auto* root = ast_.getRoot();
+  ASSERT_NE(nullptr, root);
+  auto* program = root->getImpl<ProgramNode>();
+  auto* stmt_list = program->getStmtList();
+  ASSERT_NE(nullptr, stmt_list);
+  ASSERT_EQ(1, stmt_list->getStmtList().size());
+  for (auto& stmt : stmt_list->getStmtList()) {
+    auto* call_node = stmt.getImpl<CallNode>();
+    auto* name = call_node->getName();
+    ASSERT_EQ("c", name->toString());
+    auto* param_list = call_node->getParamList();
+    ASSERT_EQ(1, param_list->getParamList().size());
+    for (const auto& param : param_list->getParamList()) {
+      auto* int_val = param.getImpl<IntValNode>();
+      ASSERT_EQ(3, int_val->getValue());
+    }
+    auto* caller = call_node->getCaller();   
+    call_node = caller->getImpl<CallNode>();
+    name = call_node->getName();
+    ASSERT_EQ("b", name->toString());
+    param_list = call_node->getParamList();
+    ASSERT_EQ(2, param_list->getParamList().size());
+    auto* int_val = param_list->getParamList()[0].getImpl<IntValNode>();
+    ASSERT_EQ(1, int_val->getValue());
+    int_val = param_list->getParamList()[1].getImpl<IntValNode>();
+    ASSERT_EQ(5, int_val->getValue());
+    caller = call_node->getCaller();
+    auto* field_access = caller->getImpl<FieldAccessNode>();
+    ASSERT_EQ("a", field_access->getFieldName()->toString());
+  }
+
+}
 }  // namespace flang

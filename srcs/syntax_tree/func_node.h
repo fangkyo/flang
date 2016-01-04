@@ -117,22 +117,26 @@ class CallNode : public ExpNode {
     caller->setParent(this);
     caller_.reset(caller);
   }
+  ExpNode* getCaller() const {
+    return caller_.get();
+  }
 
   void setName(SimpleNameNode* name) {
     name->setParent(this);
     name_.reset(name);
   }
 
-  SimpleNameNode* getName() {
+  SimpleNameNode* getName() const {
     return name_.get();
   }
 
   void setParamList(ParamListNode* param_list) {
+    CHECK(param_list);
     param_list->setParent(this);
     param_list_.reset(param_list);
   }
 
-  ParamListNode* getParamList() {
+  ParamListNode* getParamList() const {
     return param_list_.get();
   }
 
