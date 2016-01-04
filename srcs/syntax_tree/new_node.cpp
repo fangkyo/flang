@@ -2,14 +2,10 @@
 
 namespace flang {
 
-NewNode::NewNode(CallNode* constructor) {
-  setConstructor(constructor);
-}
-
-void NewNode::setConstructor(CallNode* constructor) {
-  CHECK(constructor);
-  constructor_.reset(constructor);
-  constructor_->setParent(this);
+bool NewNode::getChildNodes(ASTNodeList* child_nodes) {
+  child_nodes->push_back(class_name_.get());
+  child_nodes->push_back(param_list_.get());
+  return true;
 }
 
 }  // namespace flang

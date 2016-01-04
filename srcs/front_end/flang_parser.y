@@ -12,9 +12,9 @@
 #include "syntax_tree/syntax_tree.h"
 
 namespace flang {
-  class FlangScanner;
+class FlangScanner;
 }
-}
+}  // namespace flang
 
 %parse-param {FlangScanner* scanner}
 %parse-param {SyntaxTree* syntax_tree}
@@ -77,6 +77,7 @@ using namespace std;
   ConstructorNode* constructor_node;
   DestructorNode* destructor_node;
   UserDefTypeNode* user_def_type_node;
+  NewNode* new_node;
 }
 
 %token <int_val> INT_VAL
@@ -136,6 +137,7 @@ using namespace std;
 %type <constructor_node> constructor
 %type <destructor_node> destructor
 %type <user_def_type_node> user_def_type
+%type <new_node> instantiate
 
 %start program
 
@@ -274,17 +276,23 @@ expr : INT_VAL {
 } | '(' expr ')' {
   $$ = $2;
   $$->setLocation(@$);
-} | NEW call {
-  $$ = new NewNode($2);
+} | instantiate {
+  $$ = $1;
   $$->setLocation(@$);
 } | field_access {
   $$ = $1;
   $$->setLocation(@$);
+} | call { 
+  $$ = $1; 
+  $$->setLocation(@$); 
+}; 
+
+instantiate : NEW name '(' param_list ')' {
+  $$ = new NewNode();
+  $$->setLocation(@$);
+  $$->setClassName($2);
+  $$->setParamList($4);
 };
-/* | call { */
-  /* $$ = $1; */
-  /* $$->setLocation(@$); */
-/* }; */
 
 name : simple_name {
   $$ = $1;
