@@ -93,6 +93,17 @@ class ASTNode {
   std::string getNodeTypeName() const {
     return ASTNodeType_Name(getNodeType());
   }
+  
+  /**
+   * @brief Get this pointer as an implementation of ASTNode interface.
+   * @return T pointer if this instance's type is T. Otherwise check error.
+   */
+  template <typename T>
+  T* getImpl() const {
+    T* impl = dynamic_cast<T*>(const_cast<ASTNode*>(this));
+    CHECK_MSG(impl, getNodeTypeName().c_str());
+    return impl;
+  }
 
   void setParent(ASTNode* parent) { parent_ = parent; }
   ASTNode* getParent() const { return parent_; }

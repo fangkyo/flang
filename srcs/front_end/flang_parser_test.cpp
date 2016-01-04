@@ -123,8 +123,9 @@ TEST_F(FlangParserTest, testAssignment) {
      bool visit(AssignNode* node) override {
        EXPECT_EQ(AssignNode::OP_ASSIGN, node->getOperator());
        auto* left = node->getLeftSide();
-       EXPECT_EQ(ASTNodeType::VAR_NODE, left->getNodeType());
-       EXPECT_EQ("a", dynamic_cast<VarNode*>(left)->getName()->toString());
+       EXPECT_EQ(ASTNodeType::FIELD_ACCESS_NODE, left->getNodeType()) << left->getNodeTypeName();
+       auto* field_access = left->getImpl<FieldAccessNode>();
+       EXPECT_EQ("a", field_access->getFieldName()->toString());
        auto* right = node->getRightSide();
        EXPECT_EQ(ASTNodeType::INT_VAL_NODE, right->getNodeType());
        EXPECT_EQ(1, dynamic_cast<IntValNode*>(right)->getValue());
@@ -135,8 +136,8 @@ TEST_F(FlangParserTest, testAssignment) {
   ast_.accept(&visitor);
 }
 
-TEST_F(FlangParserTest, testNew) {
-  std::string src = "new A();";
+TEST_F(FlangParserTest, testInstantiate) {
+  std::string src = "new A(3);";
   ss_.str(src);
   parser_->parse();
   auto* root = ast_.getRoot();
@@ -152,9 +153,14 @@ TEST_F(FlangParserTest, testNew) {
         << stmt.getNodeTypeName();
     const NewNode* new_node = dynamic_cast<const NewNode*>(&stmt);
     ASSERT_NE(nullptr, new_node);
-    auto* constructor = new_node->getConstructor();
-    ASSERT_NE(nullptr, constructor->getName());
-    ASSERT_EQ("A", constructor->getName()->toString());
+    auto* class_name = new_node->getClassName();
+    ASSERT_EQ("A", class_name->toString());
+    auto* param_list = new_node->getParamList();
+    ASSERT_EQ(1, param_list->getParamList().size());
+    for (const auto& param : param_list->getParamList()) {
+      auto* int_val = param.getImpl<IntValNode>();
+      ASSERT_EQ(3, int_val->getValue());
+    }
     break;
   }
 }

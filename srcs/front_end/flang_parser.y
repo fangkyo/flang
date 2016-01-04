@@ -130,7 +130,7 @@ using namespace std;
 %type <qualified_name_node> qualified_name
 %type <name_node> name
 %type <field_access_node> field_access
-%type <param_list_node> param_list
+%type <param_list_node> param_list nonempty_param_list
 %type <import_list_node> import_list
 %type <import_node> import
 %type <return_node> return_stmt
@@ -452,14 +452,23 @@ call : expr '.' simple_name '(' param_list ')' {
   $$->setParamList($3);
 };
 
-param_list : param_list ',' expr {
+param_list : nonempty_param_list {
   $$ = $1;
   $$->setLocation(@$);
-  $$->addParameter($3);
 } | {
   $$ = new ParamListNode();
   $$->setLocation(@$);
 };
+
+nonempty_param_list : nonempty_param_list ',' expr {
+  $$ = $1;
+  $$->setLocation(@$);
+  $$->addParameter($3);
+} | expr {
+  $$ = new ParamListNode();
+  $$->setLocation(@$);
+  $$->addParameter($1);
+}
 
 class : CLASS ID '{' class_body  '}' {
   $$ = new ClassNode();
