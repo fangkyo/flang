@@ -3,20 +3,22 @@
 namespace flang {
 
 IfNode::IfNode(ExpNode* test_node, ASTNode* if_node, ASTNode* else_node) {
-  setTestNode(test_node);
-  setIfNode(if_node);
-  setElseNode(else_node);
+  setTestPart(test_node);
+  setIfPart(if_node);
+  setElsePart(else_node);
 }
 
 IfNode::IfNode(ExpNode* test_node, ASTNode* if_node) {
-  setTestNode(test_node);
-  setIfNode(if_node);
+  setTestPart(test_node);
+  setIfPart(if_node);
 }
 
 bool IfNode::getChildNodes(ASTNodeList* child_nodes) {
-  child_nodes->push_back(test_node_.get());
-  child_nodes->push_back(if_node_.get());
-  child_nodes->push_back(else_node_.get());
+  child_nodes->push_back(test_part_.get());
+  child_nodes->push_back(if_part_.get());
+  if (else_part_) {
+    child_nodes->push_back(else_part_.get());
+  }
   return true;
 }
 

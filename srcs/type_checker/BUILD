@@ -3,12 +3,15 @@ cc_library (
     srcs = [
         "type_checker.cpp",
     ],
+    hdrs = ["type_checker.h"],
+    linkopts = [
+        "-lboost_system",
+        "-llog4cxx",
+    ],
     deps = [
-        "#boost_system",
-        "#log4cxx",
         ":exception",
-        "//symbol_table:symbol_table",
-        "//syntax_tree:syntax_tree",
+        "//symbol_table",
+        "//syntax_tree:ast_node",
     ]
 )
 
@@ -17,8 +20,11 @@ cc_library(
     srcs = [
         "exception.cpp",
     ],
+    hdrs = ["exception.h"],
+    linkopts = [
+        "-lboost_system",
+    ],
     deps = [
-        "#boost_system",
         "//exception:exception",
         "//symbol_table:symbol_table",
         "//syntax_tree:syntax_tree",

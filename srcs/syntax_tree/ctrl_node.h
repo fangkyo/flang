@@ -16,32 +16,32 @@ class IfNode : public StmtNode {
   IfNode(ExpNode* test_node, ASTNode* if_node);
   ~IfNode() override {}
 
-  void setTestNode(ExpNode* test_node) {
+  void setTestPart(ExpNode* test_node) {
     CHECK(test_node);
-    test_node_.reset(test_node);
-    test_node_->setParent(this);
+    test_part_.reset(test_node);
+    test_part_->setParent(this);
   }
-  ExpNode* getTestNode() { return test_node_.get(); }
+  ExpNode* getTestPart() { return test_part_.get(); }
 
-  void setIfNode(ASTNode* if_node) {
+  void setIfPart(ASTNode* if_node) {
     CHECK(if_node);
-    if_node_.reset(if_node);
-    if_node_->setParent(this);
+    if_part_.reset(if_node);
+    if_part_->setParent(this);
   }
-  ASTNode* getIfNode() { return if_node_.get(); }
+  ASTNode* getIfPart() { return if_part_.get(); }
 
-  void setElseNode(ASTNode* else_node) {
+  void setElsePart(ASTNode* else_node) {
     CHECK(else_node);
-    else_node_.reset(else_node);
-    else_node_->setParent(this);
+    else_part_.reset(else_node);
+    else_part_->setParent(this);
   }
-  ASTNode* getElseNode() { return else_node_.get(); }
+  ASTNode* getElsePart() { return else_part_.get(); }
 
   bool getChildNodes(ASTNodeList* child_nodes) override;
  private:
-  std::unique_ptr<ExpNode> test_node_;
-  std::unique_ptr<ASTNode> if_node_;
-  std::unique_ptr<ASTNode> else_node_;
+  std::unique_ptr<ExpNode> test_part_;
+  std::unique_ptr<ASTNode> if_part_;
+  std::unique_ptr<ASTNode> else_part_;
 };
 
 class WhileNode : public StmtNode {
