@@ -89,5 +89,12 @@ void ClassSymbol::setSuperClass(ClassSymbol* super_class) {
   scope_.setParent(super_class->getScope());
 }
 
+PackageSymbol::PackageSymbol(const std::string& name) :
+    Symbol(name, Symbol::SYMBOL_PACKAGE) {
+}
+
+void PackageSymbol::execute(SymbolHandler*) {
+}
+
 }  // namespace flang
 

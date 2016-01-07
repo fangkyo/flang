@@ -23,6 +23,7 @@ class Symbol {
   enum SymbolType {
     SYMBOL_VARIABLE,
     SYMBOL_FUNCTION,
+    SYMBOL_PACKAGE,
     SYMBOL_CLASS,
   };
 
@@ -150,6 +151,16 @@ class ClassSymbol : public Symbol {
   std::vector<VariableSymbol*> member_vars_;
   ClassType class_type_;
   ClassSymbol* super_class_;
+};
+
+class PackageSymbol : public Symbol {
+ public:
+  PackageSymbol(const std::string& name);
+  void execute(SymbolHandler* handler) override;
+  Scope* getScope() override { return &scope_; }
+
+ private:
+  Scope scope_;
 };
 
 class SymbolHandler {

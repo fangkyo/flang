@@ -7,6 +7,7 @@ Scope::Scope() : owned_by_symtable_(true), parent_(nullptr) {
 }
 
 void Scope::insert(const std::string& name, Symbol* symbol) {
+  CHECK(symbol);
   symbol_map_[name] = symbol;
 }
 

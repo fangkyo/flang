@@ -1,5 +1,5 @@
 package(
-		default_visibility = ["//visibility:public"],
+    default_visibility = ["//visibility:public"],
 )
 
 load("/tools/build_rules/protobuf", "cc_proto_library")
@@ -7,34 +7,38 @@ load("/tools/build_rules/protobuf", "cc_proto_library")
 cc_proto_library(
     name = "symbol_proto",
     srcs = ["symbol.proto"],
-    deps = ["//syntax_tree:ast_node_proto"]
+    deps = ["//syntax_tree:ast_node_proto"],
 )
 
 cc_library(
     name = "symbol",
     srcs = [
+        "data_type.cpp",
         "scope.cpp",
         "symbol.cpp",
-        "data_type.cpp"
     ],
-		hdrs = ["scope.h", "symbol.h", "data_type.h"],
-		linkopts = ["-lboost_system"],
-		deps = ["//base"],
+    hdrs = [
+        "data_type.h",
+        "scope.h",
+        "symbol.h",
+    ],
+    linkopts = ["-lboost_system"],
+    deps = ["//base"],
 )
 
 cc_library(
     name = "symbol_table",
     srcs = [
-        "symbol_table.cpp"
+        "symbol_table.cpp",
     ],
-		hdrs = ["symbol_table.h"],
-		linkopts = [
-				"-lboost_system",
-				"-llog4cxx"
-		],
+    hdrs = ["symbol_table.h"],
+    linkopts = [
+        "-lboost_system",
+        "-llog4cxx",
+    ],
     deps = [
         ":symbol",
-    ]
+    ],
 )
 
 cc_test(
@@ -43,7 +47,7 @@ cc_test(
         "scope_test.cpp",
     ],
     deps = [
-        ":symbol"
+        ":symbol",
     ],
 )
 
@@ -54,7 +58,7 @@ cc_test(
     ],
     deps = [
         ":symbol",
-    ]
+    ],
 )
 
 #cc_test(
