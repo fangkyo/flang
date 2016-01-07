@@ -1,14 +1,12 @@
 #ifndef TYPE_CHECKER_ERROR_H
 #define TYPE_CHECKER_ERROR_H
 
-#include "location.hh"
-
 #include "exception/exception.h"
-#include "syntax_tree/syntax_tree.h"
-#include "symbol_table/symbol.h"
 
 namespace flang {
 
+class ExpNode;
+class BreakNode;
 class Symbol;
 class DataType;
 
@@ -21,41 +19,37 @@ class IncompatibleOpError : public Error {
       const std::string& op, DataType* type, const location& loc);
 };
 
-class RedefineSymbolError : public Error {
+class RedefineSymbolError : public FrontEndError {
  public:
   RedefineSymbolError(
-      SymbolInfo* existing_symbol, SymbolInfo* redefined_symbol, int lineno);
-
- private:
-  Symbol* existing_symbol_;
-  Symbol* redefined_symbol_;
+      Symbol* existing_symbol, Symbol* redefined_symbol, const location& loc);
 };
 
-class DataTypeNotEqualError : public Error {
+class DataTypeNotEqualError : public FrontEndError {
  public:
   DataTypeNotEqualError(
-      const DataType& type1, const DataType& type2, int lineno);
+      const DataType& type1, const DataType& type2, const location& loc);
 };
 
-class DataTypeNotPrintableError : public Error {
+class DataTypeNotPrintableError : public FrontEndError {
  public:
-  DataTypeNotPrintableError(const DataType& data_type, int lineno);
+  DataTypeNotPrintableError(const DataType& data_type, const location& loc);
 };
 
-class NotAssignableError : public Error {
+class NotAssignableError : public FrontEndError {
  public:
-  NotAssignableError(const ExpNode& left, const ExpNode& right, int lineno);
+  NotAssignableError(const ExpNode& left, const ExpNode& right, const location& loc);
 };
 
-class IncorrectTypeError : public Error {
+class IncorrectTypeError : public FrontEndError {
  public:
   IncorrectTypeError(
-      const DataType& correct, const DataType& incorrect, int lineno);
+      const DataType& correct, const DataType& incorrect, const location& loc);
 };
 
-class BreakError : public Error {
+class BreakError : public FrontEndError {
  public:
-  BreakError(const BreakNode& node);
+  BreakError(const BreakNode& node, const location& loc);
 };
 
 }  // namespace flang

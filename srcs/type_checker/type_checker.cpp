@@ -1,6 +1,6 @@
 #include "base/check.h"
 #include "symbol_table/symbol.h"
-#include "syntax_tree/syntax_tree.h"
+#include "syntax_tree/ast_node_all.h"
 #include "type_checker/type_checker.h"
 #include "type_checker/exception.h"
 
@@ -9,27 +9,33 @@ namespace flang {
 log4cxx::LoggerPtr TypeChecker::logger_(
     log4cxx::Logger::getLogger("flang.TypeChecker"));
 
-void TypeChecker::endVisit(BinaryExpNode* node) {
-  ExpNode* left = node->getLeftSide();
-  ExpNode* right = node->getRightSide();
-  CHECK(left->getSymbol());
-  CHECK(right->getSymbol());
-  DataType* left_type = left->getSymbol()->getDataType();
-  DataType* right_type = right->getSymbol()->getDataType();
-  if (left_type->equals(right_type)) {
-    if (node->getOperator() != BinaryExpNode::OP_EQ) {
-      if (left_type->getType() == DataType::DATA_TYPE_CLASS) {
-        Error* error = new IncompatibleOpError(
-            "", left_type, right_type, node->getLocation());
-        emitException(error);
-      }
-    VariableSymbol* symbol = new VariableSymbol("");
-    node->setSymbol(symbol);
-  } else {
-    Error* error = new IncompatibleOpError(
-        "", left_type, right_type, node->getLocation());
-    emitException(error);
-  }
+bool TypeChecker::endVisit(IfNode* node) {
+  ExpNode* test_part = node->getTestPart();
+  return true;
+}
+
+bool TypeChecker::endVisit(BinaryExpNode* node) {
+  //ExpNode* left = node->getLeftSide();
+  //ExpNode* right = node->getRightSide();
+  //CHECK(left->getSymbol());
+  //CHECK(right->getSymbol());
+  //DataType* left_type = left->getSymbol()->getDataType();
+  //DataType* right_type = right->getSymbol()->getDataType();
+  //if (left_type->equals(right_type)) {
+    //if (node->getOperator() != BinaryExpNode::OP_EQ) {
+      //if (left_type->getType() == DataType::DATA_TYPE_CLASS) {
+        //Error* error = new IncompatibleOpError(
+            //"", left_type, right_type, node->getLocation());
+        //emitException(error);
+      //}
+    //VariableSymbol* symbol = new VariableSymbol("");
+    //node->setSymbol(symbol);
+  //} else {
+    //Error* error = new IncompatibleOpError(
+        //"", left_type, right_type, node->getLocation());
+    //emitException(error);
+  //}
+  return true;
 }
 
 /*

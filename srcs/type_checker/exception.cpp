@@ -1,7 +1,9 @@
-#include "boost/format.hpp"
+#include <boost/format.hpp>
 
 #include "base/check.h"
-#include "type_checker/error.h"
+#include "type_checker/exception.h"
+#include "symbol_table/symbol.h"
+#include "syntax_tree/ast_node_all.h"
 
 namespace flang {
 
@@ -22,49 +24,47 @@ IncompatibleOpError::IncompatibleOpError(
 }
 
 RedefineSymbolError::RedefineSymbolError(
-    SymbolInfo* existing_symbol, SymbolInfo* redefined_symbol, int lineno) :
-    Error(lineno),
-    existing_symbol_(existing_symbol),
-    redefined_symbol_(redefined_symbol) {
+    Symbol* existing_symbol, Symbol* redefined_symbol, const location& loc) :
+    FrontEndError(loc) {
   CHECK(existing_symbol);
   CHECK(redefined_symbol);
   message_ = boost::str(
-      boost::format("Symbol %s has been defined.")
-      % existing_symbol_->getName());
+      boost::format("Symbol %s has been defined before %s")
+      % existing_symbol->getName() % redefined_symbol->getName());
 }
 
 
 DataTypeNotEqualError::DataTypeNotEqualError(
-    const DataType& type1, const DataType& type2, int lineno)
-    : Error(lineno) {
+    const DataType& type1, const DataType& type2, const location& loc)
+    : FrontEndError(loc) {
   message_ = boost::str(boost::format(
       "Type '%s' is not equals to type '%s'")
       % type1.getName() % type2.getName());
 }
 
 DataTypeNotPrintableError::DataTypeNotPrintableError(
-    const DataType& data_type, int lineno) : Error(lineno) {
+    const DataType& data_type, const location& loc) : FrontEndError(loc) {
   message_ = boost::str(
       boost::format("Type '%s' is not printable.") % data_type.getName());
 }
 
 NotAssignableError::NotAssignableError(
-    const ExpNode& left, const ExpNode& right, int lineno) : Error(lineno) {
-  message_ = boost::str(boost::format("Can't assign '%s' to '%s'")
-                        % left.getType()->getName()
-                        % right.getType()->getName());
+    const ExpNode& left, const ExpNode& right, const location& loc) : FrontEndError(loc) {
+  //message_ = boost::str(boost::format("Can't assign '%s' to '%s'")
+                        //% left.getType()->getName()
+                        //% right.getType()->getName());
 }
 
 IncorrectTypeError::IncorrectTypeError(
     const DataType& correct,
     const DataType& incorrect,
-    int lineno) : Error(lineno) {
+    const location& loc) : FrontEndError(loc) {
   message_ = boost::str(
       boost::format("Incorrect type '%s', '%s' required.")
       % incorrect.getName() % correct.getName());
 }
 
-BreakError::BreakError(const BreakNode& node) : Error(node.getLineNum()) {
+BreakError::BreakError(const BreakNode& node, const location& loc) : FrontEndError(loc) {
   message_ = "Break statement is not allowed here.";
 }
 
