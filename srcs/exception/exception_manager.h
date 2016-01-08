@@ -21,6 +21,9 @@ class ExceptionManager {
   const boost::ptr_vector<Exception>& getExceptionList() const {
     return except_list_;
   }
+  boost::ptr_vector<Exception>& getExceptionList() {
+    return except_list_;
+  }
 
  private:
   boost::ptr_vector<Exception> except_list_;

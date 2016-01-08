@@ -20,6 +20,8 @@ namespace flang {
        return NodeType; \
      }
 
+class Symbol;
+
 /** @breif Abstract syntax tree node. */
 class ASTNode {
  public:
@@ -93,7 +95,6 @@ class ASTNode {
   std::string getNodeTypeName() const {
     return ASTNodeType_Name(getNodeType());
   }
-  
   /**
    * @brief Get this pointer as an implementation of ASTNode interface.
    * @return T pointer if this instance's type is T. Otherwise check error.
@@ -125,12 +126,20 @@ class ASTNode {
 
   virtual std::string toString() const { return getNodeTypeName(); }
 
+  void setSymbol(Symbol* symbol) {
+    CHECK(symbol);
+    symbol_ = symbol;
+  }
+  Symbol* getSymbol() const {
+    return symbol_;
+  }
+
  protected:
   /** Parent ast node. */
   ASTNode* parent_;
   /** The location of this AST node in the source file. */
   location location_;
-  //std::unique_ptr<Symbol> symbol_;
+  Symbol* symbol_;
 };
 
 }  // namespace flang

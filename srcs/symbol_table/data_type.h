@@ -4,6 +4,8 @@
 #include <memory>
 #include <string>
 
+#include "base/check.h"
+
 namespace flang {
 
 class ClassSymbol;
@@ -29,6 +31,19 @@ class DataType {
   virtual bool isPrimitive() const { return true; }
   virtual std::string getName() const = 0;
 
+  template <typename T>
+  T* getImpl() {
+    T* impl = dynamic_cast<T*>(this);
+    CHECK(impl);
+    return impl;
+  }
+
+  template <typename T>
+  const T* getImpl() const {
+    T* impl = dynamic_cast<const T*>(this);
+    CHECK(impl);
+    return impl;
+  }
  protected:
   Type type_;
 };

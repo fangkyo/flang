@@ -20,6 +20,7 @@ Symbol* Scope::lookup(const std::string& name,
       return nullptr;
     }
   }
+
   auto iter = symbol_map_.find(name);
   if (iter == symbol_map_.end()){
     if (parent_) {

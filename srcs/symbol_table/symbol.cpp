@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <sstream>
 
 #include <boost/format.hpp>
 
@@ -29,25 +30,38 @@ VariableSymbol::VariableSymbol(const std::string& name) :
   CHECK(name.length());
 }
 
-void VariableSymbol::execute(SymbolHandler* handler) {
-  handler->handle(this);
+bool VariableSymbol::execute(SymbolHandler* handler) {
+  return handler->handle(this);
+}
+
+Scope* VariableSymbol::getScope() {
+  if (DataType::DATA_TYPE_CLASS == data_type_->getType()) {
+    return data_type_->getImpl<ClassType>()->getClassSymbol()->getScope();
+  } else {
+    return nullptr;
+  }
 }
 
 FunctionSymbol::FunctionSymbol(const std::string& name) :
-    Symbol(name, Symbol::SYMBOL_FUNCTION) {
+    Symbol(name, Symbol::SYMBOL_FUNCTION), return_type_(nullptr) {
   CHECK(name.length());
   scope_.setOwnedBySymbolTable(false);
   // Insert this function to its own scope when constructing
   scope_.insert(getName(), this);
 }
 
-void FunctionSymbol::execute(SymbolHandler* handler) {
-  handler->handle(this);
+bool FunctionSymbol::execute(SymbolHandler* handler) {
+  return handler->handle(this);
 }
 
 void FunctionSymbol::addParameter(VariableSymbol* parameter) {
   parameters_.push_back(parameter);
   scope_.insert(parameter->getName(), parameter);
+}
+
+std::string FunctionSymbol::getKey() const {
+  std::ostringstream oss;
+  return oss.str();
 }
 
 ClassSymbol::ClassSymbol(const std::string& name) :
@@ -73,9 +87,9 @@ void ClassSymbol::addVariable(VariableSymbol* variable) {
   scope_.insert(variable->getName(), variable);
 }
 
-void ClassSymbol::execute(SymbolHandler* handler) {
+bool ClassSymbol::execute(SymbolHandler* handler) {
   CHECK(handler);
-  handler->handle(this);
+  return handler->handle(this);
 }
 
 void ClassSymbol::setSuperClass(ClassSymbol* super_class) {
@@ -93,7 +107,16 @@ PackageSymbol::PackageSymbol(const std::string& name) :
     Symbol(name, Symbol::SYMBOL_PACKAGE) {
 }
 
-void PackageSymbol::execute(SymbolHandler*) {
+bool PackageSymbol::execute(SymbolHandler* handler) {
+  return handler->handle(this);
+}
+
+BlockSymbol::BlockSymbol(const std::string& name) :
+  Symbol(name, Symbol::SYMBOL_BLOCK) {
+}
+
+bool BlockSymbol::execute(SymbolHandler* handler) {
+  return handler->handle(this);
 }
 
 }  // namespace flang

@@ -3,39 +3,84 @@
 #include "syntax_tree/ast_node_all.h"
 #include "type_checker/type_checker.h"
 #include "type_checker/exception.h"
+#include "exception/exception_manager.h"
 
 namespace flang {
 
 log4cxx::LoggerPtr TypeChecker::logger_(
     log4cxx::Logger::getLogger("flang.TypeChecker"));
 
+TypeChecker::TypeChecker(
+    SymbolTable* symbol_table, ExceptionManager* except_manager):
+    symbol_table_(symbol_table), except_manager_(except_manager) {
+  CHECK(symbol_table_);
+  CHECK(except_manager_);
+}
+
+void TypeChecker::addException(Exception* e) {
+  CHECK(e);
+  except_manager_->addException(e);
+}
+
 bool TypeChecker::endVisit(IfNode* node) {
   ExpNode* test_part = node->getTestPart();
+  auto* data_type = test_part->getDataType();
+  CHECK(data_type);
+  // Check whether the data type of test part is bool.
+  if (data_type->getType() != DataType::DATA_TYPE_BOOL) {
+    addException(nullptr);
+    return false;
+  }
   return true;
 }
 
 bool TypeChecker::endVisit(BinaryExpNode* node) {
-  //ExpNode* left = node->getLeftSide();
-  //ExpNode* right = node->getRightSide();
-  //CHECK(left->getSymbol());
-  //CHECK(right->getSymbol());
-  //DataType* left_type = left->getSymbol()->getDataType();
-  //DataType* right_type = right->getSymbol()->getDataType();
-  //if (left_type->equals(right_type)) {
-    //if (node->getOperator() != BinaryExpNode::OP_EQ) {
-      //if (left_type->getType() == DataType::DATA_TYPE_CLASS) {
-        //Error* error = new IncompatibleOpError(
-            //"", left_type, right_type, node->getLocation());
-        //emitException(error);
-      //}
-    //VariableSymbol* symbol = new VariableSymbol("");
-    //node->setSymbol(symbol);
-  //} else {
-    //Error* error = new IncompatibleOpError(
-        //"", left_type, right_type, node->getLocation());
-    //emitException(error);
-  //}
+  ExpNode* left = node->getLeftSide();
+  ExpNode* right = node->getRightSide();
+  DataType* left_type = left->getDataType();
+  DataType* right_type = right->getDataType();
+  if (left_type == right_type) {
+    // If the type of left side equals to right side, set the type of binary
+    // experssion as the left one.
+    node->setDataType(left_type);
+  } else {
+    addException(nullptr);
+    return false;
+  }
   return true;
+}
+
+bool TypeChecker::endVisit(FieldAccessNode* node) {
+  auto* expr = node->getExpression();
+  auto* expr_symbol = expr->getSymbol();
+  CHECK(expr_symbol);
+  auto* scope = expr_symbol->getScope();
+  CHECK(scope);
+  auto* field_symbol = scope->lookup(node->getFieldName()->toString());
+  if (nullptr == field_symbol) {
+    addException(nullptr);
+    return false;
+  }
+  class FieldSymbolHandler : public SymbolHandler {
+   public:
+    FieldSymbolHandler(TypeChecker* type_checker, FieldAccessNode* field_access) :
+        type_checker_(type_checker), field_access_(field_access) {}
+    bool handle(FunctionSymbol* symbol) override {
+      symbol->getName();
+      type_checker_->addException(nullptr);
+      return false;
+    }
+    bool handle(VariableSymbol* symbol) override {
+      CHECK(symbol->getDataType());
+      field_access_->setDataType(symbol->getDataType());
+      return true;
+    }
+   private:
+    TypeChecker* type_checker_;
+    FieldAccessNode* field_access_;
+  };
+  FieldSymbolHandler handler(this, node);
+  return field_symbol->execute(&handler);
 }
 
 /*

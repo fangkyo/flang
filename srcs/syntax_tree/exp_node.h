@@ -22,9 +22,18 @@ class ExpNode : public StmtNode {
   //     Otherwise return false.
   virtual bool isLeftValue() const { return false; }
 
+  void setDataType(DataType* data_type) {
+    CHECK(data_type);
+    data_type_ = data_type;
+  }
+
+  DataType* getDataType() const {
+    return data_type_;
+  }
+
  protected:
-  ExpNode() {}
-  std::unique_ptr<Symbol> symbol_;
+  ExpNode() : data_type_(nullptr) {}
+  DataType* data_type_;
 };
 
 
