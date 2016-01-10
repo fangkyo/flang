@@ -37,6 +37,7 @@ std::string ClassType::getName() const {
 ClassType::ClassType(ClassSymbol* class_symbol) :
   DataType(DATA_TYPE_CLASS), class_symbol_(class_symbol) {
   CHECK(class_symbol);
+  setScope(class_symbol_->getScope());
 }
 
 DataType* DataTypeFactory::getClassType(ClassSymbol* class_symbol) {

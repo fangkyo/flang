@@ -8,15 +8,15 @@
 namespace flang {
 
 IncompatibleOpError::IncompatibleOpError(
-    const std::string& op, DataType* type, const location& loc) : Error(loc) {
-  boost::format format("Can't use \"%1%\" for type \"%2%\".");
+    const std::string& op, DataType* type, const location& loc) : FrontEndError(loc) {
+  boost::format format("Need \"%1%\" for type \"%2%\".");
   format % op % type->getName();
   setMessage(format.str());
 }
 
 IncompatibleOpError::IncompatibleOpError(
     const std::string& op, DataType* type1,
-    DataType* type2, const location& loc) : Error(loc) {
+    DataType* type2, const location& loc) : FrontEndError(loc) {
   boost::format format(
       "Can't use \"%1%\" between type \"%2%\" and type \"%3%\".");
   format % op % type1->getName() % type2->getName();
@@ -56,16 +56,38 @@ NotAssignableError::NotAssignableError(
 }
 
 IncorrectTypeError::IncorrectTypeError(
-    const DataType& correct,
-    const DataType& incorrect,
+    const DataType& expected_type,
+    const DataType& actual_type,
     const location& loc) : FrontEndError(loc) {
   message_ = boost::str(
-      boost::format("Incorrect type '%s', '%s' required.")
-      % incorrect.getName() % correct.getName());
+      boost::format("Incorrect type '%1%', '%2%' required.")
+      % actual_type.getName() % expected_type.getName());
 }
 
-BreakError::BreakError(const BreakNode& node, const location& loc) : FrontEndError(loc) {
+BreakError::BreakError(const BreakNode& node, const location& loc)
+  : FrontEndError(loc) {
   message_ = "Break statement is not allowed here.";
+}
+
+
+UndeclaredIdentifierError::UndeclaredIdentifierError(
+    const std::string& identifier, const location& loc) : FrontEndError(loc) {
+  boost::format fmt("Use of undeclared identifier '%1%'.");
+  setMessage(boost::str(fmt % identifier));
+}
+
+NoSuchFieldError::NoSuchFieldError(
+    const std::string& class_name, const std::string& field_name,
+    const location& loc) : FrontEndError(loc) {
+  boost::format fmt("%1% has no such field '%2%'.");
+  setMessage(boost::str(fmt % class_name % field_name));
+}
+
+NoSuchMemberFunctionError::NoSuchMemberFunctionError(
+    const std::string& class_name, const std::string& func_name,
+    const location& loc) : FrontEndError(loc) {
+  boost::format fmt("Class %1% doesn't have member function %2%");
+  setMessage(boost::str(fmt % class_name % func_name));
 }
 
 }  // namespace flang

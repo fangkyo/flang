@@ -24,7 +24,7 @@ class DataType {
     DATA_TYPE_VOID,
     DATA_TYPE_UNBOUND,
   };
-  DataType(Type type) : type_(type) {}
+  DataType(Type type) : type_(type), scope_(nullptr) {}
   virtual bool equals (const DataType& dtype) const;
   virtual uint32_t size() const = 0;
   Type getType() const { return type_; }
@@ -44,8 +44,17 @@ class DataType {
     CHECK(impl);
     return impl;
   }
+
+  void setScope(Scope* scope) {
+    scope_ = scope;
+  }
+  Scope* getScope() const {
+    return scope_;
+  }
+
  protected:
   Type type_;
+  Scope* scope_;
 };
 
 class VoidType : public DataType {

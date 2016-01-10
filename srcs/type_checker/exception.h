@@ -8,12 +8,14 @@ namespace flang {
 class ExpNode;
 class BreakNode;
 class Symbol;
+class FunctionSymbol;
 class DataType;
 
-class IncompatibleOpError : public Error {
+class IncompatibleOpError : public FrontEndError {
  public:
   IncompatibleOpError(
-      const std::string& op, DataType* type1,
+      const std::string& op,
+      DataType* type1,
       DataType* type2, const location& loc);
   IncompatibleOpError(
       const std::string& op, DataType* type, const location& loc);
@@ -44,12 +46,31 @@ class NotAssignableError : public FrontEndError {
 class IncorrectTypeError : public FrontEndError {
  public:
   IncorrectTypeError(
-      const DataType& correct, const DataType& incorrect, const location& loc);
+      const DataType& expected_type, const DataType& actual_type,
+      const location& loc);
 };
 
 class BreakError : public FrontEndError {
  public:
   BreakError(const BreakNode& node, const location& loc);
+};
+
+class UndeclaredIdentifierError : public FrontEndError {
+ public:
+  UndeclaredIdentifierError(const std::string& identifier, const location& loc);
+};
+
+class NoSuchFieldError : public FrontEndError {
+ public:
+  NoSuchFieldError(
+      const std::string& class_name, const std::string& field_name,
+      const location& loc);
+};
+
+class NoSuchMemberFunctionError : public FrontEndError {
+  NoSuchMemberFunctionError(
+      const std::string& class_name, const std::string& func_name,
+      const location& loc);
 };
 
 }  // namespace flang

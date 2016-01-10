@@ -1,5 +1,6 @@
 #include "base/check.h"
 #include "symbol_table/symbol.h"
+#include "symbol_table/symbol_table.h"
 #include "syntax_tree/ast_node_all.h"
 #include "type_checker/type_checker.h"
 #include "type_checker/exception.h"
@@ -28,7 +29,8 @@ bool TypeChecker::endVisit(IfNode* node) {
   CHECK(data_type);
   // Check whether the data type of test part is bool.
   if (data_type->getType() != DataType::DATA_TYPE_BOOL) {
-    addException(nullptr);
+    addException(new IncorrectTypeError(
+        *(DataTypeFactory::getBoolType()), *data_type, node->getLocation()));
     return false;
   }
   return true;
@@ -52,35 +54,81 @@ bool TypeChecker::endVisit(BinaryExpNode* node) {
 
 bool TypeChecker::endVisit(FieldAccessNode* node) {
   auto* expr = node->getExpression();
-  auto* expr_symbol = expr->getSymbol();
-  CHECK(expr_symbol);
-  auto* scope = expr_symbol->getScope();
-  CHECK(scope);
-  auto* field_symbol = scope->lookup(node->getFieldName()->toString());
-  if (nullptr == field_symbol) {
-    addException(nullptr);
-    return false;
-  }
-  class FieldSymbolHandler : public SymbolHandler {
-   public:
-    FieldSymbolHandler(TypeChecker* type_checker, FieldAccessNode* field_access) :
-        type_checker_(type_checker), field_access_(field_access) {}
-    bool handle(FunctionSymbol* symbol) override {
-      symbol->getName();
-      type_checker_->addException(nullptr);
+  auto* field = node->getFieldName();
+  CHECK(field);
+  std::string field_name = field->toString();
+  if (expr) {
+    auto* expr_type = expr->getDataType();
+    CHECK(expr_type);
+    auto* expr_type_scope = expr_type->getScope();
+    if (expr_type_scope) {
+      auto* field_symbol = expr_type_scope->lookup(field_name);
+      if (!field_symbol) {
+        addException(new NoSuchFieldError(
+            expr_type->getName(), field_name,
+            field->getLocation()));
+        return false;
+      }
+    } else {
+      addException(new NoSuchFieldError(
+          expr_type->getName(), field_name,
+          field->getLocation()));
       return false;
     }
-    bool handle(VariableSymbol* symbol) override {
-      CHECK(symbol->getDataType());
-      field_access_->setDataType(symbol->getDataType());
-      return true;
+  } else {
+    // This node doesn't have a expression means that it's an identifier.
+    auto* symbol = symbol_table_->lookup(field_name);
+    if (nullptr == symbol) {
+      addException(
+          new UndeclaredIdentifierError(field_name, field->getLocation()));
+      return false;
+    } else {
+      
     }
-   private:
-    TypeChecker* type_checker_;
-    FieldAccessNode* field_access_;
-  };
-  FieldSymbolHandler handler(this, node);
-  return field_symbol->execute(&handler);
+  }
+  return true;
+    // class FieldSymbolHandler : public SymbolHandler {
+     // public:
+      // FieldSymbolHandler(
+          // TypeChecker* type_checker, FieldAccessNode* field_access) :
+          // type_checker_(type_checker), field_access_(field_access) {}
+
+      // bool handle(FunctionSymbol* symbol) override {
+        // symbol->getName();
+        // type_checker_->addException(nullptr);
+        // return false;
+      // }
+
+      // bool handle(VariableSymbol* symbol) override {
+        // CHECK(symbol->getDataType());
+        // field_access_->setDataType(symbol->getDataType());
+        // return true;
+      // }
+
+     // private:
+      // TypeChecker* type_checker_;
+      // FieldAccessNode* field_access_;
+    // };
+    // FieldSymbolHandler handler(this, node);
+    // if (field_symbol->getSymbolType() != Symbol::SYMBOL_VARIABLE) {
+      // addException();
+      // return false;
+    // }
+    // VariableSymbol* var_symbol = field_symbol->getImpl<VariableSymbol>();
+    // CHECK(var_symbol);
+    // return true;
+  // } else {
+    // auto* field_name = node->getFieldName();
+    // CHECK(field_name);
+    // std::string var_name = field_name->toString();
+    // Symbol* symbol = symbol_table_->lookup(var_name);
+    // if (nullptr == symbol) {
+      // addException(new UndeclaredVariableError(var_name, node->getLocation()));
+      // return false;
+    // } else {
+      // return true;
+    // }
+  // }
 }
 
 /*
