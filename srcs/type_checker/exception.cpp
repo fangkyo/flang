@@ -90,5 +90,11 @@ NoSuchMemberFunctionError::NoSuchMemberFunctionError(
   setMessage(boost::str(fmt % class_name % func_name));
 }
 
+//InproperSymbolError::InproperSymbolError(
+  //const std::string& expected_symbol, const std::string& actual_symbol, const location& loc) :
+  //FrontEndError(loc) {
+  //boost::format fmt("%1%");
+//}
+
 }  // namespace flang
 

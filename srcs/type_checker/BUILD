@@ -10,6 +10,7 @@ cc_library (
     ],
     deps = [
         ":exception",
+        "//exception:exception_manager",
         "//symbol_table",
         "//syntax_tree:ast_node",
     ]
@@ -29,4 +30,14 @@ cc_library(
         "//symbol_table:symbol_table",
         "//syntax_tree:syntax_tree",
     ]
+)
+
+cc_test(
+    name = "type_checker_test",
+    srcs = ["type_checker_test.cpp"],
+    deps = [
+        ":type_checker",
+        "//front_end:flang_parser",
+        "//test",
+    ],
 )

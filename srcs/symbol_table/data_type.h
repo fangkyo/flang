@@ -206,6 +206,10 @@ class DataTypeFactory {
   static DataType* getCharType() {
     return CharType::getInstance();
   }
+  static DataType* getDoubleType() {
+    return DoubleType::getInstance();
+  }
+
   static DataType* getClassType(ClassSymbol* class_symbol);
 };
 

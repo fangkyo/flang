@@ -23,9 +23,44 @@ void TypeChecker::addException(Exception* e) {
   except_manager_->addException(e);
 }
 
+bool TypeChecker::visit(IntValNode* node) {
+  auto& attr = node->getAttr();
+  attr.value.set_int_val(node->getValue());
+  attr.data_type = DataTypeFactory::getInt64Type();
+  return true;
+}
+
+bool TypeChecker::visit(BoolValNode* node) {
+  auto& attr = node->getAttr();
+  attr.value.set_bool_val(node->getValue());
+  attr.data_type = DataTypeFactory::getBoolType();
+  return true;
+}
+
+bool TypeChecker::visit(StringValNode* node) {
+  auto& attr = node->getAttr();
+  attr.value.set_str_val(node->getValue());
+  attr.data_type = DataTypeFactory::getStringType();
+  return true;
+}
+
+bool TypeChecker::visit(DoubleValNode* node) {
+  auto& attr = node->getAttr();
+  attr.value.set_double_val(node->getValue());
+  attr.data_type = DataTypeFactory::getDoubleType();
+  return true;
+}
+
+bool TypeChecker::visit(CharValNode* node) {
+  auto& attr = node->getAttr();
+  attr.value.set_double_val(node->getValue());
+  attr.data_type = DataTypeFactory::getCharType();
+  return true;
+}
+
 bool TypeChecker::endVisit(IfNode* node) {
   ExpNode* test_part = node->getTestPart();
-  auto* data_type = test_part->getDataType();
+  auto* data_type = test_part->getAttr().data_type;
   CHECK(data_type);
   // Check whether the data type of test part is bool.
   if (data_type->getType() != DataType::DATA_TYPE_BOOL) {
@@ -57,6 +92,7 @@ bool TypeChecker::endVisit(FieldAccessNode* node) {
   auto* field = node->getFieldName();
   CHECK(field);
   std::string field_name = field->toString();
+  // field_access : expr '.' simple_name
   if (expr) {
     auto* expr_type = expr->getDataType();
     CHECK(expr_type);
@@ -76,59 +112,43 @@ bool TypeChecker::endVisit(FieldAccessNode* node) {
       return false;
     }
   } else {
-    // This node doesn't have a expression means that it's an identifier.
+    // field_access : simple_name
     auto* symbol = symbol_table_->lookup(field_name);
     if (nullptr == symbol) {
       addException(
           new UndeclaredIdentifierError(field_name, field->getLocation()));
       return false;
     } else {
-      
+       // TODO(congfang): In the future a function can be a variable.
+       // Theoritcally we shouldn't get a function reference by using a name in the
+       // program.
+       class FieldSymbolHandler : public SymbolHandler {
+        public:
+         FieldSymbolHandler(
+             TypeChecker* type_checker, FieldAccessNode* field_access) :
+             type_checker_(type_checker), field_access_(field_access) {}
+  
+         bool handle(VariableSymbol* symbol) override {
+           // Set the field access node's data type to the data type of variable symbol.
+           CHECK(symbol->getDataType());
+           field_access_->setDataType(symbol->getDataType());
+           return true;
+         }
+
+         bool handle(PackageSymbol* symbol) override {
+           field_access_->setSymbol(symbol);
+           return true;
+         }
+
+        private:
+         TypeChecker* type_checker_;
+         FieldAccessNode* field_access_;
+       };
+       FieldSymbolHandler handler(this, node);
+       return symbol->execute(&handler);
     }
   }
   return true;
-    // class FieldSymbolHandler : public SymbolHandler {
-     // public:
-      // FieldSymbolHandler(
-          // TypeChecker* type_checker, FieldAccessNode* field_access) :
-          // type_checker_(type_checker), field_access_(field_access) {}
-
-      // bool handle(FunctionSymbol* symbol) override {
-        // symbol->getName();
-        // type_checker_->addException(nullptr);
-        // return false;
-      // }
-
-      // bool handle(VariableSymbol* symbol) override {
-        // CHECK(symbol->getDataType());
-        // field_access_->setDataType(symbol->getDataType());
-        // return true;
-      // }
-
-     // private:
-      // TypeChecker* type_checker_;
-      // FieldAccessNode* field_access_;
-    // };
-    // FieldSymbolHandler handler(this, node);
-    // if (field_symbol->getSymbolType() != Symbol::SYMBOL_VARIABLE) {
-      // addException();
-      // return false;
-    // }
-    // VariableSymbol* var_symbol = field_symbol->getImpl<VariableSymbol>();
-    // CHECK(var_symbol);
-    // return true;
-  // } else {
-    // auto* field_name = node->getFieldName();
-    // CHECK(field_name);
-    // std::string var_name = field_name->toString();
-    // Symbol* symbol = symbol_table_->lookup(var_name);
-    // if (nullptr == symbol) {
-      // addException(new UndeclaredVariableError(var_name, node->getLocation()));
-      // return false;
-    // } else {
-      // return true;
-    // }
-  // }
 }
 
 /*

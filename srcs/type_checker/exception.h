@@ -68,10 +68,19 @@ class NoSuchFieldError : public FrontEndError {
 };
 
 class NoSuchMemberFunctionError : public FrontEndError {
+ public:
   NoSuchMemberFunctionError(
       const std::string& class_name, const std::string& func_name,
       const location& loc);
 };
+
+// @brief Throw this exception when the found symbol is not the one expected.
+// For example: we expected a variable symbol but found a function.
+//class InproperSymbolError : public FrontEndError {
+ //public:
+  //InproperSymbolError(
+      //const std::string& expected_symbol, const std::string& actual_symbol, const location& loc);
+//};
 
 }  // namespace flang
 

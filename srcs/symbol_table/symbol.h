@@ -198,14 +198,30 @@ class BlockSymbol : public Symbol {
 
 class SymbolHandler {
  public:
-  virtual bool handle(ClassSymbol*) { return true; }
-  virtual bool handle(FunctionSymbol*) { return true; }
-  virtual bool handle(VariableSymbol*) { return true; }
-  virtual bool handle(PackageSymbol*) { return true; }
-  virtual bool handle(BlockSymbol*) { return true; }
+  virtual bool handle(ClassSymbol* symbol) {
+    handleUnexpected(symbol);
+    return false;
+  }
+  virtual bool handle(FunctionSymbol* symbol) {
+    handleUnexpected(symbol);
+    return false;
+  }
+  virtual bool handle(VariableSymbol* symbol) {
+    handleUnexpected(symbol);
+    return false;
+  }
+  virtual bool handle(PackageSymbol* symbol) {
+    handleUnexpected(symbol);
+    return false;
+  }
+  virtual bool handle(BlockSymbol* symbol) {
+    handleUnexpected(symbol);
+    return false;
+  }
 
  protected:
   SymbolHandler() {}
+  void handleUnexpected(Symbol*);
 };
 
 }  // namespace flang

@@ -2,11 +2,13 @@
 #define AST_NODE_H_
 
 #include <cstdint>
+#include <cstring>
 #include <vector>
 
 #include "front_end/location.hh"
 #include "syntax_tree/ast_visitor.h"
 #include "syntax_tree/ast_node.pb.h"
+#include "symbol_table/data_type.h"
 
 namespace flang {
 
@@ -21,6 +23,15 @@ namespace flang {
      }
 
 class Symbol;
+
+struct ASTAttribute {
+  ASTAttribute() : symbol(nullptr) {
+  }
+
+  Symbol* symbol;
+  DataType* data_type;
+  ASTValue value;
+};
 
 /** @breif Abstract syntax tree node. */
 class ASTNode {
@@ -134,12 +145,17 @@ class ASTNode {
     return symbol_;
   }
 
+  ASTAttribute& getAttr() {
+    return attr_;
+  }
+
  protected:
   /** Parent ast node. */
   ASTNode* parent_;
   /** The location of this AST node in the source file. */
   location location_;
   Symbol* symbol_;
+  ASTAttribute attr_;
 };
 
 }  // namespace flang

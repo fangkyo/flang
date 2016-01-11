@@ -14,6 +14,13 @@ class ExceptionManager;
 class TypeChecker : public ASTVisitor {
  public:
   TypeChecker(SymbolTable* symbol_table, ExceptionManager* except_manager);
+
+  bool visit(BoolValNode* node) override;
+  bool visit(IntValNode* node) override;
+  bool visit(StringValNode* node) override;
+  bool visit(DoubleValNode* node) override;
+  bool visit(CharValNode* node) override;
+
   bool endVisit(IfNode* node) override;
   bool endVisit(BinaryExpNode* node) override;
   bool endVisit(FieldAccessNode* node) override;

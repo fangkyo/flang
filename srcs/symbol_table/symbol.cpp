@@ -119,5 +119,11 @@ bool BlockSymbol::execute(SymbolHandler* handler) {
   return handler->handle(this);
 }
 
+void SymbolHandler::handleUnexpected(Symbol* symbol) {
+  CHECK(symbol);
+  boost::format fmt("Unexpected symbol '%1%'.");
+  CHECK_MSG(false, boost::str(fmt % symbol->getName()));
+}
+
 }  // namespace flang
 

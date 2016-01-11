@@ -13,7 +13,7 @@ namespace flang {
 class SyntaxTree {
  public:
   SyntaxTree() {}
-  void accept(ASTVisitor*);
+  bool accept(ASTVisitor*);
   void setRoot(ASTNode* root) { root_.reset(root); }
   ASTNode* getRoot() { return root_.get(); }
 
