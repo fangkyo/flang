@@ -149,6 +149,10 @@ class ASTNode {
     return attr_;
   }
 
+  const ASTAttribute& getAttr() const {
+    return attr_;
+  }
+
  protected:
   /** Parent ast node. */
   ASTNode* parent_;
