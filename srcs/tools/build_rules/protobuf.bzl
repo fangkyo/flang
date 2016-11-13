@@ -1,56 +1,24 @@
+load("//third_party/protobuf:protobuf.bzl", cc_proto_alias = "cc_proto_library")
 
-def _impl(ctx):
-  outputs = ctx.outputs.outs
-  srcs = []
-  srcs += ctx.files.srcs
-  for dep in ctx.attr.deps:
-    srcs += dep.proto.srcs
-  
-  srcs_path = " ".join([src.path for src in ctx.files.srcs])
-  ctx.action(
-      inputs=srcs,
-      outputs=outputs,
-      command="protoc -I. --cpp_out=%s %s" %  (ctx.var["GENDIR"], srcs_path))
-  return struct(
-    proto = struct(
-      srcs = srcs 
-    ),
-  )
-  
-
-def _get_proto_outputs(srcs):
-  res = []
-  for src in srcs:
-    cc_hdr = src[:-len(".proto")] + ".pb.h"
-    cc_src = src[:-len(".proto")] + ".pb.cc"
-    res.append(cc_hdr)
-    res.append(cc_src)
-  return res
-
-proto_filetype = FileType([".proto"])
-
-gen_proto = rule(
-    implementation=_impl,
-    attrs={
-        "srcs": attr.label_list(allow_files=proto_filetype, mandatory=True),
-        "deps": attr.label_list(providers=["proto"]),
-        "outs": attr.output_list(mandatory=True, non_empty=True)
-    },
-    output_to_genfiles=True,
-)
-
-def cc_proto_library(name, srcs, deps=[], visibility=None):
-  outs = _get_proto_outputs(srcs)
-  proto_pkg = gen_proto(
-      name=name + "_genproto",
-      srcs=srcs,
-      outs=outs,
-      deps=[d + "_genproto" for d in deps])
-  native.cc_library(
+def cc_proto_library(
+        name,
+        srcs=[],
+        deps=[],
+        cc_libs=[],
+        include=None,
+        protoc="//:protoc",
+        internal_bootstrap_hack=False,
+        use_grpc_plugin=False,
+        default_runtime="//:protobuf",
+        **kargs):
+  cc_proto_alias(
       name=name,
-      srcs=[proto_pkg.label()],
-      hdrs=[proto_pkg.label()],
-      linkopts=["-lprotobuf"],
-      deps = deps,
-      visibility=visibility,
-  )
+      srcs=srcs,
+      deps=deps,
+      cc_libs=cc_libs,
+      include=include,
+      protoc="//third_party/protobuf:protoc",
+      internal_bootstrap_hack=internal_bootstrap_hack,
+      use_grpc_plugin=use_grpc_plugin,
+      default_runtime="//third_party/protobuf:protobuf",
+      **kargs)
